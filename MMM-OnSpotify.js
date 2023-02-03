@@ -271,7 +271,7 @@ Module.register("MMM-OnSpotify", {
             playerIsEmpty: false,
             name: payload.itemName,
             image: this.getImage(
-              this.playerData.images,
+              this.playerData.itemImages,
               this.config.prefersLargeImageSize,
             ),
             artist: payload.itemArtist,
@@ -334,7 +334,7 @@ Module.register("MMM-OnSpotify", {
             playerIsEmpty: this.playerData.isEmpty,
             name: this.playerData.itemName,
             image: this.getImage(
-              this.playerData.images,
+              this.playerData.itemImages,
               this.config.prefersLargeImageSize,
             ),
             artist: this.playerData.itemArtist,
@@ -473,7 +473,6 @@ Module.register("MMM-OnSpotify", {
   },
 
   getImage: (im, prefersLarge) => im[prefersLarge ? "large" : "medium"],
-
   logBadge: function () {
     console.log(
       ` ⠖ %c by Fabrizz %c ${this.name}`,
