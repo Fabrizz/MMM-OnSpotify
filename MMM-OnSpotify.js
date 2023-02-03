@@ -16,14 +16,14 @@ Module.register("MMM-OnSpotify", {
     // user | affinity | both | none | logo
     displayWhenEmpty: "both",
     // Show tracks instead of albums when the player is idle.
-    userAffinityUseTracks: false, //+
+    userAffinityUseTracks: false,
     // Prefers larger images. Affects display and the "NOW_PLAYING" broadcast.
     prefersLargeImageSize: false,
     // If you selected a high interval, you can hide the progress timestamp
     // and animate the seekbar to the timing of the updateInterval, making it look better.
     hideTrackLenghtAndAnimateProgress: false,
     // Shows the Vibrant output in the console as a palette and color data.
-    showDebugPalette: true, //+
+    showDebugPalette: false,
     // Max age in seconds for personal data. If set to 0 they update when the player changes
     // state, as user data does not change that much, this prevents unnecessary api calls.
     userDataMaxAge: 14400,
