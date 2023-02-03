@@ -1,0 +1,6 @@
+#login, #loggedin {
+  display: none;
+}
+#pre::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}

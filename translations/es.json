@@ -1,0 +1,14 @@
+{
+    "DISPLAY_PRIVATE": "Sesión de Spotify privada",
+    "PRODUCT_WARNING": "La cuenta actual de Spotify no es Premium. Este modulo requiere de una cuenta Premium para funcionar.",
+    "CONNECTION_WARNING": "Hubo un problema de conexión. Ralentizando el polling a api.spotify/...",
+    "CONNECTION_ERROR": "Los problemas de conexión persisten. Ralentizando más el polling. Ocultando la reprocucción antigua.",
+    "VIBRANT_NOT_LOADED": "(vendor) Vibrant no se cargó correctamente.",
+    "STABLISHING_CONNECTION": "Conectando a Spotify...",
+    "NOTHING_PLAYING": "No se esta reproduciendo nada",
+    "SPOTIFY_HEADER": "MMM-OnSpotify",
+    "DEBUG_COLORS": "Estas viendo las paletas de depuración porque <showDebugPalette> se encuentra en true",
+    "SPOTIFYCODE_EXPERIMENTAL": "<spotifyCodeExperimentalShow> esta activado. La API no se encuentra abierta al publico, puede dejar de funcionar sin aviso previo. Lee más en el readme...",
+    "RESUME": "Reanudando modulo...",
+    "SUSPEND": "Suspendiendo modulo..."
+}

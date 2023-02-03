@@ -1,0 +1,434 @@
+:root {
+    /* Colors extracted from the cover art */
+    --ONSP-VIBRANT-VIBRANT: #b9b9b9;
+    --ONSP-VIBRANT-DARKVIBRANT: #b9b9b9;
+    --ONSP-VIBRANT-LIGHTVIBRANT: #b9b9b9;
+    --ONSP-VIBRANT-MUTED: #b9b9b9;
+    --ONSP-VIBRANT-DARKMUTED: #b9b9b9;
+    --ONSP-VIBRANT-LIGHTMUTED: #d0d0d0;
+
+    --ONSP-VIBRANT-DOMINANTBRIGHT: #f0f0f0;
+    --ONSP-VIBRANT-DOMINANTDARK: #212121;
+    --ONSP-VIBRANT-DOMINANTEMPHASIS: #ffffff;
+    --ONSP-VIBRANT-TRANSITION: var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+
+    /* Base colors */
+    --ONSP-INTERNAL-COLOR-BRIGHT: #FFF;
+    --ONSP-INTERNAL-COLOR-MUTED: #b9b9b9;
+
+    /* User defaults */
+    --ONSP-INTERNAL-USER-IMAGE-BASE: 2.8em;
+    --ONSP-INTERNAL-USER-IMAGE-EMPTY: 1em;
+    --ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT: var(--ONSP-INTERNAL-USER-IMAGE-BASE-SIZE);
+    --ONSP-INTERNAL-USER-IMAGE-SYNC-WIDTH: var(--ONSP-INTERNAL-USER-IMAGE-BASE-SIZE);
+
+    /* Defaults for calculations */
+    --ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION: cubic-bezier(0.35, 0.11, 0.25, 1);
+    --ONSP-INTERNAL-PLAYER-UPDATE-TIME: 1000ms;
+    --ONSP-INTERNAL-PLAYER-TRANSITION-TIME: 1500ms;
+
+    --ONSP-INTERNAL-PLAYER-SIZE-WIDTH: 15em;
+    --ONSP-INTERNAL-PLAYER-PADDING-INFO: 0.28em;
+    --ONSP-INTERNAL-PLAYER-MEDIA-CORNERS: 0.68em;
+    --ONSP-INTERNAL-PLAYER-PROGRESS-CORNERS: 1em;
+    --ONSP-INTERNAL-PLAYER-GAP: 0.5em;
+    
+    --ONSP-INTERNAL-PLAYER-COLOR-PROGRESS: #FFF;
+    --ONSP-INTERNAL-PLAYER-COLOR-PROGRESS-BG: #ffffff26;
+    --ONSP-INTERNAL-PLAYER-COLOR-TITLE: #FFF;
+
+    --ONSP-INTERNAL-PLAYER-CODE-COLOR: #222;
+    --ONSP-INTERNAL-PLAYER-CODE-BARS: #ffffff;
+    --ONSP-INTERNAL-PLAYER-CODE-MARGIN: calc(0px - var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH) - var(--ONSP-INTERNAL-PLAYER-GAP) + 0.1em);
+    --ONSP-INTERNAL-PLAYER-CODE-PADDING: calc(var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH) - 0.1em);
+}
+
+/* DYNAMIC BACKGROUND */
+.ONSP-Base .background { animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) }
+.ONSP-Base .background .backgroundBox { position: absolute; transition: background-color var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) }
+/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FIXED SIZES CSS - CHANGE IF NEEDED < */
+.ONSP-Base .background .backgroundBoxAAA {
+    top: 4px;
+    height: 280px;
+    left: -40px;
+    width: 180px;
+    background-color: var(--ONSP-VIBRANT-VIBRANT);
+    opacity: 0.44;
+    filter: blur(70px);
+}
+.ONSP-Base .background .backgroundBoxBBB {
+    top: 16px;
+    height: 180px;
+    width: 253px;
+    right: -35px;
+    background-color: var(--ONSP-VIBRANT-LIGHTVIBRANT);
+    opacity: 0.46;
+    filter: blur(100px);
+}
+.ONSP-Base .background .backgroundBoxCCC {
+    bottom: 49px;
+    right: -45px;
+    height: 108px;
+    width: 180px;
+    background-color: var(--ONSP-VIBRANT-DARKMUTED);
+    opacity: 0.38;
+    filter: blur(60px);
+}
+.ONSP-Base .background .backgroundBoxDDD {
+    top: 171px;
+    right: -51px;
+    height: 203px;
+    width: 95px;
+    background-color: var(--ONSP-VIBRANT-MUTED);
+    opacity: 0.4;
+    filter: blur(60px);
+}
+.ONSP-Base .background .backgroundBoxEEE {
+    left: -31px;
+    height: 310px;
+    bottom: -35px;
+    width: 228px;
+    background-color: var(--ONSP-VIBRANT-LIGHTMUTED);
+    opacity: 0.42;
+    filter: blur(82px);
+}
+.ONSP-Base .background .backgroundBoxFFF { 
+    bottom: -41px;
+    right: -47px;
+    width: 244px;
+    height: 106px;
+    background-color: var(--ONSP-VIBRANT-DARKVIBRANT);
+    opacity: 0.36;
+    filter: blur(76px);
+}
+/* BACKGROUND FRAME OVERRIDES [If using custom background fixed sizes, make sure to have <blurLessInFrameSide> set to false] */
+/* Bottom */
+.ONSP-Base .overrideBottom .backgroundBoxEEE,
+.ONSP-Base .overrideAll .backgroundBoxEEE {
+    height: 236px;
+    bottom: 5px;
+    filter: blur(42px);
+}
+.ONSP-Base .overrideBottom .backgroundBoxFFF,
+.ONSP-Base .overrideAll .backgroundBoxFFF { 
+    bottom: 5px;
+    height: 148px;
+    filter: blur(42px);
+    opacity: 0.3;
+}
+/* Right */
+.ONSP-Base .overrideRight .backgroundBoxFFF,
+.ONSP-Base .overrideAll .backgroundBoxFFF { 
+    right: 5px;
+    width: 180px;
+    filter: blur(42px);
+    opacity: 0.3;
+}
+.ONSP-Base .overrideRight .backgroundBoxDDD,
+.ONSP-Base .overrideAll .backgroundBoxDDD { 
+    right: 5px;
+    width: 80px;
+    height: 186px;
+    filter: blur(42px);
+}
+.ONSP-Base .overrideRight .backgroundBoxBBB,
+.ONSP-Base .overrideAll .backgroundBoxBBB { 
+    width: 172px;
+    right: 5px;
+    height: 234px;
+    filter: blur(42px);
+}
+.ONSP-Base .overrideRight .backgroundBoxCCC,
+.ONSP-Base .overrideAll .backgroundBoxCCC {
+    right: 5px;
+    width: 61px;
+    filter: blur(42px);
+}
+/* Left */
+.ONSP-Base .overrideLeft .backgroundBoxEEE,
+.ONSP-Base .overrideAll .backgroundBoxEEE {
+    width: 170px;
+    left: 5px;
+    filter: blur(42px);
+}
+.ONSP-Base .overrideLeft .backgroundBoxAAA,
+.ONSP-Base .overrideAll .backgroundBoxAAA {
+    left: 5px;
+    width: 160px;
+    filter: blur(42px);
+    opacity: 0.4;
+}
+/* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END < */
+
+/* PLAYER */
+.ONSP-Base .nowplaying{
+    max-width: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
+    position: relative;
+}
+.ONSP-Base .player {
+    display: flex;
+    position: relative;
+    flex-flow: column nowrap;
+    width: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
+    animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+    text-align: left;
+    gap: var(--ONSP-INTERNAL-PLAYER-GAP);
+    z-index: 1;
+}
+.ONSP-Base .player .header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: stretch;
+    gap: 0.5em;
+    padding-bottom: 0.04em;
+}
+.ONSP-Base .player .header .visual {
+    background-color: var(--ONSP-INTERNAL-PLAYER-COLOR-TITLE);
+    width: 0.08em;
+    border-radius: 1em;
+}
+.ONSP-Base .player .header .names {
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+    flex: 1;
+}
+.ONSP-Base .player .header .names .title {
+    display: flex;
+    align-items: center;
+    font-size: 1.25em;
+    font-weight: bold;
+    color: var(--ONSP-INTERNAL-PLAYER-COLOR-TITLE);
+    margin-bottom: -0.16em;
+    margin-top: -0.1em;
+}
+.ONSP-Base .player .header .names .subtitle {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    padding-left: 0.04em;
+    color: var(--ONSP-INTERNAL-PLAYER-COLOR-TITLE);
+    font-weight: 100;
+    margin-top: -0.16em;
+    margin-bottom: -0.1em;
+}
+.ONSP-Base .player .cover {
+    display: block;
+    height: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
+    background-size: cover;
+    transition: background-image var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) cubic-bezier(0.25, 0.15, 0.20, 1);;
+    border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
+    z-index: 2;
+    background-position: center;
+    /* box-shadow: 0px 4px 12px 8px rgb(0 0 0 / 25%); */
+}
+.ONSP-Base .player .footer {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 0 var(--ONSP-INTERNAL-PLAYER-PADDING-INFO);
+    gap: 0.14em;
+}
+.ONSP-Base .player .footer .progress {
+    height: 0.28em;
+    background-color: var(--ONSP-INTERNAL-PLAYER-COLOR-PROGRESS-BG);
+    display: flex;
+    border-radius: var(--ONSP-INTERNAL-PLAYER-PROGRESS-CORNERS);
+    overflow: hidden;
+    transition: background-color var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+}
+.ONSP-Base .player .footer .bar {
+    background-color: var(--ONSP-INTERNAL-PLAYER-COLOR-PROGRESS);
+    border-radius: var(--ONSP-INTERNAL-PLAYER-PROGRESS-CORNERS);
+    transition: background-color var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME), width var(--ONSP-INTERNAL-PLAYER-UPDATE-TIME) var(--ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION) 0s;
+}
+.ONSP-Base .player .footer .target {
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    flex-flow: row nowrap;
+    gap: 0.2em;
+}
+.ONSP-Base .player .footer .target .device {
+    flex: 1;
+    font-weight: 400;
+    font-size: 0.8em;
+}
+.ONSP-Base .player .footer .target .time {
+    font-weight: 100;
+    font-size: 0.8em;
+}
+.ONSP-Base .player .footer .target .icon {
+    display: flex;
+    height: 0.9em;
+    width: 0.9em;
+}
+.ONSP-Base .player .experimental {
+    display: flex;
+    flex-flow: row nowrap;
+    color: #FFF;
+    background-color: var(--ONSP-INTERNAL-PLAYER-CODE-COLOR);
+    align-items: center;
+    /* As this is an experimental feature, this workaround to set the BG and
+       rounded corners is used (the +0.1em -0.1em) (the -0.5em come from the
+       flex gap of the module) (Future: Include it inside cover el) */
+    margin-top: var(--ONSP-INTERNAL-PLAYER-CODE-MARGIN);
+    padding-top: var(--ONSP-INTERNAL-PLAYER-CODE-PADDING);
+    justify-content: center;
+    border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
+    border-top-left-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
+    border-top-right-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
+    transition: all var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+}
+.ONSP-Base .player .experimental .code {
+    aspect-ratio: 4 / 1;
+    width: 66%;
+}
+.ONSP-Base .player .experimental .code svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* PRIVATE SESSION */
+.ONSP-Base .privateSession {
+    display: flex;
+    gap: 0.32em;
+    flex-flow: row nowrap;
+    align-items: center;
+    color: var(--ONSP-COLORSYSTEM-EXAMPLE);
+}
+.ONSP-Base .privateSession .text {
+    font-size: 1.2em;
+    font-weight: 100;
+}
+.ONSP-Base .privateSession .icon {
+    height: 1.4em;
+    width: 1.4em;
+}
+
+/* USERAFFINITY */
+.ONSP-Base .useraffinity {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    gap: 0.6em;
+    animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+}
+.ONSP-Base .useraffinity .affinity {
+    display: flex;
+    justify-content: center;
+}
+.ONSP-Base .useraffinity .affinity .grid {
+    width: 14.8em;
+    height: 14.8em;
+    animation: none;
+}
+.ONSP-Base .useraffinity .user .profile {
+    animation: none;
+    padding: 0em 0.2em;
+    background-color: transparent;
+}
+.ONSP-Base .useraffinity .user .profile .image {
+    width: calc(var(--ONSP-INTERNAL-USER-IMAGE-SYNC-WIDTH) * 0.80);
+    height: calc(var(--ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT) * 0.80);
+}
+.ONSP-Base .useraffinity .user .profile .data .title {
+    font-size: 0.9em;
+    margin-bottom: -6px;
+    color: var(--ONSP-COLORSYSTEM-EXAMPLE);
+}
+.ONSP-Base .useraffinity .user .profile .data .subtitle {
+    font-size: 0.8em;
+}
+
+/* AFFINITY */
+.ONSP-Base .affinity .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 15.2em;
+    height: 15.2em;
+    gap: 0.2em;
+    animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+}
+.ONSP-Base .affinity .grid .gridElement {
+    background-size: cover;
+    transition: background-image 1.2s;
+    border-radius: 0.4em;
+}
+
+/* USER */
+.ONSP-Base .user .profile {
+    display: flex;
+    align-items: center;
+    flex-flow: row nowrap;
+    gap: 0.5em;
+    background-color: var(--ONSP-INTERNAL-USER-BG-COLOR);
+    padding: 0.4em 1em 0.4em 0.4em;
+    border-radius: 1.18em;
+    transition: background-color 3s;
+    animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+}
+.ONSP-Base .user .profile .image {
+    width: var(--ONSP-INTERNAL-USER-IMAGE-SYNC-WIDTH);
+    height: var(--ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT);
+    background-size: cover;
+    transition: all 2s;
+    border-radius: 0.9em;
+    background-image: var(--ONSP-INTERNAL-USER-IMAGE);
+}
+.ONSP-Base .user .profile .image .letter {
+    color: var(--ONSP-COLORSYSTEM-EXAMPLE);
+    font-weight: 300;
+    font-size: 1.3em;
+}
+.ONSP-Base .user .profile .image .letter:before {
+    content: var(--ONSP-INTERNAL-USER-LETTER);
+}
+.ONSP-Base .user .profile .data {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    justify-content: center;
+}
+.ONSP-Base .user .profile .data .title {
+    font-size: 1em;
+    font-weight: 400;
+    margin-bottom: -4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+}
+.ONSP-Base .user .profile .data .title .badge {
+    display: inline-flex;
+    font-size: 0.6em;
+    color: #1DB954;
+}
+.ONSP-Base .user .profile .data .title .badge:before {
+    content: var(--ONSP-INTERNAL-USER-PRODUCT);
+}
+.ONSP-Base .user .profile .data .title:before {
+    content: var(--ONSP-INTERNAL-USER-NAME);
+    color: var(--ONSP-INTERNAL-COLOR-BRIGHT);
+}
+.ONSP-Base .user .profile .data .subtitle {
+    font-size: 0.86em;
+    font-weight: 300;
+}
+.ONSP-Base .user .profile .data .subtitle:before {
+    content: var(--ONSP-INTERNAL-USER-SUBTITLE);
+    color: var(--ONSP-INTERNAL-COLOR-MUTED);
+}
+
+/* LOGO */
+.ONSP-Base .logowide {
+    display: flex;
+}
+.ONSP-Base .logowide .logo {
+    max-width: 12em;
+}
+
+/* ANIMATIONS */
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } };

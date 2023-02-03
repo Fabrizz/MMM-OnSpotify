@@ -1,0 +1,782 @@
+/* eslint-disable no-undef */
+class SpotifyDomBuilder {
+  constructor(pathPrefix, config, other, translator) {
+    this.pathPrefix = pathPrefix;
+    this.config = { ...config, ...other };
+    this.translate = translator;
+    this.root = document.querySelector(":root");
+    this.firstUpdate = true;
+    this.lastItemURI = null;
+    this.lastUrlProcessed = null;
+    this.lastPalette = null;
+    this.constrainSide = null;
+    this.constrainBottom = null;
+    this.affinityGridElements = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
+    this.backgroundColors = ["AAA", "BBB", "CCC", "DDD", "EEE", "FFF"];
+
+    // Corrects the background blur and sizes so it does not reach the
+    // body borders (actual display size borders). This makes it look good
+    // behind the mirror (hides your acual display size)
+    if (this.config.theming.blurLessInFrameSide) {
+      const s = this.config.moduleSide;
+      if (s && s.includes("right")) this.constrainSide = "overrideRight";
+      if (s && s.includes("left")) this.constrainSide = "overrideLeft";
+      if (s && s.includes("bottom")) this.constrainBottom = true;
+    }
+
+    this.root.style.setProperty(
+      "--ONSP-INTERNAL-PLAYER-UPDATE-TIME",
+      `${this.config.updateInterval.isPlaying * 1000}ms`,
+    );
+    this.root.style.setProperty(
+      "--ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION",
+      this.config.hideTrackLenghtAndAnimateProgress
+        ? "linear"
+        : "cubic-bezier(0.35, 0.11, 0.25, 1)",
+    );
+    if (this.config.theming.useColorInProgressBar) {
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-COLOR-PROGRESS",
+        // Use the same corrected color as the Spotify Code bar if its enabled
+        // It looks better and makes it look good if showBlurBackground is enabled
+        this.config.theming.spotifyCodeExperimentalShow &&
+          this.config.theming.spotifyCodeExperimentalUseColor
+          ? "var(--ONSP-VIBRANT-DOMINANTBRIGHT)"
+          : "var(--ONSP-VIBRANT-LIGHTVIBRANT)",
+      );
+    }
+    if (!this.config.theming.roundProgressBar)
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-PROGRESS-CORNERS",
+        "none",
+      );
+    if (!this.config.theming.roundMediaCorners)
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS",
+        "none",
+      );
+    if (this.config.theming.spotifyCodeExperimentalSeparateItem) {
+      this.root.style.setProperty("--ONSP-INTERNAL-PLAYER-CODE-MARGIN", "none");
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-CODE-PADDING",
+        "none",
+      );
+    }
+    if (
+      this.config.theming.useColorInProgressBar &&
+      this.config.theming.showBlurBackground
+    )
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-COLOR-PROGRESS-BG",
+        "rgb(0,0,0,0.48)",
+      );
+
+    this.svgs = {
+      default:
+        "M4.93,4.93C3.12,6.74 2,9.24 2,12C2,14.76 3.12,17.26 4.93,19.07L6.34,17.66C4.89,16.22 4,14.22 4,12C4,9.79 4.89,7.78 6.34,6.34L4.93,4.93M19.07,4.93L17.66,6.34C19.11,7.78 20,9.79 20,12C20,14.22 19.11,16.22 17.66,17.66L19.07,19.07C20.88,17.26 22,14.76 22,12C22,9.24 20.88,6.74 19.07,4.93M7.76,7.76C6.67,8.85 6,10.35 6,12C6,13.65 6.67,15.15 7.76,16.24L9.17,14.83C8.45,14.11 8,13.11 8,12C8,10.89 8.45,9.89 9.17,9.17L7.76,7.76M16.24,7.76L14.83,9.17C15.55,9.89 16,10.89 16,12C16,13.11 15.55,14.11 14.83,14.83L16.24,16.24C17.33,15.15 18,13.65 18,12C18,10.35 17.33,8.85 16.24,7.76M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z",
+      lock: "M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z",
+      // Spotify devices:
+      Speaker:
+        "M2 11V13C7 13 11 17 11 22H13C13 15.9 8.1 11 2 11M20 2H10C8.9 2 8 2.9 8 4V10.5C9 11 9.9 11.7 10.7 12.4C11.6 11 13.2 10 15 10C17.8 10 20 12.2 20 15S17.8 20 15 20H14.8C14.9 20.7 15 21.3 15 22H20C21.1 22 22 21.1 22 20V4C22 2.9 21.1 2 20 2M15 8C13.9 8 13 7.1 13 6C13 4.9 13.9 4 15 4C16.1 4 17 4.9 17 6S16.1 8 15 8M15 18C14.8 18 14.5 18 14.3 17.9C13.8 16.4 13.1 15.1 12.2 13.9C12.6 12.8 13.7 11.9 15 11.9C16.7 11.9 18 13.2 18 14.9S16.7 18 15 18M2 15V17C4.8 17 7 19.2 7 22H9C9 18.1 5.9 15 2 15M2 19V22H5C5 20.3 3.7 19 2 19",
+      CastVideo:
+        "M1,10V12A9,9 0 0,1 10,21H12C12,14.92 7.07,10 1,10M1,14V16A5,5 0 0,1 6,21H8A7,7 0 0,0 1,14M1,18V21H4A3,3 0 0,0 1,18M21,3H3C1.89,3 1,3.89 1,5V8H3V5H21V19H14V21H21A2,2 0 0,0 23,19V5C23,3.89 22.1,3 21,3Z",
+      AVR: "M2.175 16.825v-9.65h19.65v9.65Zm3.725-3.75h4.375v-2.15H5.9Zm7.65.15q.5 0 .863-.362.362-.363.362-.863t-.362-.863q-.363-.362-.863-.362t-.862.362q-.363.363-.363.863t.363.863q.362.362.862.362Zm3.475 0q.5 0 .863-.362.362-.363.362-.863t-.362-.863q-.363-.362-.863-.362t-.862.362Q15.8 11.5 15.8 12t.363.863q.362.362.862.362Z",
+      Computer:
+        "M4,6H20V16H4M20,18A2,2 0 0,0 22,16V6C22,4.89 21.1,4 20,4H4C2.89,4 2,4.89 2,6V16A2,2 0 0,0 4,18H0V20H24V18H20Z",
+      Smartphone:
+        "M3,4H20A2,2 0 0,1 22,6V8H18V6H5V18H14V20H3A2,2 0 0,1 1,18V6A2,2 0 0,1 3,4M17,10H23A1,1 0 0,1 24,11V21A1,1 0 0,1 23,22H17A1,1 0 0,1 16,21V11A1,1 0 0,1 17,10M18,12V19H22V12H18Z",
+    };
+    this.images = {
+      placeholder: "assets/placeholder.png",
+      spotifyGreen: "assets/spotifyGreen.png",
+      spotifyLogoGreen: "assets/spotifyLogoGreen.png",
+      spotifyLogoWide: "assets/spotifyLogoWide.png",
+    };
+  }
+
+  /* All cases */
+  empty(isPlaying) {
+    const wrapper = this.globalWrapper();
+    const content = document.createElement("div");
+    const notice = document.createComment(
+      isPlaying
+        ? "Spotify is playing. The config <displayWhenPlaying> is set to none"
+        : "Spotify is empty. The config <displayWhenEmpty> is set to none",
+    );
+    content.classList.add("empty", isPlaying ? "playing" : "stopped");
+    content.appendChild(notice);
+    wrapper.appendChild(content);
+    this.lastItemURI = null;
+    return wrapper;
+  }
+
+  /* Player */
+  privateSession(data) {
+    const wrapper = this.globalWrapper();
+    const content = document.createElement("div");
+    const text = document.createElement("span");
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    path.setAttribute("d", this.svgs.lock);
+    svg.setAttribute("fill", "currentColor");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.appendChild(path);
+    svg.classList.add("icon");
+
+    text.classList.add("text");
+    text.innerText = `'${this.translate("DISPLAY_PRIVATE")}'`;
+
+    content.classList.add("privateSession", "playing");
+    content.appendChild(svg);
+    content.appendChild(text);
+
+    wrapper.appendChild(content);
+    this.lastItemURI = null;
+    return wrapper;
+  }
+  nowPlaying(data) {
+    const wrapper = this.globalWrapper();
+    const content = document.createElement("div");
+    content.classList.add("nowplaying", "playing");
+    if (
+      data &&
+      (data.statusIsNewSong || this.firstUpdate) &&
+      this.config.useVibrantOnChange
+    )
+      this.setGlobalColors(this.selectImage(data.itemImages), data);
+
+    if (this.config.theming.showBlurBackground)
+      content.appendChild(this.getPlayerBackground(data));
+    content.appendChild(this.getPlayerData(data));
+
+    wrapper.appendChild(content);
+    this.lastItemURI = data.itemUri;
+    return wrapper;
+  }
+
+  /* Empty player */
+  spotifyLogo() {
+    const wrapper = this.globalWrapper();
+    const content = document.createElement("div");
+    content.classList.add("logowide", "stopped");
+
+    const logo = document.createElement("img");
+    logo.src = `/${this.pathPrefix}${this.images.spotifyLogoWide}`;
+    logo.classList.add("logo");
+    content.appendChild(logo);
+
+    wrapper.appendChild(content);
+    this.lastItemURI = null;
+    return wrapper;
+  }
+  userAffinity(data, datab) {
+    const wrapper = this.globalWrapper();
+
+    const content = document.createElement("div");
+    content.classList.add("useraffinity", "stopped");
+
+    const userContainer = document.createElement("div");
+    userContainer.classList.add("user");
+    userContainer.appendChild(this.getUserProfile(data, true));
+
+    const affinityContainer = document.createElement("div");
+    affinityContainer.classList.add("affinity");
+    affinityContainer.appendChild(this.getAffinityGrid(datab));
+
+    content.appendChild(userContainer);
+    content.appendChild(affinityContainer);
+    wrapper.appendChild(content);
+    this.lastItemURI = null;
+    return wrapper;
+  }
+  user(data) {
+    const wrapper = this.globalWrapper();
+    const content = document.createElement("div");
+    const user = this.getUserProfile(data);
+
+    content.classList.add("user", "stopped");
+    content.appendChild(user);
+
+    wrapper.appendChild(content);
+    this.lastItemURI = null;
+    return wrapper;
+  }
+  affinity(data) {
+    const wrapper = this.globalWrapper();
+    const content = document.createElement("div");
+    const grid = this.getAffinityGrid(data);
+
+    content.classList.add("affinity", "stopped");
+    content.appendChild(grid);
+
+    wrapper.appendChild(content);
+    this.lastItemURI = null;
+    return wrapper;
+  }
+
+  /* COMMON */
+  globalWrapper() {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("ONSP-Base", "ONSP-Custom");
+    wrapper.id = "ONSP-WRAPPER";
+    return wrapper;
+  }
+
+  /* PLAYER */
+  getPlayerData(data) {
+    const player = document.createElement("div");
+    player.classList.add(
+      "player",
+      data.currently_playing_type ? data.currently_playing_type : "unknown",
+    );
+
+    /* Header -> Title | Subtitle */
+    const header = document.createElement("div");
+    header.classList.add("header");
+    const names = document.createElement("div");
+    names.classList.add("names");
+    const visual = document.createElement("span");
+    visual.classList.add("visual");
+
+    const title = document.createElement("span");
+    title.id = "VSNO-TARGET-TITLE";
+    title.classList.add("title");
+    title.innerText = data.itemName;
+    const subtitle = document.createElement("span");
+    subtitle.id = "VSNO-TARGET-SUBTITLE";
+    subtitle.classList.add("subtitle");
+    subtitle.innerText = data.itemArtists
+      ? data.itemArtists
+      : data.itemShowName;
+
+    names.appendChild(title);
+    names.appendChild(subtitle);
+    header.appendChild(visual);
+    header.appendChild(names);
+
+    /* Cover */
+    const cover = document.createElement("div");
+    cover.id = "VSNO-TARGET-COVER";
+    cover.classList.add("cover");
+    //cover.referrerPolicy = "no-referrer";
+    //cover.src = this.selectImage(data.itemImages);
+    cover.style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
+
+    /* Footer -> ProgressBar>Bar | Target>Icon/Device */
+    const footer = document.createElement("div");
+    footer.classList.add("footer");
+    const progressbar = document.createElement("div");
+    progressbar.classList.add("progress");
+    const progress = document.createElement("div");
+    progress.id = "VSNO-TARGET-PROGRESS";
+    progress.style.width = `${this.getPercentage(
+      data.playerProgress,
+      data.itemDuration,
+    )}%`;
+    progress.classList.add("bar");
+    progressbar.appendChild(progress);
+    //////////////
+    const target = document.createElement("div");
+    target.classList.add("target");
+
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.setAttribute("fill", "currentColor");
+    icon.setAttribute("viewBox", "0 0 24 24");
+    icon.classList.add("icon");
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.id = "VSNO-TARGET-PATH";
+    path.setAttribute(
+      "d",
+      this.config.theming.alwaysUseDefaultDeviceIcon
+        ? this.svgs.default
+        : this.svgs[data.deviceType]
+        ? this.svgs[data.deviceType]
+        : this.svgs.default,
+    );
+    icon.appendChild(path);
+    target.appendChild(icon);
+
+    const device = document.createElement("span");
+    device.id = "VSNO-TARGET-DEVICE";
+    device.classList.add("device");
+    device.innerText = data.deviceName;
+    target.appendChild(device);
+
+    const time = document.createElement("span");
+    time.innerText = this.getSanitizedTime(
+      data.playerProgress,
+      data.itemDuration,
+    );
+    time.id = "VSNO-TARGET-TIME";
+    time.classList.add("time");
+    target.appendChild(time);
+
+    footer.appendChild(progressbar);
+    footer.appendChild(target);
+
+    /* Main */
+    player.appendChild(header);
+    player.appendChild(cover);
+    if (this.config.theming.spotifyCodeExperimentalShow) {
+      player.appendChild(this.getSpotifyCodeDom(data.itemUri));
+    }
+    player.appendChild(footer);
+    return player;
+  }
+  getPlayerBackground() {
+    const bg = document.createElement("div");
+    bg.classList.add(
+      "background",
+      this.config.theming.blurLessInAllSides
+        ? "overrideAll"
+        : "overrideAllNone",
+      this.constrainSide ? this.constrainSide : "overrideSideNone",
+      this.constrainBottom ? "overrideBottom" : "overrideBottomNone",
+    );
+    this.backgroundColors.forEach((c) => {
+      let a = document.createElement("div");
+      a.classList.add("backgroundBox", "backgroundBox" + c);
+      bg.appendChild(a);
+    });
+    return bg;
+  }
+  getSpotifyCodeDom(u) {
+    const experimental = document.createElement("div");
+    experimental.classList.add("experimental");
+    const code = document.createElement("div");
+    code.id = "VSNO-TARGET-CODE";
+    code.classList.add("code");
+    this.getSpotifyCodeImage(u, "VSNO-TARGET-CODE", true);
+    experimental.appendChild(code);
+    return experimental;
+  }
+  updatePlayerData(data) {
+    if (!document.getElementById("ONSP-WRAPPER")) return;
+    if (
+      data &&
+      (data.statusIsNewSong || this.firstUpdate) &&
+      this.config.useVibrantOnChange
+    )
+      this.setGlobalColors(this.selectImage(data.itemImages), data);
+
+    document.getElementById(
+      "VSNO-TARGET-PROGRESS",
+    ).style.width = `${this.getPercentage(
+      data.playerProgress,
+      data.itemDuration,
+    )}%`;
+    document.getElementById("VSNO-TARGET-TIME").innerText =
+      this.getSanitizedTime(data.playerProgress, data.itemDuration);
+
+    if (data.statusIsNewSong || data.itemUri !== this.lastItemURI) {
+      document.getElementById("VSNO-TARGET-TITLE").innerText = data.itemName;
+      document.getElementById("VSNO-TARGET-SUBTITLE").innerText =
+        data.itemArtists ? data.itemArtists : data.itemShowName;
+      // document.getElementById("VSNO-TARGET-COVER").src = this.selectImage(data.itemImages);
+      document.getElementById(
+        "VSNO-TARGET-COVER",
+      ).style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
+      if (this.config.theming.spotifyCodeExperimentalShow)
+        this.getSpotifyCodeImage(data.itemUri, "VSNO-TARGET-CODE", false);
+    }
+
+    if (data.statusIsDeviceChange) {
+      document.getElementById("VSNO-TARGET-DEVICE").innerText = data.deviceName;
+      document
+        .getElementById("VSNO-TARGET-PATH")
+        .setAttribute(
+          "d",
+          this.config.theming.alwaysUseDefaultDeviceIcon
+            ? this.svgs.default
+            : this.svgs[data.deviceType]
+            ? this.svgs[data.deviceType]
+            : this.svgs.default,
+        );
+    }
+
+    this.lastItemURI = data.itemUri;
+  }
+
+  /* AFFINITY */
+  getAffinityGrid(data) {
+    const grid = document.createElement("div");
+    this.updateAffinityData(data);
+
+    grid.classList.add("grid");
+    this.affinityGridElements.forEach((element) => {
+      const img = document.createElement("span");
+      img.classList.add("gridElement", "gridElement-" + element);
+      img.style.backgroundImage = `var(--ONSP-INTERNAL-AFFINITY-IMAGES-${element})`;
+      grid.appendChild(img);
+    });
+    return grid;
+  }
+  updateAffinityData(data) {
+    if (data) {
+      data.forEach((element) => {
+        const name = this.affinityGridElements[data.indexOf(element)];
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-AFFINITY-IMAGES-" + name,
+          `url('${element.image}')`,
+        );
+      });
+      this.root.style.setProperty("--ONSP-INTERNAL-AFFINITY-TEXT", ``);
+    } else {
+      this.affinityGridElements.forEach((element) => {
+        this.root.style.setProperty(
+          `--ONSP-INTERNAL-AFFINITY-IMAGES-${element}`,
+          `url('/${this.pathPrefix}${this.images.placeholder}')`,
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-AFFINITY-TEXT",
+          "'Connecting to Spotify...'", // translator("STABLISHING_CONNECTION"),
+        );
+      });
+    }
+  }
+
+  /* USER */
+  getUserProfile(data, sync) {
+    const content = document.createElement("div");
+    content.classList.add("profile");
+    this.updateUserData(data, sync);
+
+    const img = document.createElement("span");
+    img.classList.add("image");
+    content.appendChild(img);
+
+    const user = document.createElement("div");
+    user.classList.add("data");
+    const title = document.createElement("span");
+    title.classList.add("title");
+    const badge = document.createElement("span");
+    badge.classList.add("badge");
+    title.appendChild(badge);
+
+    const subtitle = document.createElement("span");
+    subtitle.classList.add("subtitle");
+    user.appendChild(title);
+    user.appendChild(subtitle);
+    content.appendChild(user);
+
+    return content;
+  }
+  updateUserData(data, vib) {
+    if (data) {
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-USER-NAME",
+        `"${data.name.charAt(0).toUpperCase() + data.name.slice(1)}"`,
+      );
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-USER-PRODUCT",
+        `"${data.product.toLocaleUpperCase()}"`,
+      );
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-USER-SUBTITLE",
+        `'${this.translate("NOTHING_PLAYING")}'`,
+      );
+      if (!data.image) {
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-USER-BG-COLOR",
+          `#ffffff0d`,
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-USER-IMAGE",
+          `url('/${this.pathPrefix}${this.images.spotifyGreen}')`,
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT",
+          `var(--ONSP-INTERNAL-USER-IMAGE-EMPTY)`,
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-USER-IMAGE-SYNC-WIDTH",
+          `calc(var(--ONSP-INTERNAL-USER-IMAGE-EMPTY) * 0.4)`,
+        );
+      } else {
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT",
+          `var(--ONSP-INTERNAL-USER-IMAGE-BASE)`,
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-USER-IMAGE-SYNC-WIDTH",
+          `var(--ONSP-INTERNAL-USER-IMAGE-BASE)`,
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-USER-IMAGE",
+          `url('${data.image}')`,
+        );
+        this.userDataProcessImage(data.image, vib);
+      }
+    } else {
+      this.root.style.setProperty("--ONSP-INTERNAL-USER-BG-COLOR", "#191414");
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-USER-IMAGE",
+        `url('/${this.pathPrefix}${this.images.spotifyLogoGreen}')`,
+      );
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-USER-NAME",
+        `'${this.translate("SPOTIFY_HEADER")}'`,
+      );
+      this.root.style.setProperty("--ONSP-INTERNAL-USER-PRODUCT", `""`);
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-USER-SUBTITLE",
+        `'${this.translate("STABLISHING_CONNECTION")}'`,
+      );
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT",
+        `var(--ONSP-INTERNAL-USER-IMAGE-BASE)`,
+      );
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-USER-IMAGE-SYNC-WIDTH",
+        `var(--ONSP-INTERNAL-USER-IMAGE-BASE)`,
+      );
+    }
+  }
+
+  /* Image color processing */
+  async setGlobalColors(url, data) {
+    const ch = url !== this.lastUrlProcessed ? "" : "[PALETTE CACHED] | ";
+    this.firstUpdate = false;
+    const palette =
+      url !== this.lastUrlProcessed
+        ? await this.getVibrant(url)
+        : this.lastPalette;
+
+    if (!palette) return;
+    this.lastPalette = palette;
+
+    for (const element in palette) {
+      let rgb = palette[element].rgb;
+      this.root.style.setProperty(
+        "--ONSP-VIBRANT-" + element.toLocaleUpperCase(),
+        `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
+      );
+    }
+
+    // Fix color data using RGB_Linear_Shade to get more contrast
+    // This is used in the SpotifyCode bar, if enabled with useColorInProgressBar
+    // its also used there for continuity
+
+    // [0.6v]
+    // Always export the brightness corrected colors even if not used
+    // in the SpotifyCode, useful for external theming
+    let vibrantCorrectedDark = RGB_Linear_Shade(
+      -0.68,
+      `rgb(${palette.Vibrant.rgb.join(",")})`,
+    );
+    let vibrantCorrectedBright = RGB_Linear_Shade(
+      0.65,
+      `rgb(${palette.Vibrant.rgb.join(",")})`,
+    );
+    this.root.style.setProperty(
+      "--ONSP-VIBRANT-DOMINANTDARK",
+      vibrantCorrectedDark,
+    );
+    this.root.style.setProperty(
+      "--ONSP-VIBRANT-DOMINANTBRIGHT",
+      vibrantCorrectedBright,
+    );
+    this.root.style.setProperty(
+      "--ONSP-VIBRANT-DOMINANTEMPHASIS",
+      vibrantCorrectedBright,
+    );
+
+    if (this.config.theming.spotifyCodeExperimentalUseColor) {
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-CODE-BARS",
+        "var(--ONSP-VIBRANT-DOMINANTDARK)",
+      );
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-CODE-COLOR",
+        "var(--ONSP-VIBRANT-DOMINANTBRIGHT)",
+      );
+    }
+
+    // Set a special transparent color to the progress bar background
+    // If showBlurBackground is enabled it uses the default value, that looks
+    // better with the blurred background colors. Also respects the color
+    // if spotifyCodeExperimentalUseColor is enabled
+    if (
+      this.config.theming.useColorInProgressBar &&
+      !this.config.theming.showBlurBackground
+    )
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-COLOR-PROGRESS-BG",
+        this.config.theming.spotifyCodeExperimentalShow &&
+          this.config.theming.spotifyCodeExperimentalUseColor
+          ? `${vibrantCorrectedBright.slice(0, -1)},0.17)`
+          : `rgb(${palette.LightMuted.rgb[0]},${palette.LightMuted.rgb[1]},${palette.LightMuted.rgb[2]},0.17)`,
+      );
+
+    if (this.config.theming.useColorInTitle) {
+      const ls = Math.round(
+        (Brightness_By_Color(palette.LightVibrant.hex) / 255) * 100,
+      );
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-PLAYER-COLOR-TITLE",
+        this.config.theming.spotifyCodeExperimentalShow &&
+          this.config.theming.spotifyCodeExperimentalUseColor
+          ? "var(--ONSP-VIBRANT-DOMINANTBRIGHT)"
+          : ls > 68
+          ? "var(--ONSP-VIBRANT-LIGHTVIBRANT)"
+          : ls > 54
+          ? RGB_Linear_Shade(0.3, `rgb(${palette.LightVibrant.rgb.join(",")})`)
+          : RGB_Linear_Shade(0.5, `rgb(${palette.LightVibrant.rgb.join(",")})`),
+      );
+    }
+
+    if (this.config.showDebugPalette) {
+      console.log(
+        `%cV  ${palette.Vibrant.hex}%cLV ${palette.LightVibrant.hex}%cDV ${
+          palette.DarkVibrant.hex
+        }%cM  ${palette.Muted.hex}%cLM ${palette.LightMuted.hex}%cDM ${
+          palette.DarkMuted.hex
+        }%c %c${
+          this.config.theming.spotifyCodeExperimentalUseColor ? "SPCBR" : ""
+        }%c${
+          this.config.theming.spotifyCodeExperimentalUseColor ? "SPCBG" : ""
+        }%c ${
+          this.config.theming.spotifyCodeExperimentalUseColor
+            ? "VHSP: " +
+              Math.round(
+                (Brightness_By_Color(palette.Vibrant.hex) / 255) * 100,
+              ) +
+              "%"
+            : ""
+        } | ${ch}${data.itemName} | ${url}`,
+        `padding:0.7em;border-radius:3em;background-color:${palette.Vibrant.hex}`,
+        `padding:0.7em;border-radius:3em;margin-left:0.3em;background-color:${palette.LightVibrant.hex};color:${palette.DarkVibrant.hex}`,
+        `padding:0.7em;border-radius:3em;margin-left:0.3em;background-color:${palette.DarkVibrant.hex};color:${palette.LightVibrant.hex}`,
+        `padding:0.7em;border-radius:3em;margin-left:0.3em;background-color:${palette.Muted.hex}`,
+        `padding:0.7em;border-radius:3em;margin-left:0.3em;background-color:${palette.LightMuted.hex};color:${palette.DarkMuted.hex}`,
+        `padding:0.7em;border-radius:3em;margin-left:0.3em;background-color:${palette.DarkMuted.hex};color:${palette.LightMuted.hex}`,
+        "padding:0.4em;",
+        `padding:0.7em;border-radius:3em;background-color:${vibrantCorrectedDark};color:${vibrantCorrectedBright}`,
+        `padding:0.7em;border-radius:3em;margin-left:0.3em;background-color:${vibrantCorrectedBright};color:${vibrantCorrectedDark}`,
+        "padding:0.4em;",
+      );
+    }
+  }
+
+  userDataProcessImage(url, vib) {
+    this.config.theming.useColorInUserData && !vib
+      ? this.getVibrant(url, { quality: 6 }).then((palette) =>
+          palette
+            ? this.root.style.setProperty(
+                "--ONSP-INTERNAL-USER-BG-COLOR",
+                palette.Vibrant.hex + "20",
+              )
+            : this.root.style.setProperty(
+                "--ONSP-INTERNAL-USER-BG-COLOR",
+                `#ffffff0d`,
+              ),
+        )
+      : this.root.style.setProperty(
+          "--ONSP-INTERNAL-USER-BG-COLOR",
+          `#ffffff0d`,
+        );
+  }
+  getVibrant(url, opts) {
+    this.lastUrlProcessed = url;
+    if (!Vibrant) {
+      console.error(
+        "%c· MMM-OnSpotify %c %c[WARN]%c " +
+          this.translate("VIBRANT_NOT_LOADED"),
+        "background-color:#84CC16;color:black",
+        "",
+        "background-color:orange;color:black",
+        "",
+      );
+      return;
+    }
+    return (
+      Vibrant.from(url, {
+        quality: this.config.prefersLargeImageSize ? 12 : 5,
+        // Downsize the sample colors if the image is larger
+        // Less accurate but more preformant
+        ...opts,
+      })
+        // Here we use the webworker threads to allow a non blocking update
+        .useQuantizer(Vibrant.Quantizer.WebWorker)
+        .getPalette((palette) => palette)
+        .catch((e) =>
+          console.error(
+            "%c· MMM-OnSpotify %c %c[ERRO]",
+            e,
+            "background-color:#84CC16;color:black",
+            "",
+            "background-color:darkred;color:black",
+          ),
+        )
+    );
+  }
+  /* Utils */
+  selectImage(im) {
+    return im[this.config.prefersLargeImageSize ? "large" : "medium"];
+  }
+  getPercentage(n, t) {
+    return (n / t) * 100;
+  }
+  getSanitizedTime(n, t) {
+    const lg = moment.duration(n).format();
+    const fl = moment.duration(t).format();
+    let str = this.config.hideTrackLenghtAndAnimateProgress
+      ? fl
+      : lg + " / " + fl;
+    if (
+      str.includes("second") &&
+      !this.config.hideTrackLenghtAndAnimateProgress
+    )
+      str = "0:00 / " + fl;
+    return str;
+  }
+  getSpotifyCodeImage(uri, id, animate) {
+    fetch(
+      `https://scannables.scdn.co/uri/plain/${
+        this.config.theming.spotifyCodeExperimentalUseColor
+          ? "svg/ffffff/black"
+          : "svg/000000/white"
+      }/260/${uri}`,
+      {
+        method: "GET",
+        referrerPolicy: "no-referrer",
+      },
+    ).then((response) =>
+      response.text().then(
+        (external) =>
+          // FUTURE UPDATE, get every <rect> element inside the svg and update the existing
+          // svg rects, this allows animating the bars vertically and color transition. Visually
+          // it would be much better, but more process consuming
+          (document.getElementById(id).innerHTML = DOMPurify.sanitize(external)
+            .replaceAll(
+              this.config.theming.spotifyCodeExperimentalUseColor
+                ? `#000000`
+                : "unknown",
+              "var(--ONSP-INTERNAL-PLAYER-CODE-BARS)",
+            )
+            .replace(
+              this.config.theming.spotifyCodeExperimentalUseColor
+                ? "#ffffff"
+                : "#000000",
+              "#00000000",
+            )
+            .replace(
+              "<svg ",
+              animate
+                ? `<svg style="animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME)" `
+                : `<svg style="" `,
+            )),
+      ),
+    );
+  }
+}
+
+// By Trizkit & Mike 'Pomax' Kamermans | https://stackoverflow.com/a/13542669
+// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq
+const RGB_Linear_Shade = (p, c) => {var i = parseInt, r = Math.round, [a, b, c, d] = c.split(","), P = p < 0, t = P ? 0 : 255 * p, P = P ? 1 + p : 1 - p; return "rgb" + (d ? "a(" : "(") + r(i(a[3] == "a" ? a.slice(5) : a.slice(4)) * P + t) + "," + r(i(b) * P + t) + "," + r(i(c) * P + t) + (d ? "," + d : ")");};
+
+// By Max Chuhryaev & danilocastro-toast | https://gist.github.com/w3core/e3d9b5b6d69a3ba8671cc84714cca8a4?permalink_comment_id=3125287#gistcomment-3125287
+// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq
+const Brightness_By_Color = (color) => {var r, g, b, hsp; if (color.match(/^rgb/)) {color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/); r = color[1]; g = color[2]; b = color[3];} else {/* HEX > RGB http://gist.github.com/983661 */color = +("0x" + color.slice(1).replace(color.length < 5 && /./g, '$&$&')); r = color >> 16; g = color >> 8 & 255; b = color & 255;} /* HSP equation http://alienryderflex.com/hsp.html */hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)); return hsp; };

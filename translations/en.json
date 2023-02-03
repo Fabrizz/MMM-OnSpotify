@@ -1,0 +1,14 @@
+{
+    "DISPLAY_PRIVATE": "Private Spotify session",
+    "PRODUCT_WARNING": "The current account is not using Spotify Premium. This module requieres a Premium account.",
+    "CONNECTION_WARNING": "There was a connection error. Slowing the polling of api.spotify/...",
+    "CONNECTION_ERROR": "Connection errors persists. Slowing the polling more. Hiding old player data.",
+    "VIBRANT_NOT_LOADED": "(vendor) Vibrant did not load correctly.",
+    "STABLISHING_CONNECTION": "Connecting to Spotify...",
+    "NOTHING_PLAYING": "Nothing is playing",
+    "SPOTIFY_HEADER": "MMM-OnSpotify",
+    "DEBUG_COLORS": "Debug palettes are shown because <showDebugPalette> is set to true",
+    "SPOTIFYCODE_EXPERIMENTAL": "<spotifyCodeExperimentalShow> is enabled. The api to generate codes is not public, and can end without prior notice. View more in the readme...",
+    "RESUME": "Resuming module",
+    "SUSPEND": "Suspending module" 
+}
