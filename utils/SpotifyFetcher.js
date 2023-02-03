@@ -1,11 +1,9 @@
 /*
- * MMM-NPOS
- * MIT License
+ * MMM-OnSpotify
+ * GPL-3.0 License
  *
- * By Fabrizz <3
- *
- * Original implementation: Raywo
- * https://github.com/raywo/MMM-NowPlayingOnSpotify
+ * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ * Original implementation: Raywo | https://github.com/raywo/MMM-NowPlayingOnSpotify
  */
 
 const moment = require("moment");

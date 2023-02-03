@@ -1,5 +1,11 @@
-"use strict";
+/*
+ * MMM-OnSpotify
+ * GPL-3.0 License
+ *
+ * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ */
 
+"use strict";
 const NodeHelper = require("node_helper");
 const SpotifyFetcher = require("./utils/SpotifyFetcher");
 

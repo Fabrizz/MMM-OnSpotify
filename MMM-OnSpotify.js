@@ -1,38 +1,73 @@
+/*
+ * MMM-OnSpotify
+ * GPL-3.0 License
+ *
+ * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ */
+
 "use strict";
 
 Module.register("MMM-OnSpotify", {
   defaults: {
-    name: "MMM-OnSpotify", //+
-    advertisePlayerTheme: true, //+
+    name: "MMM-OnSpotify",
+    // Sends notifications containin them locking. Works with other DynamicTheme modules.
+    advertisePlayerTheme: true,
+    // What to display when the player is idle
+    // user | affinity | both | none | logo
+    displayWhenEmpty: "both",
+    // Show tracks instead of albums when the player is idle.
     userAffinityUseTracks: false, //+
-    displayWhenEmpty: "both", //+
-    prefersLargeImageSize: false, //+
-    hideTrackLenghtAndAnimateProgress: false, //+
+    // Prefers larger images. Affects display and the "NOW_PLAYING" broadcast.
+    prefersLargeImageSize: false,
+    // If you selected a high interval, you can hide the progress timestamp
+    // and animate the seekbar to the timing of the updateInterval, making it look better.
+    hideTrackLenghtAndAnimateProgress: false,
+    // Shows the Vibrant output in the console as a palette and color data.
     showDebugPalette: true, //+
+    // Max age in seconds for personal data. If set to 0 they update when the player changes
+    // state, as user data does not change that much, this prevents unnecessary api calls.
     userDataMaxAge: 14400,
     userAffinityMaxAge: 36000,
+
     updateInterval: {
-      isPlaying: 1, //+
-      isEmpty: 2, //+
-      isPlayingHidden: 2, //+
-      isEmptyHidden: 4, //+
-      onReconnecting: 4, //+
-      onError: 8, //+
+      isPlaying: 1,
+      isEmpty: 2,
+      isPlayingHidden: 2,
+      isEmptyHidden: 4,
+      // When there is a connection error
+      onReconnecting: 4,
+      // If the errors persist, use a wider window between calls.
+      onError: 8,
     },
+
     theming: {
-      spotifyCodeExperimentalShow: true, //+
-      spotifyCodeExperimentalUseColor: true, //+
-      spotifyCodeExperimentalSeparateItem: true, //+
-      roundMediaCorners: true, //+
-      roundProgressBar: true, //+
-      useColorInProgressBar: true, //+
-      useColorInTitle: true, //+
-      useColorInUserData: true, //+
-      showBlurBackground: true, //+
+      // Show the Spotify Code Bar [EXPERIMENTAL]
+      spotifyCodeExperimentalShow: true,
+      // Themes the code and bars using the cover art
+      // Using this option uses a brighter color palette, to allow better
+      // scans using the camera. Also affects other colors in the module.
+      spotifyCodeExperimentalUseColor: true,
+      // If the code should be shown standalone or separated from the cover art.
+      spotifyCodeExperimentalSeparateItem: true,
+      // Round cover art and Spotify Code corners
+      roundMediaCorners: true,
+      roundProgressBar: true,
+      useColorInProgressBar: true,
+      useColorInTitle: true,
+      // Get colors from the used profile image
+      useColorInUserData: true,
+      // Show the blurred color background to give a depth to the module
+      showBlurBackground: true,
+      // Blur less on the side that the module touches the frame, if your actual mirror
+      // is larger than your screen, this deletes the color overflow in the corners [bottom | left | right]
       blurLessInFrameSide: false,
+      // Blur less in all sides, useful if you like less color or you dont like the blur difference just
+      // in the frame sides.
       blurLessInAllSides: false,
-      alwaysUseDefaultDeviceIcon: false, //+
+      // Depending on the device, the device icon changes, you can use always the dault if you dont like it
+      alwaysUseDefaultDeviceIcon: false,
     },
+    // Internal, if you want to change the "GET_PLAYING" notification mapping
     events: {
       GET_PLAYING: "GET_PLAYING",
     },
@@ -235,7 +270,10 @@ Module.register("MMM-OnSpotify", {
           this.sendNotification("NOW_PLAYING", {
             playerIsEmpty: false,
             name: payload.itemName,
-            image: this.getImage(this.playerData.images),
+            image: this.getImage(
+              this.playerData.images,
+              this.config.prefersLargeImageSize,
+            ),
             artist: payload.itemArtist,
             artists: payload.itemArtists,
             type: payload.playerMediaType,
@@ -295,7 +333,10 @@ Module.register("MMM-OnSpotify", {
           this.sendNotification("NOW_PLAYING", {
             playerIsEmpty: this.playerData.isEmpty,
             name: this.playerData.itemName,
-            image: this.getImage(this.playerData.images),
+            image: this.getImage(
+              this.playerData.images,
+              this.config.prefersLargeImageSize,
+            ),
             artist: this.playerData.itemArtist,
             artists: this.playerData.itemArtists,
             type: this.playerData.playerMediaType,
@@ -431,8 +472,7 @@ Module.register("MMM-OnSpotify", {
       this.builder.updateAffinityData(this.affinityData);
   },
 
-  selectImage: (im) =>
-    im[this.config.prefersLargeImageSize ? "large" : "medium"],
+  getImage: (im, prefersLarge) => im[prefersLarge ? "large" : "medium"],
 
   logBadge: function () {
     console.log(

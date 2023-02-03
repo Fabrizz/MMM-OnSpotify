@@ -1,3 +1,10 @@
+/*
+ * MMM-OnSpotify
+ * GPL-3.0 License
+ *
+ * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ */
+
 /* eslint-disable no-undef */
 class SpotifyDomBuilder {
   constructor(pathPrefix, config, other, translator) {
