@@ -162,7 +162,7 @@ console.log(
 console.log("\x1b[46m%s\x1b[0m", "[Authorization Service] Initializing ");
 console.log(
   "\x1b[46m%s\x1b[0m",
-  "[Authorization Service] Open: http://localhost:" +
+  "[Authorization Service] Open http://localhost:" +
     port +
     "/ to configure your mirror. ",
 );

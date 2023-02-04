@@ -7,6 +7,8 @@
 
 "use strict";
 
+/* FUTURE: Add a "guessTrackTime" option that still changes the timer even when the update interval window is higher */
+
 Module.register("MMM-OnSpotify", {
   defaults: {
     name: "MMM-OnSpotify",
