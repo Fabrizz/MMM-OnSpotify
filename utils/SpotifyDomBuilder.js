@@ -24,7 +24,7 @@ class SpotifyDomBuilder {
     // Corrects the background blur and sizes so it does not reach the
     // body borders (actual display size borders). This makes it look good
     // behind the mirror (hides your acual display size)
-    if (this.config.theming.blurLessInFrameSide) {
+    if (this.config.theming.blurCorrectionInFrameSide) {
       const s = this.config.moduleSide;
       if (s && s.includes("right")) this.constrainSide = "overrideRight";
       if (s && s.includes("left")) this.constrainSide = "overrideLeft";
@@ -336,7 +336,7 @@ class SpotifyDomBuilder {
     const bg = document.createElement("div");
     bg.classList.add(
       "background",
-      this.config.theming.blurLessInAllSides
+      this.config.theming.blurCorrectionInAllSides
         ? "overrideAll"
         : "overrideAllNone",
       this.constrainSide ? this.constrainSide : "overrideSideNone",

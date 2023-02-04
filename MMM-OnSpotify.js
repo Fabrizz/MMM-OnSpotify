@@ -23,7 +23,7 @@ Module.register("MMM-OnSpotify", {
     // and animate the seekbar to the timing of the updateInterval, making it look better.
     hideTrackLenghtAndAnimateProgress: false,
     // Shows the Vibrant output in the console as a palette and color data.
-    showDebugPalette: false,
+    showDebugPalette: true,
     // Max age in seconds for personal data. If set to 0 they update when the player changes
     // state, as user data does not change that much, this prevents unnecessary api calls.
     userDataMaxAge: 14400,
@@ -60,10 +60,10 @@ Module.register("MMM-OnSpotify", {
       showBlurBackground: true,
       // Blur less on the side that the module touches the frame, if your actual mirror
       // is larger than your screen, this deletes the color overflow in the corners [bottom | left | right]
-      blurLessInFrameSide: false,
+      blurCorrectionInFrameSide: false,
       // Blur less in all sides, useful if you like less color or you dont like the blur difference just
       // in the frame sides.
-      blurLessInAllSides: false,
+      blurCorrectionInAllSides: false,
       // Depending on the device, the device icon changes, you can use always the dault if you dont like it
       alwaysUseDefaultDeviceIcon: false,
     },
@@ -101,7 +101,8 @@ Module.register("MMM-OnSpotify", {
       this.config.theming.useColorInProgressBar ||
       this.config.theming.useColorInTitle ||
       this.config.theming.useColorInTitleBorder ||
-      this.config.theming.blurLessInFrameSide ||
+      this.config.theming.showBlurBackground ||
+      this.config.theming.useColorInUserData ||
       (this.config.theming.spotifyCodeExperimentalShow &&
         this.config.theming.spotifyCodeExperimentalUseColor)
         ? true
