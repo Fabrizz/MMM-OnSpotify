@@ -1,12 +1,8 @@
-<picture>
-  <source align="right" media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg">
-  <source align="right" media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg">
-  <img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png" align="right">
-</picture>
+[<picture><source align="right" media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg"><source align="right" media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg"><img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png" align="right"></picture>](https://fabriz.co/)
 
 #
 
-### <img alt="MMM-OnSpotify banner" src=".github/content/banner-header.png" width="100%">
+### [<img alt="MMM-OnSpotify banner" src=".github/content/banner-header.png" width="100%">](https://github.com/Fabrizz/MMM-OnSpotify)
 
 ![GitHub](https://img.shields.io/github/license/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub package.json version](https://img.shields.io/github/package-json/v/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/Fabrizz/MMM-OnSpotify?style=flat-square) ![Magic Mirror version](https://img.shields.io/badge/MM2%20VERSION-%3C2.19.0-blueviolet?style=flat-square) 
 
@@ -187,8 +183,4 @@ Makes the module return a `NOW_PLAYING` notification, regardles of the state of 
 With <3 by Fabrizz
 [fabriz.co](https://fabriz.co/)
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg">
-  <source media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg">
-  <img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png">
-</picture>
+[<picture><source media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg"><source media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg"><img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png"></picture>](https://fabriz.co/)
