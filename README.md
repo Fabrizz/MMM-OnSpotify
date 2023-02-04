@@ -180,7 +180,5 @@ Makes the module return a `NOW_PLAYING` notification, regardles of the state of 
 
 - The API for Spotify Codes is not public, as its from the Spotify CDN (_scannables.scdn.co_) The API could change without notice. Many libraries rely on it and using it does not go againts the ToS.
 
-With <3 by Fabrizz
-[fabriz.co](https://fabriz.co/)
-
-[<picture><source media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg"><source media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg"><img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png"></picture>](https://fabriz.co/)
+##
+With <3 by Fabrizz <br />[fabriz.co](https://fabriz.co/) [<picture><source align="right" media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg"><source align="right" media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg"><img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png" align="right"></picture>](https://fabriz.co/)
