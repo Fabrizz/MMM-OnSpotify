@@ -100,6 +100,7 @@ Module.register("MMM-OnSpotify", {
         : false;
 
     this.loadVibrantPalette =
+      this.config.advertisePlayerTheme ||
       this.config.theming.useColorInProgressBar ||
       this.config.theming.useColorInTitle ||
       this.config.theming.useColorInTitleBorder ||
