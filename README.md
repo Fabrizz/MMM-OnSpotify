@@ -115,6 +115,8 @@ This options determine the update interval to the update of the player data. Use
 | onError | `8` | When the N° of errors reach a certain point, it changes "onReconnecting" to "onError", to slow down api calls |
 
 ### Theming options:
+> Also see: [Disabling all color theming options](#other)
+
 | Option (config.theming.option) | Default | Description |
 | :-- | :-: | :-- |
 | spotifyCodeExperimentalShow | `true` | Shows the Spotify Bar Code for the current song/podcast/etc. This is an experimental feature, as the API is not documented <br /><br /><img alt="Spotify code" src=".github/content/image-spotifycode.png" aling="left" height="40"> |
@@ -122,18 +124,71 @@ This options determine the update interval to the update of the player data. Use
 | spotifyCodeExperimentalSeparateItem | `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor` <br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-codeseparation.png" aling="left" height="100">  |
 | roundMediaCorners | `true` | If you want rounded corners in the cover art. Affects also the Spotify Code Bar |
 | roundProgressBar | `true` | If you want a rounded progress bar |
-| useColorInProgressBar | `true` | Use color in the progress bar. If `showBlurBackground` is enabled, the background behaivour differs |
+| useColorInProgressBar | `true` | Use color in the progress bar. If `showBlurBackground` is enabled, the background behaviour differs |
 | useColorInTitle | `true` | Use color in the title, artist and bar |
 | useColorInUserData | `true` | If only the user bar is shown (`displayWhenEmpty: "user"`) |
 | showBlurBackground | `true` | Shows the background colors |
 | blurCorrectionInFrameSide | `false` | Fixes the color blur in the frame side of the display, making it look like there is no gap between the actual border and the display. View ilustration below<br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-blurcorrection.png" aling="left"> |
 | blurCorrectionInAllSides | `false` | Same as "InFrameSide", but blurs less all the borders for a more subtle effect |
-| alwaysUseDefaultDeviceIcon | `false` | The device icon changes depending on the player type. If you don’t like this behaivour you can change it |
+| alwaysUseDefaultDeviceIcon | `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it |
 
 # Dynamic Theme
+The Dynamic Theme is a form of theming that all of my modules have. Its a way of "normalizing" color data. This module provides color data (Master), and other modules can listen to the notificactions and act accordingly. This module uses the `VIBRANT` scheme. Here is an example payload:
+```js
+{ /* ON MUSIC */
+    provider: "MMM-OnSpotify",
+    providerPrefix: "ONSP",
+    providerScheme: "VIBRANT",
+    // CSS VARS: --(ONSP)-(VIBRANT)-(VIBRANT-SCHEME-COLOR]
+    set: "lock",
+    until: "provider",
+    priority: true,
+    // Lock on [MMM-OnSpotify] until [provider] decides (player is empty)
+}
+{ /* ON EMPTY */
+    provider: "MMM-OnSpotify",
+    set: "unlock",
+}
+```
+You can disable this behaviour using `advertisePlayerTheme: false`.
 
 # Notification API
+### `THEME_PREFERENCE` -->
+> Explanation in [Dynamic Theme](#dynamic-theme).
 
-# Lyrics
+### `NOW_PLAYING` -->
+Everytime the player changes states or the song changes, the module sends a notification so other modules can, for example, [show lyrics](https://github.com/Fabrizz/MMM-LiveLyrics).
 
-# More modules
+```js
+{
+    playerIsEmpty: false,
+    name: "title",
+    image: "https://i.scdn.co/[...]",
+    artist: "artist",
+    artists: ["artist 1", "artist 2", "artist 3"],
+    type: "track", // "episode", etc
+    device: "sonos kitchen",
+    deviceType: "speaker",
+}
+```
+
+### `GET_PLAYING` <--
+Makes the module return a `NOW_PLAYING` notification, regardles of the state of the player. (Used by [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics))
+
+# More modules:
+
+
+
+# Other:
+- You can disable all the color related stuff and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `theming.useColorInProgressBar`, `theming.useColorInTitle`, `theming.useColorInTitleBorder`, `theming.showBlurBackground`, `theming.useColorInUserData`, `theming.spotifyCodeExperimentalUseColor`.<br /> <img alt="MMM-OnSpotify no theming" src=".github/content/image-modulebasic.png" width="200"> <br /> Of course you can still use the Spotify Color bar (White/Gray). This image is the base module. <br /> Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.
+
+- The API for Spotify Codes is not public, as its from the Spotify CDN (_scannables.scdn.co_) The API could change without notice. Many libraries rely on it and using it does not go againts the ToS.
+
+With <3 by Fabrizz
+[fabriz.co](https://fabriz.co/)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg">
+  <img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png">
+</picture>
