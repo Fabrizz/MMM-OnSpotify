@@ -89,13 +89,13 @@ Module.register("MMM-OnSpotify", {
     this.isHidden = false;
 
     this.displayUser =
-      this.config.displayWhenEmpty === "user" ||
-      this.config.displayWhenEmpty === "both"
+      this.config.displayWhenEmpty.toLowerCase() === "user" ||
+      this.config.displayWhenEmpty.toLowerCase() === "both"
         ? true
         : false;
     this.displayAffinity =
-      this.config.displayWhenEmpty === "affinity" ||
-      this.config.displayWhenEmpty === "both"
+      this.config.displayWhenEmpty.toLowerCase() === "affinity" ||
+      this.config.displayWhenEmpty.toLowerCase() === "both"
         ? true
         : false;
 
@@ -202,7 +202,7 @@ Module.register("MMM-OnSpotify", {
         this.globalThemeSelected = false;
       }
 
-      switch (this.config.displayWhenEmpty) {
+      switch (this.config.displayWhenEmpty.toLowerCase()) {
         case "both":
           return this.builder.userAffinity(this.userData, this.affinityData);
         case "user":
