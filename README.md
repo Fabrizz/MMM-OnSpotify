@@ -1,10 +1,10 @@
-[<picture><source align="right" media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg"><source align="right" media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg"><img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png" align="right"></picture>](https://fabriz.co/)
+[<img alt="Fabrizz logo" src=".github/content/logo-fabrizz-white.svg" align="right">](https://fabriz.co/)
 
 #
 
 ### [<img alt="MMM-OnSpotify banner" src=".github/content/banner-header.png" width="100%">](https://github.com/Fabrizz/MMM-OnSpotify)
 
-![GitHub](https://img.shields.io/github/license/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub package.json version](https://img.shields.io/github/package-json/v/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/Fabrizz/MMM-OnSpotify?style=flat-square) ![Magic Mirror version](https://img.shields.io/badge/MM2%20VERSION-%3CTESTING-blueviolet?style=flat-square) 
+![GitHub](https://img.shields.io/github/license/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub package.json version](https://img.shields.io/github/package-json/v/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/Fabrizz/MMM-OnSpotify?style=flat-square)
 
 
 ## How does it work?
@@ -141,6 +141,7 @@ The Dynamic Theme is a form of theming that all of my modules have. Its a way of
     priority: true,
     // Lock on [MMM-OnSpotify] until [provider] decides (player is empty)
 }
+
 { /* ON EMPTY */
     provider: "MMM-OnSpotify",
     set: "unlock",
@@ -171,8 +172,15 @@ Everytime the player changes states or the song changes, the module sends a noti
 ### `GET_PLAYING` <--
 Makes the module return a `NOW_PLAYING` notification, regardles of the state of the player. (Used by [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics))
 
+
 # More modules:
 
+| Modules |  |
+| :-- | :-: |
+| [`MMM-LiveLyrics`](https://github.com/Fabrizz/MMM-LiveLyrics)<br /><br />This module overlays the lyrics of the song that you are curretly listening to using Genius data. Has different overlay types and allows toggling the lyrics from other modules/web. | <img alt="MMM-LiveLyrics" width="400" src=".github/content/module-livelyrics.png" aling="left"> |
+| [`MMM-VisualNotifications`](https://github.com/Fabrizz/MMM-VisualNotifications)<br /><br />An extensible notification modules that uses the included MM2 notification system (and later direct web/api connection). Supports DynamicTheming and custom animations/themes. | <img alt="MMM-VisualNotifications" width="400" src=".github/content/module-visualnotifications.png" aling="left"> |
+| [`MMM-LocalProxy`](https://github.com/Fabrizz/MMM-LocalProxy)<br /><br />A MagicMirror2 module that proxies requests from the browser to the backend. Useful for development or CORS in a private network. |
+| [`MMM-DolarArgentina`](https://github.com/Fabrizz/MMM-DolarArgentina)<br /><br />This Magic Mirror² module allows you to view the current exchange rate for different USD/ARS types. | <img alt="MMM-DolarArgentina" width="400" src=".github/content/module-dolarargentina.png" aling="left"> |
 
 
 # Other:
