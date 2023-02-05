@@ -182,7 +182,6 @@ Module.register("MMM-OnSpotify", {
           // --[ONSP]-[VIBRANT]-[VIBRANT-SCHEME-COLOR]
           providerPrefix: "ONSP",
           providerScheme: "VIBRANT",
-          providerTiming: true,
           // Lock on [MMM-OnSpotify] until [provider] decides (player is empty)
           set: "lock",
           until: "provider",
