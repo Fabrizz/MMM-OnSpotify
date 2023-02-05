@@ -321,12 +321,6 @@ Module.register("MMM-OnSpotify", {
         this.isConnectedToSpotify = false;
         this.smartUpdate("PLAYER_DATA");
         break;
-
-      // Future update
-      // case "QUEUE_DATA":
-      // this.queueData = payload;
-      // this.smartUpdate("QUEUE_DATA");
-      // break;
     }
   },
   notificationReceived: function (notification, payload) {
