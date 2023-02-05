@@ -91,11 +91,11 @@ Once you finish with the configuration, you are all set with the basic configura
 | Option (config.option) | Default | Description |
 | :-- | :-: | :-- |
 | advertisePlayerTheme | `true` | If the module should send Dynamic Theme (lock/unlock) notifications. Read more about [Dynamic Theme](#dynamic-theme) below |
-| displayWhenEmpty | `"both"` | What to display when the player is idle. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing |
+| displayWhenEmpty | `"both"` | What to display when the player is idle. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing<br /><br /><img alt="Display when empty " src=".github/content/banner-onidle.png"> |
 | userAffinityUseTracks | `false` | If you are showing affinity data on idle, you can select between showing album cover art or track cover art |
 | prefersLargeImageSize | `false` | If you prefer to use higher resolution images. Defaults to false as its not really noticeable  |
 | hideTrackLenghtAndAnimateProgress | `false` | If your update interval window is to high, you can opt to animate the bar and hide the timestamp |
-| showDebugPalette | `false` | Shows the Vibrant output as a color palette and other theme related info <br /><br /> <img alt="MMM-OnSpotify banner" src=".github/content/image-debugpalette.png" width="80%"> |
+| showDebugPalette | `false` | Shows the Vibrant output as a color palette and other theme related info <br /><br /> <img alt="Debug palette" src=".github/content/image-debugpalette.png" width="80%"> |
 | userDataMaxAge | `14400` | (Seconds) The time in seconds of user data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot |
 | userAffinityMaxAge | `36000` | (Seconds) The time in seconds of affinity data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot  |
 
@@ -124,7 +124,7 @@ This options determine the update interval to the update of the player data. Use
 | useColorInTitle | `true` | Use color in the title, artist and bar |
 | useColorInUserData | `true` | If only the user bar is shown (`displayWhenEmpty: "user"`) |
 | showBlurBackground | `true` | Shows the background colors |
-| blurCorrectionInFrameSide | `false` | Fixes the color blur in the frame side of the display, making it look like there is no gap between the actual border and the display. View ilustration below<br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-blurcorrection.png" aling="left"> |
+| blurCorrectionInFrameSide | `false` | Fixes the color blur in the frame side of the display, making it look like there is no gap between the actual border and the display. View ilustration below<br /><br /><img alt="Blur separation" src=".github/content/banner-blurcorrection.png" aling="left"> |
 | blurCorrectionInAllSides | `false` | Same as "InFrameSide", but blurs less all the borders for a more subtle effect |
 | alwaysUseDefaultDeviceIcon | `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it |
 
