@@ -4,7 +4,7 @@
 
 ### [<img alt="MMM-OnSpotify banner" src=".github/content/banner-header.png" width="100%">](https://github.com/Fabrizz/MMM-OnSpotify)
 
-![GitHub](https://img.shields.io/github/license/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub package.json version](https://img.shields.io/github/package-json/v/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/Fabrizz/MMM-OnSpotify?style=flat-square) ![Magic Mirror version](https://img.shields.io/badge/MM2-%3C2.19.0-blueviolet?style=flat-square) 
+![GitHub](https://img.shields.io/github/license/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub package.json version](https://img.shields.io/github/package-json/v/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/Fabrizz/MMM-OnSpotify?style=flat-square)
 
 
 ## How does it work?
