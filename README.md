@@ -70,7 +70,7 @@ Once you finish with the configuration, you are all set with the basic configura
             theming: {
                 mediaAnimations: false,
                 fadeAnimations: false,
-                transitionAnimations: false,
+                transitionAnimations: true,
                 // Spotify Code (EXPERMIENTAL)
                 spotifyCodeExperimentalShow: true,
                 spotifyCodeExperimentalUseColor: true,
@@ -93,8 +93,8 @@ Once you finish with the configuration, you are all set with the basic configura
 ### General module options: 
 | Option (config.option) | Default | Description |
 | :-- | :-: | :-- |
-| mediaAnimations | `true` | Disable cover fade, useful if you are using a system that is not GPU powerful (RPIs).  |
-| fadeAnimations | `true` | Disable fade in/out animations, useful if you are using a system that is not GPU powerful (RPIs). |
+| mediaAnimations | `false` | Disable cover fade, useful if you are using a system that is not GPU powerful (RPIs).  |
+| fadeAnimations | `false` | Disable fade in/out animations, useful if you are using a system that is not GPU powerful (RPIs). |
 | transitionAnimations| `true` | Disable color transitions, useful if you are using a system that is not GPU powerful (RPIs). |
 | advertisePlayerTheme | `true` | If the module should send Dynamic Theme (lock/unlock) notifications. Read more about [Dynamic Theme](#dynamic-theme) below |
 | displayWhenEmpty | `"both"` | What to display when the player is idle. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing<br /><br /><img alt="Display when empty " src=".github/content/banner-onidle.png"> |
