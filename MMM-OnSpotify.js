@@ -43,6 +43,10 @@ Module.register("MMM-OnSpotify", {
     },
 
     theming: {
+      // As RPIs are not powerful you can disable some of the animations.
+      mediaAnimations: false,
+      fadeAnimations: false,
+      transitionAnimations: true,
       // Show the Spotify Code Bar [EXPERIMENTAL]
       spotifyCodeExperimentalShow: true,
       // Themes the code and bars using the cover art

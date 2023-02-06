@@ -27,6 +27,10 @@
     --ONSP-INTERNAL-PLAYER-UPDATE-TIME: 1000ms;
     --ONSP-INTERNAL-PLAYER-TRANSITION-TIME: 1500ms;
 
+    --ONSP-INTERNAL-LOWPOWER-FADEIN: none;
+    --ONSP-INTERNAL-LOWPOWER-COVER: none;
+    --ONSP-INTERNAL-LOWPOWER-TRANSITIONS: none; /* background-color */
+
     --ONSP-INTERNAL-PLAYER-SIZE-WIDTH: 15em;
     --ONSP-INTERNAL-PLAYER-PADDING-INFO: 0.28em;
     --ONSP-INTERNAL-PLAYER-MEDIA-CORNERS: 0.68em;
@@ -44,8 +48,8 @@
 }
 
 /* DYNAMIC BACKGROUND */
-.ONSP-Base .background { animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) }
-.ONSP-Base .background .backgroundBox { position: absolute; transition: background-color var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) }
+.ONSP-Base .background { animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) }
+.ONSP-Base .background .backgroundBox { position: absolute; transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) }
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FIXED SIZES CSS - CHANGE IF NEEDED < */
 .ONSP-Base .background .backgroundBoxAAA {
     top: 4px;
@@ -170,7 +174,7 @@
     position: relative;
     flex-flow: column nowrap;
     width: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
-    animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+    animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
     text-align: left;
     gap: var(--ONSP-INTERNAL-PLAYER-GAP);
     z-index: 1;
@@ -218,7 +222,7 @@
     display: block;
     height: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
     background-size: cover;
-    transition: background-image var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) cubic-bezier(0.25, 0.15, 0.20, 1);;
+    transition: var(--ONSP-INTERNAL-LOWPOWER-COVER);
     border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
     z-index: 2;
     background-position: center;
@@ -236,12 +240,12 @@
     display: flex;
     border-radius: var(--ONSP-INTERNAL-PLAYER-PROGRESS-CORNERS);
     overflow: hidden;
-    transition: background-color var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+    transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
 }
 .ONSP-Base .player .footer .bar {
     background-color: var(--ONSP-INTERNAL-PLAYER-COLOR-PROGRESS);
     border-radius: var(--ONSP-INTERNAL-PLAYER-PROGRESS-CORNERS);
-    transition: background-color var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME), width var(--ONSP-INTERNAL-PLAYER-UPDATE-TIME) var(--ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION) 0s;
+    transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME), width var(--ONSP-INTERNAL-PLAYER-UPDATE-TIME) var(--ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION) 0s;
 }
 .ONSP-Base .player .footer .target {
     color: #FFF;
@@ -279,7 +283,7 @@
     border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
     border-top-left-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
     border-top-right-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
-    transition: all var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+    transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME); /* ALL */
 }
 .ONSP-Base .player .experimental .code {
     aspect-ratio: 4 / 1;
@@ -314,7 +318,7 @@
     flex-flow: column nowrap;
     align-items: stretch;
     gap: 0.6em;
-    animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+    animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
 }
 .ONSP-Base .useraffinity .affinity {
     display: flex;
@@ -351,11 +355,11 @@
     width: 15.2em;
     height: 15.2em;
     gap: 0.2em;
-    animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+    animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
 }
 .ONSP-Base .affinity .grid .gridElement {
     background-size: cover;
-    transition: background-image 1.2s;
+    transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) 1.2s;
     border-radius: 0.4em;
 }
 
@@ -368,14 +372,14 @@
     background-color: var(--ONSP-INTERNAL-USER-BG-COLOR);
     padding: 0.4em 1em 0.4em 0.4em;
     border-radius: 1.18em;
-    transition: background-color 3s;
-    animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
+    transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) 3s;
+    animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
 }
 .ONSP-Base .user .profile .image {
     width: var(--ONSP-INTERNAL-USER-IMAGE-SYNC-WIDTH);
     height: var(--ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT);
     background-size: cover;
-    transition: all 2s;
+    transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) 2s;
     border-radius: 0.9em;
     background-image: var(--ONSP-INTERNAL-USER-IMAGE);
 }

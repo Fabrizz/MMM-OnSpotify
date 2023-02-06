@@ -77,6 +77,18 @@ class SpotifyDomBuilder {
         "--ONSP-INTERNAL-PLAYER-COLOR-PROGRESS-BG",
         "rgb(0,0,0,0.48)",
       );
+    if (this.config.theming.fadeAnimations)
+      this.root.style.setProperty("--ONSP-INTERNAL-LOWPOWER-FADEIN", "fadein");
+    if (this.config.theming.coverAnimations)
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-LOWPOWER-COVER",
+        "var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) cubic-bezier(0.25, 0.15, 0.20, 1)",
+      );
+    if (this.config.theming.transitionAnimations)
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-LOWPOWER-TRANSITIONS",
+        "all",
+      );
 
     this.svgs = {
       default:
@@ -772,7 +784,7 @@ class SpotifyDomBuilder {
             .replace(
               "<svg ",
               animate
-                ? `<svg style="animation: fadein var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME)" `
+                ? `<svg style="animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME)" `
                 : `<svg style="" `,
             )),
       ),
