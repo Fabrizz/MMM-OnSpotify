@@ -8,7 +8,7 @@
 
 
 ## How does it work?
-This module shows what you are currently listening in Spotify, including podcasts _(and later when available, audiobooks)_. See all the options below to know more about the extensive customization and Dynamic Theming.
+This module shows what you are currently listening in Spotify, including podcasts _(and later when available, audiobooks)_. I wanted it to be the best looking posible, so it extracts cover art colors to create a palette and theme itself (other modules too!) and it includes animations for almost everything. See all the options below to know more about the extensive customization and Dynamic Theming.
 
 The module includes an **Authentication Service** that guide you through the configuration of an Spotify App. MMM-OnSpotify does **not use any third party service**, its an independent app, just the Spotify API.
 
