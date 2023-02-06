@@ -8,7 +8,7 @@
 
 
 ## How does it work?
-This module shows what you are currently listening in Spotify, including podcasts _(and later when available, audiobooks)_. See all the options below to know more about the extensive customization and Dynamic Theming.
+This module shows what you are currently listening in Spotify, including podcasts _(and later when available, audiobooks)_. I wanted it to be the best looking posible, so it extracts cover art colors to create a palette and theme itself (other modules too!) and it includes animations for almost everything. See all the options below to know more about the extensive customization and Dynamic Theming.
 
 The module includes an **Authentication Service** that guide you through the configuration of an Spotify App. MMM-OnSpotify does **not use any third party service**, its an independent app, just the Spotify API.
 
@@ -91,16 +91,16 @@ Once you finish with the configuration, you are all set with the basic configura
 | Option (config.option) | Default | Description |
 | :-- | :-: | :-- |
 | advertisePlayerTheme | `true` | If the module should send Dynamic Theme (lock/unlock) notifications. Read more about [Dynamic Theme](#dynamic-theme) below |
-| displayWhenEmpty | `"both"` | What to display when the player is idle. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing |
+| displayWhenEmpty | `"both"` | What to display when the player is idle. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing<br /><br /><img alt="Display when empty " src=".github/content/banner-onidle.png"> |
 | userAffinityUseTracks | `false` | If you are showing affinity data on idle, you can select between showing album cover art or track cover art |
 | prefersLargeImageSize | `false` | If you prefer to use higher resolution images. Defaults to false as its not really noticeable  |
 | hideTrackLenghtAndAnimateProgress | `false` | If your update interval window is to high, you can opt to animate the bar and hide the timestamp |
-| showDebugPalette | `false` | Shows the Vibrant output as a color palette and other theme related info <br /><br /> <img alt="MMM-OnSpotify banner" src=".github/content/image-debugpalette.png" width="80%"> |
+| showDebugPalette | `false` | Shows the Vibrant output as a color palette and other theme related info <br /><br /> <img alt="Debug palette" src=".github/content/image-debugpalette.png" width="80%"> |
 | userDataMaxAge | `14400` | (Seconds) The time in seconds of user data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot |
 | userAffinityMaxAge | `36000` | (Seconds) The time in seconds of affinity data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot  |
 
 ### Interval options:
-This options determine the update interval to the update of the player data. User/Affinity data is only requested when needed.
+Here you can select different update intervals based on module state. If your window between calls is big, you can enable `hideTrackLenghtAndAnimateProgress`
 | Option <br />(config.updateInterval.option) | Default | Description |
 | :-- | :-: | :-- |
 | isPlaying | `1` | Default interval when there is something in the player |
@@ -124,7 +124,7 @@ This options determine the update interval to the update of the player data. Use
 | useColorInTitle | `true` | Use color in the title, artist and bar |
 | useColorInUserData | `true` | If only the user bar is shown (`displayWhenEmpty: "user"`) |
 | showBlurBackground | `true` | Shows the background colors |
-| blurCorrectionInFrameSide | `false` | Fixes the color blur in the frame side of the display, making it look like there is no gap between the actual border and the display. View ilustration below<br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-blurcorrection.png" aling="left"> |
+| blurCorrectionInFrameSide | `false` | Fixes the color blur in the frame side of the display, making it look like there is no gap between the actual border and the display. View ilustration below<br /><br /><img alt="Blur separation" src=".github/content/banner-blurcorrection.png" aling="left"> |
 | blurCorrectionInAllSides | `false` | Same as "InFrameSide", but blurs less all the borders for a more subtle effect |
 | alwaysUseDefaultDeviceIcon | `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it |
 
@@ -187,6 +187,8 @@ Makes the module return a `NOW_PLAYING` notification, regardles of the state of 
 - You can disable all the color related stuff and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `theming.useColorInProgressBar`, `theming.useColorInTitle`, `theming.useColorInTitleBorder`, `theming.showBlurBackground`, `theming.useColorInUserData`, `theming.spotifyCodeExperimentalUseColor`.<br /> <img alt="MMM-OnSpotify no theming" src=".github/content/image-modulebasic.png" width="200"> <br /> Of course you can still use the Spotify Color bar (White/Gray). This image is the base module. <br /> Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.
 
 - The API for Spotify Codes is not public, as its from the Spotify CDN (_scannables.scdn.co_) The API could change without notice. Many libraries rely on it and using it does not go againts the ToS.
+
+- I probably made some spelling mistakes in this readme / the authentication service. Please open an issue so I can fix them!
 
 ##
 With <3 by Fabrizz | Give a star if you like it! <br />[fabriz.co](https://fabriz.co/) (also work in progress) [<picture><source align="right" media="(prefers-color-scheme: dark)" srcset=".github/content/logo-fabrizz-white.svg"><source align="right" media="(prefers-color-scheme: light)" srcset=".github/content/logo-fabrizz-githubgray.svg"><img alt="Fabrizz logo" src=".github/content/logo-fabrizz-fill.png" align="right"></picture>](https://fabriz.co/)
