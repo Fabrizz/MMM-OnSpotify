@@ -119,6 +119,12 @@ Here you can select different update intervals based on module state. If your wi
 ### Theming options:
 > Also see: [Disabling all color theming options](#other)
 
+Note on theming: If you are using a **RPI4** I recommend to keep the default settings (or less), and if your two way mirror is not very good, I also recommend disabling the background colors.
+
+If you are using the server separatelly or using a **higher power device**, you can turn on all the animations.
+
+If you are using RPIs3 or below, disabling all the animations and [Vibrant usage](#other) is probably the best idea. 
+
 | Option (config.theming.option) | Default | Description |
 | :-- | :-: | :-- |
 | spotifyCodeExperimentalShow | `true` | Shows the Spotify Bar Code for the current song/podcast/etc. This is an experimental feature, as the API is not documented <br /><br /><img alt="Spotify code" src=".github/content/image-spotifycode.png" aling="left" height="40"> |
