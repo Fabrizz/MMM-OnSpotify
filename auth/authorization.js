@@ -19,7 +19,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 
 const port = 8100;
-const version = "V1.1";
+const version = "V1.3";
 
 let client_id = "";
 let client_secret = "";
@@ -121,7 +121,6 @@ app.post("/login", function (req, response) {
     redirectToAuthorization(response, state);
   }
 });
-
 app.get("/callback", function (req, res) {
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -143,28 +142,36 @@ app.get("/callback", function (req, res) {
     });
   }
 });
-
 app.get("/terminate", function (req, res) {
   res.send(
     "[Authorization Service] Shutting down... You can close this window. (MMM-OnSpotify by Fabrizz)",
   );
   console.log(
-    "\x1b[46m%s\x1b[0m",
+    "\x1b[31m",
+    "\x1b[47m",
     "[Authorization Service] Shutting down... | MMM-OnSpotify by Fabrizz ",
+    "\x1b[0m",
   );
   process.exit();
 });
 
 console.log(
-  "\x1b[46m%s\x1b[0m",
+  "\x1b[36m",
+  "\x1b[47m",
   `[Authorization Service] MMM-OnSpotify by Fabrizz | ${version} `,
+  "\x1b[0m",
 );
-console.log("\x1b[46m%s\x1b[0m", "[Authorization Service] Initializing ");
 console.log(
-  "\x1b[46m%s\x1b[0m",
-  "[Authorization Service] Open http://localhost:" +
-    port +
-    "/ to configure your mirror. ",
+  "\x1b[36m",
+  "\x1b[47m",
+  "[Authorization Service] Initializing ",
+  "\x1b[0m",
+);
+console.log(
+  "\x1b[36m",
+  "\x1b[47m",
+  `[Authorization Service] Open http://localhost:${port}/ to configure your mirror. `,
+  "\x1b[0m",
 );
 
 app.listen(port);

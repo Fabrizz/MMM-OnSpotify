@@ -7,6 +7,8 @@
  */
 
 const moment = require("moment");
+// Use node fetch as most MM2 installs use older node
+const fetch = require("node-fetch");
 const tokenRefreshBase = "https://accounts.spotify.com";
 const userBase = "https://api.spotify.com";
 
