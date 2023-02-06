@@ -68,6 +68,9 @@ Once you finish with the configuration, you are all set with the basic configura
             },
             // Theming and Dynamic Theme [SEE BELOW]
             theming: {
+                mediaAnimations: false,
+                fadeAnimations: false,
+                transitionAnimations: false,
                 // Spotify Code (EXPERMIENTAL)
                 spotifyCodeExperimentalShow: true,
                 spotifyCodeExperimentalUseColor: true,
