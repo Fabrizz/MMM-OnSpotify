@@ -100,7 +100,7 @@ Once you finish with the configuration, you are all set with the basic configura
 | userAffinityMaxAge | `36000` | (Seconds) The time in seconds of affinity data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot  |
 
 ### Interval options:
-This options determine the update interval to the update of the player data. User/Affinity data is only requested when needed.
+Here you can select different update intervasl based on module state. If your window between calls is big, you can enable `hideTrackLenghtAndAnimateProgress`
 | Option <br />(config.updateInterval.option) | Default | Description |
 | :-- | :-: | :-- |
 | isPlaying | `1` | Default interval when there is something in the player |
