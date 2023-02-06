@@ -82,9 +82,9 @@ Once you finish with the configuration, you are all set with the basic configura
                 useColorInTitle: true,
                 useColorInUserData: true,
                 showBlurBackground: true,
-                blurCorrectionInFrameSide: false,
-                blurCorrectionInAllSides: false,
-                alwaysUseDefaultDeviceIcon: false,
+                blurCorrectionInFrameSide: true,
+                blurCorrectionInAllSides: true,
+                alwaysUseDefaultDeviceIcon: true,
             },
         }
 },
