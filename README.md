@@ -93,9 +93,6 @@ Once you finish with the configuration, you are all set with the basic configura
 ### General module options: 
 | Option (config.option) | Default | Description |
 | :-- | :-: | :-- |
-| mediaAnimations | `false` | Disable cover fade, useful if you are using a system that is not GPU powerful (RPIs).  |
-| fadeAnimations | `false` | Disable fade in/out animations, useful if you are using a system that is not GPU powerful (RPIs). |
-| transitionAnimations| `true` | Disable color transitions, useful if you are using a system that is not GPU powerful (RPIs). |
 | advertisePlayerTheme | `true` | If the module should send Dynamic Theme (lock/unlock) notifications. Read more about [Dynamic Theme](#dynamic-theme) below |
 | displayWhenEmpty | `"both"` | What to display when the player is idle. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing<br /><br /><img alt="Display when empty " src=".github/content/banner-onidle.png"> |
 | userAffinityUseTracks | `false` | If you are showing affinity data on idle, you can select between showing album cover art or track cover art |
@@ -127,6 +124,9 @@ If you are using RPIs3 or below, disabling all the animations and [Vibrant usage
 
 | Option (config.theming.option) | Default | Description |
 | :-- | :-: | :-- |
+| mediaAnimations | `false` | Disable cover fade, useful if you are using a system that is not GPU powerful (RPIs).  |
+| fadeAnimations | `false` | Disable fade in/out animations, useful if you are using a system that is not GPU powerful (RPIs). |
+| transitionAnimations| `true` | Disable color transitions, useful if you are using a system that is not GPU powerful (RPIs). |
 | spotifyCodeExperimentalShow | `true` | Shows the Spotify Bar Code for the current song/podcast/etc. This is an experimental feature, as the API is not documented <br /><br /><img alt="Spotify code" src=".github/content/image-spotifycode.png" aling="left" height="40"> |
 | spotifyCodeExperimentalUseColor | `true` | As shown on the image above, color the spotify code bar using cover art colors |
 | spotifyCodeExperimentalSeparateItem | `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor` <br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-codeseparation.png" aling="left" height="100">  |
