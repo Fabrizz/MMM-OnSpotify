@@ -4,8 +4,6 @@
 
 ### [<img alt="MMM-OnSpotify banner" src=".github/content/banner-header.png" width="100%">](https://github.com/Fabrizz/MMM-OnSpotify)
 
-![GitHub](https://img.shields.io/github/license/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub package.json version](https://img.shields.io/github/package-json/v/Fabrizz/MMM-OnSpotify?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/Fabrizz/MMM-OnSpotify?style=flat-square)
-
 
 ## How does it work?
 This module shows what you are currently listening in Spotify, including podcasts _(and later when available, audiobooks)_. I wanted it to be the best looking posible, so it extracts cover art colors to create a palette and theme itself (other modules too!) and it includes animations for almost everything. See all the options below to know more about the extensive customization and Dynamic Theming.
