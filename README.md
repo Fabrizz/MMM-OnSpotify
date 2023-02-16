@@ -15,7 +15,7 @@ The module includes an **Authentication Service** that guide you through the con
 # Installation
 ### Step 1: Install the module
 ```bash
-cd ~/modules
+cd ~/MagicMirror/modules
 git clone https://github.com/Fabrizz/MMM-OnSpotify.git
 cd MMM-OnSpotify
 npm install
