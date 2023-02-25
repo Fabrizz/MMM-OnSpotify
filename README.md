@@ -1,9 +1,10 @@
 [<img alt="Fabrizz logo" src=".github/content/logo-fabrizz-white.svg" align="right">](https://fabriz.co/)
 
-#
+# 
 
-### [<img alt="MMM-OnSpotify banner" src=".github/content/banner-header.png" width="100%">](https://github.com/Fabrizz/MMM-OnSpotify)
+### <img alt="MMM-OnSpotify banner" src=".github/content/banner-header.png" width="100%">
 
+### <img alt="MMM-OnSpotify banner" src=".github/content/banner-header-alt.png" width="100%">
 
 ## How does it work?
 This module shows what you are currently listening in Spotify, including podcasts _(and later when available, audiobooks)_. I wanted it to be the best looking posible, so it extracts cover art colors to create a palette and theme itself (other modules too!) and it includes animations for almost everything. See all the options below to know more about the extensive customization and Dynamic Theming.
@@ -38,6 +39,9 @@ Once you finish with the configuration, you are all set with the basic configura
 
 # Options
 #### This is an example entry of `config.js` (all options). Scroll down to see the description/default value for each value.
+> **Note**
+> This correspond to the latest MMM-OnSpotify Version, older versions that used separated objects for theming/intervals are still supported, but not deep merged.
+
  ```js
 {
     module: "MMM-OnSpotify",
@@ -48,6 +52,7 @@ Once you finish with the configuration, you are all set with the basic configura
             clientSecret: "key",
             accessToken: "key",
             refreshToken: "key",
+
             // General module options [SEE BELOW]
             advertisePlayerTheme: true,
             displayWhenEmpty: "both",
@@ -57,41 +62,42 @@ Once you finish with the configuration, you are all set with the basic configura
             showDebugPalette: true,
             userDataMaxAge: 14400,
             userAffinityMaxAge: 36000,
+
             // Update intervals [SEE BELOW]
-            updateInterval: {
-                isPlaying: 1,
-                isEmpty: 2,
-                isPlayingHidden: 2,
-                isEmptyHidden: 4,
-                onReconnecting: 4,
-                onError: 8,
-            },
-            // Theming and Dynamic Theme [SEE BELOW]
-            theming: {
-                mediaAnimations: false,
-                fadeAnimations: false,
-                transitionAnimations: true,
-                // Spotify Code (EXPERMIENTAL)
-                spotifyCodeExperimentalShow: true,
-                spotifyCodeExperimentalUseColor: true,
-                spotifyCodeExperimentalSeparateItem: true,
-                // Theming General
-                roundMediaCorners: true,
-                roundProgressBar: true,
-                useColorInProgressBar: true,
-                useColorInTitle: true,
-                useColorInUserData: true,
-                showBlurBackground: true,
-                blurCorrectionInFrameSide: true,
-                blurCorrectionInAllSides: true,
-                alwaysUseDefaultDeviceIcon: true,
+            isPlaying: 1,
+            isEmpty: 2,
+            isPlayingHidden: 2,
+            isEmptyHidden: 4,
+            onReconnecting: 4,
+            onError: 8,
+
+            // Animations [SEE BELOW]
+            mediaAnimations: false,
+            fadeAnimations: false,
+            transitionAnimations: true,
+
+            // Spotify Code (EXPERMIENTAL)
+            spotifyCodeExperimentalShow: true,
+            spotifyCodeExperimentalUseColor: true,
+            spotifyCodeExperimentalSeparateItem: true,
+
+            // Theming General
+            roundMediaCorners: true,
+            roundProgressBar: true,
+            useColorInProgressBar: true,
+            useColorInTitle: true,
+            useColorInUserData: true,
+            showBlurBackground: true,
+            blurCorrectionInFrameSide: true,
+            blurCorrectionInAllSides: true,
+            alwaysUseDefaultDeviceIcon: true,
             },
         }
 },
 ```
 
 ### General module options: 
-| Option (config.option) | Default | Description |
+| Key | Default | Description |
 | :-- | :-: | :-- |
 | advertisePlayerTheme | `true` | If the module should send Dynamic Theme (lock/unlock) notifications. Read more about [Dynamic Theme](#dynamic-theme) below |
 | displayWhenEmpty | `"both"` | What to display when the player is idle. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing<br /><br /><img alt="Display when empty " src=".github/content/banner-onidle.png"> |
@@ -104,7 +110,7 @@ Once you finish with the configuration, you are all set with the basic configura
 
 ### Interval options:
 Here you can select different update intervals based on module state. If your window between calls is big, you can enable `hideTrackLenghtAndAnimateProgress`
-| Option <br />(config.updateInterval.option) | Default | Description |
+| Key | Default | Description |
 | :-- | :-: | :-- |
 | isPlaying | `1` | Default interval when there is something in the player |
 | isEmpty | `2` | Interval when the player is idle | 
@@ -114,15 +120,14 @@ Here you can select different update intervals based on module state. If your wi
 | onError | `8` | When the N° of errors reach a certain point, it changes "onReconnecting" to "onError", to slow down api calls |
 
 ### Theming options:
-> Also see: [Disabling all color theming options](#other)
+> Also see: [Disabling **all** color theming](#other)
 
-Note on theming: If you are using a **RPI4** I recommend to keep the default settings (or less), and if your two way mirror is not very good, I also recommend disabling the background colors.
+> **Warning**
+> - If you are using a **RPI4** I recommend to keep the default theming settings (or less)
+> - If you are using the server separatelly or using a **higher power device**, you can turn on all the animations, the fade and transitions look really good!
+> - If you are using a **RPI3** or below, disabling all the animations or diasabling the blurred background, as the effect is the most demanding. 
 
-If you are using the server separatelly or using a **higher power device**, you can turn on all the animations.
-
-If you are using RPIs3 or below, disabling all the animations and [Vibrant usage](#other) is probably the best idea. 
-
-| Option (config.theming.option) | Default | Description |
+| Key | Default | Description |
 | :-- | :-: | :-- |
 | mediaAnimations | `false` | Disable cover fade, useful if you are using a system that is not GPU powerful (RPIs).  |
 | fadeAnimations | `false` | Disable fade in/out animations, useful if you are using a system that is not GPU powerful (RPIs). |
@@ -141,9 +146,9 @@ If you are using RPIs3 or below, disabling all the animations and [Vibrant usage
 | alwaysUseDefaultDeviceIcon | `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it |
 
 # Dynamic Theme
-The Dynamic Theme is a form of theming that all of my modules have. Its a way of "normalizing" color data. This module provides color data (Master), and other modules can listen to the notificactions and act accordingly. This module uses the `VIBRANT` scheme. Here is an example payload:
+[Work in progress] The Dynamic Theme is a form of theming that all of my modules have. Its a way of "normalizing" color data. This module provides color data (Master), and other modules can listen to the notificactions and act accordingly. This module uses the `VIBRANT` scheme. Here is an example payload:
 ```js
-{ /* ON MUSIC */
+{ /* Playing */
     provider: "MMM-OnSpotify",
     providerPrefix: "ONSP",
     providerScheme: "VIBRANT",
@@ -154,7 +159,7 @@ The Dynamic Theme is a form of theming that all of my modules have. Its a way of
     // Lock on [MMM-OnSpotify] until [provider] decides (player is empty)
 }
 
-{ /* ON EMPTY */
+{ /* Player empty */
     provider: "MMM-OnSpotify",
     set: "unlock",
 }

@@ -1,6 +1,6 @@
 /*
  * MMM-OnSpotify
- * GPL-3.0 License
+ * MIT license
  *
  * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
  */
@@ -79,7 +79,7 @@ class SpotifyDomBuilder {
       );
     if (this.config.theming.fadeAnimations)
       this.root.style.setProperty("--ONSP-INTERNAL-LOWPOWER-FADEIN", "fadein");
-    if (this.config.theming.coverAnimations)
+    if (this.config.theming.mediaAnimations)
       this.root.style.setProperty(
         "--ONSP-INTERNAL-LOWPOWER-COVER",
         "var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) cubic-bezier(0.25, 0.15, 0.20, 1)",
@@ -389,18 +389,6 @@ class SpotifyDomBuilder {
     document.getElementById("VSNO-TARGET-TIME").innerText =
       this.getSanitizedTime(data.playerProgress, data.itemDuration);
 
-    if (data.statusIsNewSong || data.itemUri !== this.lastItemURI) {
-      document.getElementById("VSNO-TARGET-TITLE").innerText = data.itemName;
-      document.getElementById("VSNO-TARGET-SUBTITLE").innerText =
-        data.itemArtists ? data.itemArtists : data.itemShowName;
-      // document.getElementById("VSNO-TARGET-COVER").src = this.selectImage(data.itemImages);
-      document.getElementById(
-        "VSNO-TARGET-COVER",
-      ).style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
-      if (this.config.theming.spotifyCodeExperimentalShow)
-        this.getSpotifyCodeImage(data.itemUri, "VSNO-TARGET-CODE", false);
-    }
-
     if (data.statusIsDeviceChange) {
       document.getElementById("VSNO-TARGET-DEVICE").innerText = data.deviceName;
       document
@@ -413,6 +401,25 @@ class SpotifyDomBuilder {
             ? this.svgs[data.deviceType]
             : this.svgs.default,
         );
+    }
+
+    if (data.statusIsNewSong || data.itemUri !== this.lastItemURI) {
+      document.getElementById("VSNO-TARGET-TITLE").innerText = data.itemName;
+      document.getElementById("VSNO-TARGET-SUBTITLE").innerText =
+        data.itemArtists ? data.itemArtists : data.itemShowName;
+      // document.getElementById("VSNO-TARGET-COVER").src = this.selectImage(data.itemImages); <-- transitions do not affect src
+
+      // LATER: Add a couple of miliseconds of artificial delay so Vibrant can prefetch the image and
+      // see if that removes the background flash on lower bandwidth conections...
+
+      // LATER: Update the new image using two elements on top of each other. different vars for each,
+      // keep track of current one and create below/delete on top...
+
+      document.getElementById(
+        "VSNO-TARGET-COVER",
+      ).style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
+      if (this.config.theming.spotifyCodeExperimentalShow)
+        this.getSpotifyCodeImage(data.itemUri, "VSNO-TARGET-CODE", false);
     }
 
     this.lastItemURI = data.itemUri;

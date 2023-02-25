@@ -1,6 +1,6 @@
 /*
  * MMM-OnSpotify
- * GPL-3.0 License
+ * MIT license
  *
  * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
  */
@@ -12,6 +12,8 @@
 Module.register("MMM-OnSpotify", {
   defaults: {
     name: "MMM-OnSpotify",
+    /* configDeepMerge: true, deepMerge: true, <-- Does not work */
+
     // Sends notifications containin them locking. Works with other DynamicTheme modules.
     advertisePlayerTheme: true,
     // What to display when the player is idle
@@ -77,10 +79,35 @@ Module.register("MMM-OnSpotify", {
     events: {
       GET_PLAYING: "GET_PLAYING",
     },
+
+    // Allow config with or without
+    isPlaying: 1,
+    isEmpty: 2,
+    isPlayingHidden: 2,
+    isEmptyHidden: 4,
+    onReconnecting: 4,
+    onError: 8,
+    mediaAnimations: false,
+    fadeAnimations: false,
+    transitionAnimations: true,
+    spotifyCodeExperimentalShow: true,
+    spotifyCodeExperimentalUseColor: true,
+    spotifyCodeExperimentalSeparateItem: true,
+    roundMediaCorners: true,
+    roundProgressBar: true,
+    useColorInProgressBar: true,
+    useColorInTitle: true,
+    useColorInUserData: true,
+    showBlurBackground: true,
+    blurCorrectionInFrameSide: false,
+    blurCorrectionInAllSides: false,
+    alwaysUseDefaultDeviceIcon: false,
   },
 
   start: function () {
+    this.configFix();
     this.logBadge();
+
     this.isConnectedToSpotify = false;
     this.currentIntervalId = null;
     this.isFirstCall = true;
@@ -480,5 +507,89 @@ Module.register("MMM-OnSpotify", {
       "background-color: #555;color: #fff;margin: 0.4em 0em 0.4em 0.4em;padding: 5px 3px 5px 5px;border-radius: 7px 0 0 7px;font-family: DejaVu Sans,Verdana,Geneva,sans-serif;",
       "background-color: #bc81e0;background-image: linear-gradient(90deg, #3F6212, #84CC16);color: #fff;margin: 0.4em 0.4em 0.4em 0em;padding: 5px 5px 5px 3px;border-radius: 0 7px 7px 0;font-family: DejaVu Sans,Verdana,Geneva,sans-serif;text-shadow: 0 1px 0 rgba(1, 1, 1, 0.3)",
     );
+  },
+  /* Fix for older version that have object based cfg */
+  /* Its not pretty, but the default does not work */
+  configFix: function () {
+    typeof this.config.isPlaying === "number"
+      ? (this.config.updateInterval.isPlaying = this.config.isPlaying)
+      : null;
+    typeof this.config.isEmpty === "number"
+      ? (this.config.updateInterval.isEmpty = this.config.isEmpty)
+      : null;
+    typeof this.config.isPlayingHidden === "number"
+      ? (this.config.updateInterval.isPlayingHidden =
+          this.config.isPlayingHidden)
+      : null;
+    typeof this.config.isEmptyHidden === "number"
+      ? (this.config.updateInterval.isEmptyHidden = this.config.isEmptyHidden)
+      : null;
+    typeof this.config.onReconnecting === "number"
+      ? (this.config.updateInterval.onReconnecting = this.config.onReconnecting)
+      : null;
+    typeof this.config.onError === "number"
+      ? (this.config.updateInterval.onError = this.config.onError)
+      : null;
+
+    typeof this.config.mediaAnimations === "boolean"
+      ? (this.config.theming.mediaAnimations = this.config.mediaAnimations)
+      : null;
+    typeof this.config.fadeAnimations === "boolean"
+      ? (this.config.theming.fadeAnimations = this.config.fadeAnimations)
+      : null;
+    typeof this.config.transitionAnimations === "boolean"
+      ? (this.config.theming.transitionAnimations =
+          this.config.transitionAnimations)
+      : null;
+
+    typeof this.config.spotifyCodeExperimentalShow === "boolean"
+      ? (this.config.theming.spotifyCodeExperimentalShow =
+          this.config.spotifyCodeExperimentalShow)
+      : null;
+    typeof this.config.spotifyCodeExperimentalUseColor === "boolean"
+      ? (this.config.theming.spotifyCodeExperimentalUseColor =
+          this.config.spotifyCodeExperimentalUseColor)
+      : null;
+    typeof this.config.spotifyCodeExperimentalSeparateItem === "boolean"
+      ? (this.config.theming.spotifyCodeExperimentalSeparateItem =
+          this.config.spotifyCodeExperimentalSeparateItem)
+      : null;
+
+    typeof this.config.roundMediaCorners === "boolean"
+      ? (this.config.theming.roundMediaCorners = this.config.roundMediaCorners)
+      : null;
+    typeof this.config.roundProgressBar === "boolean"
+      ? (this.config.theming.roundProgressBar = this.config.roundProgressBar)
+      : null;
+
+    typeof this.config.useColorInProgressBar === "boolean"
+      ? (this.config.theming.useColorInProgressBar =
+          this.config.useColorInProgressBar)
+      : null;
+    typeof this.config.useColorInTitle === "boolean"
+      ? (this.config.theming.useColorInTitle = this.config.useColorInTitle)
+      : null;
+    typeof this.config.useColorInUserData === "boolean"
+      ? (this.config.theming.useColorInUserData =
+          this.config.useColorInUserData)
+      : null;
+
+    typeof this.config.showBlurBackground === "boolean"
+      ? (this.config.theming.showBlurBackground =
+          this.config.showBlurBackground)
+      : null;
+    typeof this.config.blurCorrectionInFrameSide === "boolean"
+      ? (this.config.theming.blurCorrectionInFrameSide =
+          this.config.blurCorrectionInFrameSide)
+      : null;
+    typeof this.config.blurCorrectionInAllSides === "boolean"
+      ? (this.config.theming.blurCorrectionInAllSides =
+          this.config.blurCorrectionInAllSides)
+      : null;
+
+    typeof this.config.alwaysUseDefaultDeviceIcon === "boolean"
+      ? (this.config.theming.alwaysUseDefaultDeviceIcon =
+          this.config.alwaysUseDefaultDeviceIcon)
+      : null;
   },
 });

@@ -1,6 +1,6 @@
 /*
  * MMM-OnSpotify
- * GPL-3.0 License
+ * MIT license
  *
  * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
  */
@@ -50,10 +50,11 @@ module.exports = NodeHelper.create({
   fetchSpotifyData: async function (type) {
     try {
       let data = await this.fetcher.getData(type);
-      if (data instanceof Error) {
-        this.sendSocketNotification("CONNECTION_ERRONED", JSON.stringify(data));
-        return;
-      }
+      if (data instanceof Error)
+        return this.sendSocketNotification(
+          "CONNECTION_ERRONED",
+          JSON.stringify(data),
+        );
       switch (type) {
         case "PLAYER":
           if (data && data.device && data.device.is_private_session) {

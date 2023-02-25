@@ -1,5 +1,17 @@
 /* eslint-disable no-undef */
 /* eslint-disable jsdoc/require-jsdoc */
+
+/*
+ * MMM-OnSpotify
+ * MIT License
+ *
+ * By Fabrizz <3
+ *
+ * Based on the example oAuth2 flow from:
+ * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
+ * and Raywoo implementation:
+ * https://github.com/raywo/MMM-NowPlayingOnSpotify/tree/master/authorization
+ */
 "use strict";
 
 (function () {

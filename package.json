@@ -1,6 +1,6 @@
 {
     "name": "mmm-onspotify",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "description": "A MagicMirror2 module to display Spotify Connect data. Highly customizable. Allows DynamicTheming.",
     "repository": {
         "type": "git",
@@ -23,7 +23,7 @@
         "url": "https://github.com/Fabrizz/MMM-OnSpotify/issues"
     },
     "homepage": "https://github.com/Fabrizz/MMM-OnSpotify#readme",
-    "license": "GPL-3.0",
+    "license": "MIT",
     "scripts": {
         "init": "npm install && cd auth && node authorization",
         "auth": "cd auth && node authorization"

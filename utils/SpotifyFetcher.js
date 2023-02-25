@@ -1,6 +1,6 @@
 /*
  * MMM-OnSpotify
- * GPL-3.0 License
+ * MIT license
  *
  * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
  * Original implementation: Raywo | https://github.com/raywo/MMM-NowPlayingOnSpotify
