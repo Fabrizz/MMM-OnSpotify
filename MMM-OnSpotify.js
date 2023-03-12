@@ -36,7 +36,7 @@ Module.register("MMM-OnSpotify", {
     updateInterval: {
       isPlaying: 1,
       isEmpty: 2,
-      isPlayingHidden: 2,
+      isPlayingHidden: 1,
       isEmptyHidden: 4,
       // When there is a connection error
       onReconnecting: 4,
@@ -78,12 +78,15 @@ Module.register("MMM-OnSpotify", {
     // Internal, if you want to change the "GET_PLAYING" notification mapping
     events: {
       GET_PLAYING: "GET_PLAYING",
+      ONSPOTIFY_GET: "ONSPOTIFY_GET",
+      LIVELYRICS_NOTICE: "LIVELYRICS_NOTICE",
+      ALL_MODULES_STARTED: "ALL_MODULES_STARTED",
     },
 
     // Allow config with or without
     isPlaying: 1,
     isEmpty: 2,
-    isPlayingHidden: 2,
+    isPlayingHidden: 1,
     isEmptyHidden: 4,
     onReconnecting: 4,
     onError: 8,
@@ -117,7 +120,11 @@ Module.register("MMM-OnSpotify", {
     this.retries = 0;
     this.lastPrivate = [null, null];
     this.lastStatus = "isPlaying";
-    this.isHidden = false;
+    this.muduleHidden = false;
+
+    ///////////////////////
+    this.version = "2.0.0";
+    ///////////////////////
 
     this.displayUser =
       this.config.displayWhenEmpty.toLowerCase() === "user" ||
@@ -149,6 +156,7 @@ Module.register("MMM-OnSpotify", {
       {
         useVibrantOnChange: this.loadVibrantPalette,
         moduleSide: this.data.position,
+        version: this.version,
       },
       (a, b) => this.translate(a, b),
     );
@@ -178,26 +186,6 @@ Module.register("MMM-OnSpotify", {
       },
     });
     this.updateFetchingLoop(this.config.updateInterval[this.lastStatus]);
-
-    setTimeout(() => {
-      if (this.config.showDebugPalette)
-        console.info(
-          "%c· MMM-OnSpotify %c %c[INFO]%c " + this.translate("DEBUG_COLORS"),
-          "background-color:#84CC16;color:black",
-          "",
-          "background-color:darkcyan;color:black",
-          "",
-        );
-      if (this.config.theming.spotifyCodeExperimentalShow)
-        console.info(
-          "%c· MMM-OnSpotify %c %c[WARN]%c " +
-            this.translate("SPOTIFYCODE_EXPERIMENTAL"),
-          "background-color:#84CC16;color:black",
-          "",
-          "background-color:orange;color:black",
-          "",
-        );
-    }, "1000");
   },
 
   getDom: function () {
@@ -260,7 +248,12 @@ Module.register("MMM-OnSpotify", {
       this.file("vendor/vibrant.worker.min.js"),
       // MM2 loader cannot load .map files // this.file("vendor/vibrant.worker.min.js.map"),
     ];
-    if (this.config.theming.spotifyCodeExperimentalShow)
+    // eslint-disable-next-line no-undef
+    if (
+      this.config.theming.spotifyCodeExperimentalShow &&
+      // Check if other modules load DOMPurify
+      !("DOMPurify" in window)
+    )
       files.push(this.file("node_modules/dompurify/dist/purify.min.js"));
     return files;
   },
@@ -275,18 +268,18 @@ Module.register("MMM-OnSpotify", {
     this.smartUpdate();
     console.info(
       "%c· MMM-OnSpotify %c %c[INFO]%c " + this.translate("SUSPEND"),
-      "background-color:#84CC16;color:black",
+      "background-color:#84CC16;color:black;border-radius:0.4em",
       "",
-      "background-color:darkcyan;color:black",
+      "background-color:darkcyan;color:black;border-radius:0.4em",
       "",
     );
   },
   resume: function () {
     console.info(
       "%c· MMM-OnSpotify %c %c[INFO]%c " + this.translate("RESUME"),
-      "background-color:#84CC16;color:black",
+      "background-color:#84CC16;color:black;border-radius:0.4em",
       "",
-      "background-color:darkcyan;color:black",
+      "background-color:darkcyan;color:black;border-radius:0.4em",
       "",
     );
     this.moduleHidden = false;
@@ -308,6 +301,7 @@ Module.register("MMM-OnSpotify", {
               this.playerData.itemImages,
               this.config.prefersLargeImageSize,
             ),
+            uri: this.playerData.itemUri,
             artist: payload.itemArtist,
             artists: payload.itemArtists,
             type: payload.playerMediaType,
@@ -316,6 +310,10 @@ Module.register("MMM-OnSpotify", {
           });
         if (payload.statusIsChangeToEmptyPlayer)
           this.sendNotification("NOW_PLAYING", { playerEmpty: true });
+        if (payload.statusIsDeviceChange)
+          this.sendNotification("DEVICE_CHANGE", {
+            device: payload.deviceName,
+          });
         break;
       case "USER_DATA":
         this.userData = payload;
@@ -323,12 +321,12 @@ Module.register("MMM-OnSpotify", {
         this.requestUserData = false;
         this.smartUpdate("USER_DATA");
         if (this.userData.product !== "premium")
-          console.info(
+          console.warn(
             "%c· MMM-OnSpotify %c %c[WARN]%c " +
               this.translate("PRODUCT_WARNING"),
-            "background-color:#84CC16;color:black",
+            "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
-            "background-color:orange;color:black",
+            "background-color:orange;color:black;border-radius:0.4em",
             "",
           );
         break;
@@ -343,9 +341,9 @@ Module.register("MMM-OnSpotify", {
           console.info(
             "%c· MMM-OnSpotify %c %c[WARN]%c " +
               this.translate("CONNECTION_WARNING"),
-            "background-color:#84CC16;color:black",
+            "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
-            "background-color:orange;color:black",
+            "background-color:orange;color:black;border-radius:0.4em",
             "",
           );
         }
@@ -365,12 +363,52 @@ Module.register("MMM-OnSpotify", {
               this.playerData.itemImages,
               this.config.prefersLargeImageSize,
             ),
+            uri: this.playerData.itemUri,
             artist: this.playerData.itemArtist,
             artists: this.playerData.itemArtists,
             type: this.playerData.playerMediaType,
             device: this.playerData.deviceName,
             deviceType: this.playerData.deviceType,
           });
+          break;
+        case "ONSPOTIFY_GET":
+          this.sendNotification("ONSPOTIFY_NOTICE", {
+            version: this.version,
+            directColorData:
+              this.loadVibrantPalette && this.config.advertisePlayerTheme,
+            loadsSpotifyCode: this.config.theming.spotifyCodeExperimentalShow,
+          });
+          break;
+        case "LIVELYRICS_NOTICE":
+          console.info(
+            "%c· MMM-OnSpotify %c %c[INFO]%c " +
+              this.translate("LIVELYRICS_NOTICE"),
+            "background-color:#84CC16;color:black;border-radius:0.4em",
+            "",
+            "background-color:darkcyan;color:black;border-radius:0.4em",
+            "",
+          );
+          break;
+        case "ALL_MODULES_STARTED":
+          if (this.config.showDebugPalette)
+            console.info(
+              "%c· MMM-OnSpotify %c %c[INFO]%c " +
+                this.translate("DEBUG_COLORS"),
+              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "",
+              "background-color:darkcyan;color:black;border-radius:0.4em",
+              "",
+            );
+          if (this.config.theming.spotifyCodeExperimentalShow)
+            console.info(
+              "%c· MMM-OnSpotify %c %c[WARN]%c " +
+                this.translate("SPOTIFYCODE_EXPERIMENTAL"),
+              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "",
+              "background-color:orange;color:black;border-radius:0.4em",
+              "",
+            );
+          this.sendNotification("LIVELYRICS_GET");
           break;
         default:
           break;
@@ -447,9 +485,9 @@ Module.register("MMM-OnSpotify", {
         console.error(
           "%c· MMM-OnSpotify %c %c[WARN]%c " +
             this.translate("CONNECTION_ERROR"),
-          "background-color:#84CC16;color:black",
+          "background-color:#84CC16;color:black;border-radius:0.4em",
           "",
-          "background-color:darkred;color:black",
+          "background-color:darkred;color:black;border-radius:0.4em",
           "",
         );
         this.playerData = {
@@ -468,11 +506,19 @@ Module.register("MMM-OnSpotify", {
       this.retries = 0;
     }
 
-    if (this.playerData.deviceIsPrivate && !this.lastPrivate[0]) {
+    if (
+      this.playerData &&
+      this.playerData.deviceIsPrivate &&
+      !this.lastPrivate[0]
+    ) {
       this.lastPrivate = [true];
       return this.updateDom();
     }
-    if (!this.playerData.deviceIsPrivate && this.lastPrivate[0]) {
+    if (
+      this.playerData &&
+      !this.playerData.deviceIsPrivate &&
+      this.lastPrivate[0]
+    ) {
       this.lastPrivate = [false];
       return this.updateDom();
     }

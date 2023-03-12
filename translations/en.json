@@ -8,7 +8,8 @@
     "NOTHING_PLAYING": "Nothing is playing",
     "SPOTIFY_HEADER": "MMM-OnSpotify",
     "DEBUG_COLORS": "Debug palettes are shown because <showDebugPalette> is set to true",
-    "SPOTIFYCODE_EXPERIMENTAL": "<spotifyCodeExperimentalShow> is enabled. The api to generate codes is not public, and can end without prior notice. View more in the readme...",
+    "SPOTIFYCODE_EXPERIMENTAL": "<spotifyCodeExperimentalShow> is enabled. The api to generate codes is not public, and can end without prior notice. (https://github.com/Fabrizz/MMM-OnSpotify#other)",
     "RESUME": "Resuming module",
-    "SUSPEND": "Suspending module" 
+    "SUSPEND": "Suspending module",
+    "LIVELYRICS_NOTICE": "MMM-LiveLyrics found! - Check MMM-LL logs to see more. (https://github.com/Fabrizz/MMM-LiveLyrics)"
 }

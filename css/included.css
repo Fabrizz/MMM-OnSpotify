@@ -346,6 +346,9 @@
 .ONSP-Base .useraffinity .user .profile .data .subtitle {
     font-size: 0.8em;
 }
+.ONSP-Base .externalhidden {
+    display: none;
+}
 
 /* AFFINITY */
 .ONSP-Base .affinity .grid {

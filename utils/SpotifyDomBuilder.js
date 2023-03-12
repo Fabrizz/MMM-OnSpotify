@@ -6,6 +6,7 @@
  */
 
 /* eslint-disable no-undef */
+
 class SpotifyDomBuilder {
   constructor(pathPrefix, config, other, translator) {
     this.pathPrefix = pathPrefix;
@@ -237,8 +238,17 @@ class SpotifyDomBuilder {
   /* COMMON */
   globalWrapper() {
     const wrapper = document.createElement("div");
+    const version = document.createComment(
+      ` MMM-ONSP Version: ${this.config.version} `,
+    );
+    const code = document.createComment(
+      ` MMM-OnSpotify by Fabrizz | https://github.com/Fabrizz/MMM-OnSpotify `,
+    );
     wrapper.classList.add("ONSP-Base", "ONSP-Custom");
     wrapper.id = "ONSP-WRAPPER";
+    wrapper.appendChild(version);
+    wrapper.appendChild(code);
+
     return wrapper;
   }
 
@@ -367,7 +377,7 @@ class SpotifyDomBuilder {
     const code = document.createElement("div");
     code.id = "VSNO-TARGET-CODE";
     code.classList.add("code");
-    this.getSpotifyCodeImage(u, "VSNO-TARGET-CODE", true);
+    this.getSpotifyCodeImage(u, "VSNO-TARGET-CODE", true, "ONSP-WRAPPER");
     experimental.appendChild(code);
     return experimental;
   }
@@ -419,7 +429,12 @@ class SpotifyDomBuilder {
         "VSNO-TARGET-COVER",
       ).style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
       if (this.config.theming.spotifyCodeExperimentalShow)
-        this.getSpotifyCodeImage(data.itemUri, "VSNO-TARGET-CODE", false);
+        this.getSpotifyCodeImage(
+          data.itemUri,
+          "VSNO-TARGET-CODE",
+          false,
+          "ONSP-WRAPPER",
+        );
     }
 
     this.lastItemURI = data.itemUri;
@@ -758,7 +773,7 @@ class SpotifyDomBuilder {
       str = "0:00 / " + fl;
     return str;
   }
-  getSpotifyCodeImage(uri, id, animate) {
+  getSpotifyCodeImage(uri, id, animate, dataId) {
     fetch(
       `https://scannables.scdn.co/uri/plain/${
         this.config.theming.spotifyCodeExperimentalUseColor
@@ -774,7 +789,7 @@ class SpotifyDomBuilder {
         (external) =>
           // FUTURE UPDATE, get every <rect> element inside the svg and update the existing
           // svg rects, this allows animating the bars vertically and color transition. Visually
-          // it would be much better, but more process consuming
+          // it would be much better, but more gpu consuming
           (document.getElementById(id).innerHTML = DOMPurify.sanitize(external)
             .replaceAll(
               this.config.theming.spotifyCodeExperimentalUseColor
@@ -793,6 +808,18 @@ class SpotifyDomBuilder {
               animate
                 ? `<svg style="animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME)" `
                 : `<svg style="" `,
+            )
+            .replace(
+              "<svg ",
+              `<svg data-onsp-changes="${
+                this.config.theming.spotifyCodeExperimentalUseColor
+                  ? `#000000`
+                  : "unknown"
+              }:var(--ONSP-INTERNAL-PLAYER-CODE-BARS),${
+                this.config.theming.spotifyCodeExperimentalUseColor
+                  ? "#ffffff"
+                  : "#000000"
+              }:#00000000"`,
             )),
       ),
     );
