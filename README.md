@@ -23,7 +23,7 @@ npm install
 ```
 
 ### Step 2: Create a Spotify App and authorize the module
-[You can migrate from MMM-NowPlayinOnSpotify and skip this step!](#migrating-from-mmm-nowplayinginspotify)
+[You can migrate from MMM-NowPlayingOnSpotify and skip this step!](#migrating-from-mmm-nowplayinginspotify)
 
 Here we use the **Authentication Service** that guides you on each step of the process:
 
