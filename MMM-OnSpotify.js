@@ -121,6 +121,7 @@ Module.register("MMM-OnSpotify", {
     this.lastPrivate = [null, null];
     this.lastStatus = "isPlaying";
     this.muduleHidden = false;
+    this.firstSongOnLoad = true;
 
     ///////////////////////
     this.version = "2.0.0";
@@ -293,7 +294,7 @@ Module.register("MMM-OnSpotify", {
         this.connectionRetries = 0;
         if (!payload.statusPlayerUpdating) this.playerData = payload;
         this.smartUpdate("PLAYER_DATA");
-        if (payload.statusIsNewSong)
+        if (payload.statusIsNewSong || this.firstSongOnLoad) {
           this.sendNotification("NOW_PLAYING", {
             playerIsEmpty: false,
             name: payload.itemName,
@@ -308,6 +309,8 @@ Module.register("MMM-OnSpotify", {
             device: payload.deviceName,
             deviceType: payload.deviceType,
           });
+          this.firstSongOnLoad = false;
+        }
         if (payload.statusIsChangeToEmptyPlayer)
           this.sendNotification("NOW_PLAYING", { playerEmpty: true });
         if (payload.statusIsDeviceChange)
