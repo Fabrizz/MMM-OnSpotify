@@ -721,7 +721,7 @@ class SpotifyDomBuilder {
   }
   getVibrant(url, opts) {
     this.lastUrlProcessed = url;
-    if (!Vibrant) {
+    if (!("Vibrant" in window)) {
       console.error(
         "%c· MMM-OnSpotify %c %c[WARN]%c " +
           this.translate("VIBRANT_NOT_LOADED"),
