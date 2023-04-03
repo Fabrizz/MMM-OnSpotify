@@ -23,7 +23,7 @@ npm install
 ```
 
 ### Step 2: Create a Spotify App and authorize the module
-[You can migrate from MMM-NowPlayinOnSpotify and skip this step!](#migrating-from-mmm-nowplayinginspotify)
+[You can migrate from MMM-NowPlayingOnSpotify and skip this step!](#migrating-from-mmm-nowplayinginspotify)
 
 Here we use the **Authentication Service** that guides you on each step of the process:
 
@@ -145,8 +145,16 @@ Here you can select different update intervals based on module state. If your wi
 | blurCorrectionInAllSides | `false` | Same as "InFrameSide", but blurs less all the borders for a more subtle effect |
 | alwaysUseDefaultDeviceIcon | `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it |
 
+# Lyrics
+You can show lyrics in a realy stilysh way using [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics). See more in the repo.
+
+[<img alt="Livelyrics module" src=".github/content/banner-livelyrics.png" aling="left">](https://github.com/Fabrizz/MMM-LiveLyrics)
+
+
 # Dynamic Theme
 [Work in progress] The Dynamic Theme is a form of theming that all of my modules have. Its a way of "normalizing" color data. This module provides color data (Master), and other modules can listen to the notificactions and act accordingly. This module uses the `VIBRANT` scheme. Here is an example payload:
+
+> Current modules use other types of notifications to know if the module exports color data.
 ```js
 { /* Playing */
     provider: "MMM-OnSpotify",
@@ -171,10 +179,10 @@ You can disable this behaviour using `advertisePlayerTheme: false`.
 > Explanation in [Dynamic Theme](#dynamic-theme).
 
 ### `NOW_PLAYING` -->
-Everytime the player changes states or the song changes, the module sends a notification so other modules can, for example, [show lyrics](https://github.com/Fabrizz/MMM-LiveLyrics).
+Everytime the player changes states or the song changes, the module sends a notification so other modules can, for example, [show lyrics](#lyrics).
 
 ```js
-{
+{ /* Playing */
     playerIsEmpty: false,
     name: "title",
     image: "https://i.scdn.co/[...]",
@@ -184,7 +192,33 @@ Everytime the player changes states or the song changes, the module sends a noti
     device: "sonos kitchen",
     deviceType: "speaker",
 }
+{ /* Player empty */
+    playerIsEmpty: false,
+}
 ```
+
+### `DEVICE_CHANGE` -->
+Everytime the device that is set as the output changes, this notification is fired.
+
+```js
+{
+    device: "Denon AVR" // Name
+    type: "AVR" // Device type (as Spotify defs)
+}
+```
+### `ONSPOTIFY_NOTICE` -->
+Everytime the device that is set as the output changes, this notification is fired.
+
+```js
+{
+    version: "2.1.0" // Version string
+    directColorData: true // Loads Vibrant
+    loadsSpotifyCode: true // if it shows Spotify Codes
+}
+```
+
+### `ONSPOTIFY_GET` <--
+Returns a **ONSPOTIFY_NOTICE** 
 
 ### `GET_PLAYING` <--
 Makes the module return a `NOW_PLAYING` notification, regardles of the state of the player. (Used by [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics))
@@ -216,7 +250,7 @@ After finishing the installation of the module, you can migrate your old credent
 ```
 
 # Other:
-- You can disable all the color related stuff and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `theming.useColorInProgressBar`, `theming.useColorInTitle`, `theming.useColorInTitleBorder`, `theming.showBlurBackground`, `theming.useColorInUserData`, `theming.spotifyCodeExperimentalUseColor`.<br /> <img alt="MMM-OnSpotify no theming" src=".github/content/image-modulebasic.png" width="200"> <br /> Of course you can still use the Spotify Color bar (White/Gray). This image is the base module. <br /> Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.
+- You can disable all the color related stuff and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `useColorInProgressBar`, `useColorInTitle`, `useColorInTitleBorder`, `showBlurBackground`, `useColorInUserData`, `spotifyCodeExperimentalUseColor`.<br /> <img alt="MMM-OnSpotify no theming" src=".github/content/image-modulebasic.png" width="200"> <br /> Of course you can still use the Spotify Color bar (White/Gray). This image is the base module. <br /> Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.
 
 - The API for Spotify Codes is not public, as its from the Spotify CDN (_scannables.scdn.co_) The API could change without notice. Many libraries rely on it and using it does not go againts the ToS.
 

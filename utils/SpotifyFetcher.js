@@ -59,6 +59,8 @@ module.exports = class SpotifyFetcher {
                 "[MMM-NPOS] [Node Helper] Get player Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            if (res.statusText === "No Content") return null;
             return res.body ? res.json() : null;
           })
           .catch((error) => {

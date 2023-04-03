@@ -50,6 +50,7 @@
 /* DYNAMIC BACKGROUND */
 .ONSP-Base .background { animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) }
 .ONSP-Base .background .backgroundBox { position: absolute; transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) }
+
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> FIXED SIZES CSS - CHANGE IF NEEDED < */
 .ONSP-Base .background .backgroundBoxAAA {
     top: 4px;
@@ -345,6 +346,9 @@
 }
 .ONSP-Base .useraffinity .user .profile .data .subtitle {
     font-size: 0.8em;
+}
+.ONSP-Base .externalhidden {
+    display: none;
 }
 
 /* AFFINITY */
