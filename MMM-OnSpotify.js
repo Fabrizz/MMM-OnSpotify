@@ -81,13 +81,15 @@ Module.register("MMM-OnSpotify", {
       ONSPOTIFY_GET: "ONSPOTIFY_GET",
       LIVELYRICS_NOTICE: "LIVELYRICS_NOTICE",
       ALL_MODULES_STARTED: "ALL_MODULES_STARTED",
+      ONSPOTIFY_SHOW: "ONSPOTIFY_SHOW",
+      ONSPOTIFY_HIDE: "ONSPOTIFY_HIDE",
     },
 
     // Allow config with or without
     isPlaying: 1,
     isEmpty: 2,
     isPlayingHidden: 1,
-    isEmptyHidden: 4,
+    isEmptyHidden: 3,
     onReconnecting: 4,
     onError: 8,
     mediaAnimations: false,
@@ -124,7 +126,7 @@ Module.register("MMM-OnSpotify", {
     this.firstSongOnLoad = true;
 
     ///////////////////////
-    this.version = "2.0.0";
+    this.version = "2.1.0";
     ///////////////////////
 
     this.displayUser =
@@ -295,27 +297,29 @@ Module.register("MMM-OnSpotify", {
         if (!payload.statusPlayerUpdating) this.playerData = payload;
         this.smartUpdate("PLAYER_DATA");
         if (payload.statusIsNewSong || this.firstSongOnLoad) {
-          this.sendNotification("NOW_PLAYING", {
-            playerIsEmpty: false,
-            name: payload.itemName,
-            image: this.getImage(
-              this.playerData.itemImages,
-              this.config.prefersLargeImageSize,
-            ),
-            uri: this.playerData.itemUri,
-            artist: payload.itemArtist,
-            artists: payload.itemArtists,
-            type: payload.playerMediaType,
-            device: payload.deviceName,
-            deviceType: payload.deviceType,
-          });
+          if (payload.itemName)
+            this.sendNotification("NOW_PLAYING", {
+              playerIsEmpty: false,
+              name: payload.itemName,
+              image: this.getImage(
+                this.playerData.itemImages,
+                this.config.prefersLargeImageSize,
+              ),
+              uri: this.playerData.itemUri,
+              artist: payload.itemArtist,
+              artists: payload.itemArtists,
+              type: payload.playerMediaType,
+              device: payload.deviceName,
+              deviceType: payload.deviceType,
+            });
           this.firstSongOnLoad = false;
         }
         if (payload.statusIsChangeToEmptyPlayer)
-          this.sendNotification("NOW_PLAYING", { playerEmpty: true });
+          this.sendNotification("NOW_PLAYING", { playerIsEmpty: true });
         if (payload.statusIsDeviceChange)
           this.sendNotification("DEVICE_CHANGE", {
             device: payload.deviceName,
+            type: payload.deviceType,
           });
         break;
       case "USER_DATA":
@@ -381,6 +385,12 @@ Module.register("MMM-OnSpotify", {
               this.loadVibrantPalette && this.config.advertisePlayerTheme,
             loadsSpotifyCode: this.config.theming.spotifyCodeExperimentalShow,
           });
+          break;
+        case "ONSPOTIFY_HIDE":
+          this.hide();
+          break;
+        case "ONSPOTIFY_SHOW":
+          this.show();
           break;
         case "LIVELYRICS_NOTICE":
           console.info(
@@ -486,7 +496,7 @@ Module.register("MMM-OnSpotify", {
       this.retries = this.retries > 25 ? this.retries : this.retries + 1;
       if (this.retries === 25) {
         console.error(
-          "%c· MMM-OnSpotify %c %c[WARN]%c " +
+          "%c· MMM-OnSpotify %c %c[ERRO]%c " +
             this.translate("CONNECTION_ERROR"),
           "background-color:#84CC16;color:black;border-radius:0.4em",
           "",
@@ -549,7 +559,8 @@ Module.register("MMM-OnSpotify", {
       this.builder.updateAffinityData(this.affinityData);
   },
 
-  getImage: (im, prefersLarge) => im[prefersLarge ? "large" : "medium"],
+  getImage: (im, prefersLarge) =>
+    im ? (prefersLarge ? im.large : im.medium) : null,
   logBadge: function () {
     console.log(
       ` ⠖ %c by Fabrizz %c ${this.name}`,
