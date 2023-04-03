@@ -725,7 +725,7 @@ class SpotifyDomBuilder {
       console.error(
         "%c· MMM-OnSpotify %c %c[WARN]%c " +
           this.translate("VIBRANT_NOT_LOADED"),
-        "background-color:#84CC16;color:black",
+        "background-color:#84CC16;color:black;border-radius:0.4em",
         "",
         "background-color:orange;color:black",
         "",
@@ -746,7 +746,7 @@ class SpotifyDomBuilder {
           console.error(
             "%c· MMM-OnSpotify %c %c[ERRO]",
             e,
-            "background-color:#84CC16;color:black",
+            "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
             "background-color:darkred;color:black",
           ),

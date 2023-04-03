@@ -273,7 +273,7 @@ Module.register("MMM-OnSpotify", {
       "%c· MMM-OnSpotify %c %c[INFO]%c " + this.translate("SUSPEND"),
       "background-color:#84CC16;color:black;border-radius:0.4em",
       "",
-      "background-color:darkcyan;color:black;border-radius:0.4em",
+      "background-color:darkcyan;color:black;",
       "",
     );
   },
@@ -282,7 +282,7 @@ Module.register("MMM-OnSpotify", {
       "%c· MMM-OnSpotify %c %c[INFO]%c " + this.translate("RESUME"),
       "background-color:#84CC16;color:black;border-radius:0.4em",
       "",
-      "background-color:darkcyan;color:black;border-radius:0.4em",
+      "background-color:darkcyan;color:black;",
       "",
     );
     this.moduleHidden = false;
@@ -333,7 +333,7 @@ Module.register("MMM-OnSpotify", {
               this.translate("PRODUCT_WARNING"),
             "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
-            "background-color:orange;color:black;border-radius:0.4em",
+            "background-color:orange;color:black;",
             "",
           );
         break;
@@ -350,7 +350,7 @@ Module.register("MMM-OnSpotify", {
               this.translate("CONNECTION_WARNING"),
             "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
-            "background-color:orange;color:black;border-radius:0.4em",
+            "background-color:orange;color:black;",
             "",
           );
         }
@@ -398,7 +398,7 @@ Module.register("MMM-OnSpotify", {
               this.translate("LIVELYRICS_NOTICE"),
             "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
-            "background-color:darkcyan;color:black;border-radius:0.4em",
+            "background-color:darkcyan;color:black;",
             "",
           );
           break;
@@ -409,7 +409,7 @@ Module.register("MMM-OnSpotify", {
                 this.translate("DEBUG_COLORS"),
               "background-color:#84CC16;color:black;border-radius:0.4em",
               "",
-              "background-color:darkcyan;color:black;border-radius:0.4em",
+              "background-color:darkcyan;color:black;",
               "",
             );
           if (this.config.theming.spotifyCodeExperimentalShow)
@@ -418,7 +418,7 @@ Module.register("MMM-OnSpotify", {
                 this.translate("SPOTIFYCODE_EXPERIMENTAL"),
               "background-color:#84CC16;color:black;border-radius:0.4em",
               "",
-              "background-color:orange;color:black;border-radius:0.4em",
+              "background-color:orange;color:black;",
               "",
             );
           this.sendNotification("LIVELYRICS_GET");
@@ -500,7 +500,7 @@ Module.register("MMM-OnSpotify", {
             this.translate("CONNECTION_ERROR"),
           "background-color:#84CC16;color:black;border-radius:0.4em",
           "",
-          "background-color:darkred;color:black;border-radius:0.4em",
+          "background-color:darkred;color:black;",
           "",
         );
         this.playerData = {
