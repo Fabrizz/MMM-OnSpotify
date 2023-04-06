@@ -126,7 +126,7 @@ Module.register("MMM-OnSpotify", {
     this.firstSongOnLoad = true;
 
     ///////////////////////
-    this.version = "2.1.0";
+    this.version = "2.2.0";
     ///////////////////////
 
     this.displayUser =
