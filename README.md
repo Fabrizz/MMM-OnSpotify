@@ -146,7 +146,7 @@ Here you can select different update intervals based on module state. If your wi
 | alwaysUseDefaultDeviceIcon | `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it |
 
 # Lyrics
-You can show lyrics in a realy stilysh way using [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics). See more in the repo.
+You can show lyrics in a realy nice way using [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics). See more in the repo.
 
 [<img alt="Livelyrics module" src=".github/content/banner-livelyrics.png" aling="left">](https://github.com/Fabrizz/MMM-LiveLyrics)
 

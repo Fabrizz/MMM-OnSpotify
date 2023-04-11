@@ -299,6 +299,10 @@ class SpotifyDomBuilder {
     progressbar.classList.add("progress");
     const progress = document.createElement("div");
     progress.id = "VSNO-TARGET-PROGRESS";
+    // As this has been changed to use a widht %, extracting
+    // attributtes and not parent width is better
+    progress.setAttribute("now", data.playerProgress);
+    progress.setAttribute("max", data.itemDuration);
     progress.style.width = `${this.getPercentage(
       data.playerProgress,
       data.itemDuration,
@@ -390,12 +394,14 @@ class SpotifyDomBuilder {
     )
       this.setGlobalColors(this.selectImage(data.itemImages), data);
 
-    document.getElementById(
-      "VSNO-TARGET-PROGRESS",
-    ).style.width = `${this.getPercentage(
+    const progress = document.getElementById("VSNO-TARGET-PROGRESS");
+    progress.style.width = `${this.getPercentage(
       data.playerProgress,
       data.itemDuration,
     )}%`;
+    progress.setAttribute("now", data.playerProgress);
+    progress.setAttribute("max", data.itemDuration);
+
     document.getElementById("VSNO-TARGET-TIME").innerText =
       this.getSanitizedTime(data.playerProgress, data.itemDuration);
 
