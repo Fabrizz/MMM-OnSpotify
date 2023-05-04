@@ -23,7 +23,6 @@ npm install
 ```
 
 ### Step 2: Create a Spotify App and authorize the module
-[You can migrate from MMM-NowPlayingOnSpotify and skip this step!](#migrating-from-mmm-nowplayinginspotify)
 
 Here we use the **Authentication Service** that guides you on each step of the process:
 
@@ -47,7 +46,7 @@ Once you finish with the configuration, you are all set with the basic configura
     module: "MMM-OnSpotify",
         position: "bottom_right",
         config: {
-            // Spotify authentication (Authentication Service / Migration from MMM-NowPlayingOnSpotify)
+            // Spotify authentication (Authentication Service)
             clientID: "key",
             clientSecret: "key",
             accessToken: "key",
@@ -234,20 +233,8 @@ Makes the module return a `NOW_PLAYING` notification, regardles of the state of 
 | [`MMM-DolarArgentina`](https://github.com/Fabrizz/MMM-DolarArgentina)<br /><br />This Magic Mirror² module allows you to view the current exchange rate for different USD/ARS types. | <img alt="MMM-DolarArgentina" width="400" src=".github/content/module-dolarargentina.png" aling="left"> |
 
 # Migrating from MMM-NowPlayingInSpotify
-After finishing the installation of the module, you can migrate your old credentials from **MMM-NowPlayingInSpotify**, the keys for the credentials are the same!, make sure to remove/disable MMM-NPOS, you can get rate limited by Spotify.
-```js
-{
-    module: "MMM-OnSpotify",
-        position: "bottom_right",
-        config: {
-            // Spotify credentials from MMM-NowPlayingOnSpotify
-            clientID: "clientID",
-            clientSecret: "clientSecret",
-            accessToken: "accessToken",
-            refreshToken: "refreshToken",
-        }
-}
-```
+### IMPORTANT
+You **cannot** migrate from NowPlayingInSpotify, as the scopes included in the NPOS auth do not enable searching for user data or viewing user generated data.
 
 # Other:
 - You can disable all the color related stuff and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `useColorInProgressBar`, `useColorInTitle`, `useColorInTitleBorder`, `showBlurBackground`, `useColorInUserData`, `spotifyCodeExperimentalUseColor`.<br /> <img alt="MMM-OnSpotify no theming" src=".github/content/image-modulebasic.png" width="200"> <br /> Of course you can still use the Spotify Color bar (White/Gray). This image is the base module. <br /> Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.
