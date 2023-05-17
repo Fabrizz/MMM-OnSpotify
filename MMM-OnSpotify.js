@@ -60,6 +60,7 @@ Module.register("MMM-OnSpotify", {
       // Round cover art and Spotify Code corners
       roundMediaCorners: true,
       roundProgressBar: true,
+      showVerticalPipe: true,
       useColorInProgressBar: true,
       useColorInTitle: true,
       // Get colors from the used profile image
@@ -107,6 +108,7 @@ Module.register("MMM-OnSpotify", {
     blurCorrectionInFrameSide: false,
     blurCorrectionInAllSides: false,
     alwaysUseDefaultDeviceIcon: false,
+    showVerticalPipe: true,
   },
 
   start: function () {
@@ -126,7 +128,7 @@ Module.register("MMM-OnSpotify", {
     this.firstSongOnLoad = true;
 
     ///////////////////////
-    this.version = "2.2.0";
+    this.version = "2.3.0";
     ///////////////////////
 
     this.displayUser =
@@ -249,7 +251,7 @@ Module.register("MMM-OnSpotify", {
       this.file("utils/SpotifyDomBuilder.js"),
       // Use a custom build of the "node-vibrant" library that fixes the webworker usage
       this.file("vendor/vibrant.worker.min.js"),
-      // MM2 loader cannot load .map files // this.file("vendor/vibrant.worker.min.js.map"),
+      // MM2 loader cannot load .map files - this.file("vendor/vibrant.worker.min.js.map"),
     ];
     // eslint-disable-next-line no-undef
     if (
@@ -620,6 +622,9 @@ Module.register("MMM-OnSpotify", {
       : null;
     typeof this.config.roundProgressBar === "boolean"
       ? (this.config.theming.roundProgressBar = this.config.roundProgressBar)
+      : null;
+    typeof this.config.showVerticalPipe === "boolean"
+      ? (this.config.theming.showVerticalPipe = this.config.showVerticalPipe)
       : null;
 
     typeof this.config.useColorInProgressBar === "boolean"

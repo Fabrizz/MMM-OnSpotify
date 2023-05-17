@@ -23,7 +23,8 @@ npm install
 ```
 
 ### Step 2: Create a Spotify App and authorize the module
-[You can migrate from MMM-NowPlayingOnSpotify and skip this step!](#migrating-from-mmm-nowplayinginspotify)
+
+> **Warning** You can not use MMM-NowPlayingOnSpotify (or other module) credentials, as the user scopes are not included.
 
 Here we use the **Authentication Service** that guides you on each step of the process:
 
@@ -45,54 +46,54 @@ Once you finish with the configuration, you are all set with the basic configura
  ```js
 {
     module: "MMM-OnSpotify",
-        position: "bottom_right",
-        config: {
-            // Spotify authentication (Authentication Service / Migration from MMM-NowPlayingOnSpotify)
-            clientID: "key",
-            clientSecret: "key",
-            accessToken: "key",
-            refreshToken: "key",
+    position: "bottom_right",
+    config: {
+        // Spotify authentication (Authentication Service)
+        clientID: "key",
+        clientSecret: "key",
+        accessToken: "key",
+        refreshToken: "key",
 
-            // General module options [SEE BELOW]
-            advertisePlayerTheme: true,
-            displayWhenEmpty: "both",
-            userAffinityUseTracks: false,
-            prefersLargeImageSize: false,
-            hideTrackLenghtAndAnimateProgress: false,
-            showDebugPalette: true,
-            userDataMaxAge: 14400,
-            userAffinityMaxAge: 36000,
+        // General module options [SEE BELOW]
+        advertisePlayerTheme: true,
+        displayWhenEmpty: "both",
+        userAffinityUseTracks: false,
+        prefersLargeImageSize: false,
+        hideTrackLenghtAndAnimateProgress: false,
+        showDebugPalette: true,
+        userDataMaxAge: 14400,
+        userAffinityMaxAge: 36000,
 
-            // Update intervals [SEE BELOW]
-            isPlaying: 1,
-            isEmpty: 2,
-            isPlayingHidden: 2,
-            isEmptyHidden: 4,
-            onReconnecting: 4,
-            onError: 8,
+        // Update intervals [SEE BELOW]
+        isPlaying: 1,
+        isEmpty: 2,
+        isPlayingHidden: 2,
+        isEmptyHidden: 4,
+        onReconnecting: 4,
+        onError: 8,
 
-            // Animations [SEE BELOW]
-            mediaAnimations: false,
-            fadeAnimations: false,
-            transitionAnimations: true,
+        // Animations [SEE BELOW]
+        mediaAnimations: false,
+        fadeAnimations: false,
+        transitionAnimations: true,
 
-            // Spotify Code (EXPERMIENTAL)
-            spotifyCodeExperimentalShow: true,
-            spotifyCodeExperimentalUseColor: true,
-            spotifyCodeExperimentalSeparateItem: true,
+        // Spotify Code (EXPERMIENTAL)
+        spotifyCodeExperimentalShow: true,
+        spotifyCodeExperimentalUseColor: true,
+        spotifyCodeExperimentalSeparateItem: true,
 
-            // Theming General
-            roundMediaCorners: true,
-            roundProgressBar: true,
-            useColorInProgressBar: true,
-            useColorInTitle: true,
-            useColorInUserData: true,
-            showBlurBackground: true,
-            blurCorrectionInFrameSide: true,
-            blurCorrectionInAllSides: true,
-            alwaysUseDefaultDeviceIcon: true,
-            },
-        }
+        // Theming General
+        roundMediaCorners: true,
+        roundProgressBar: true,
+        showVerticalPipe: true, 
+        useColorInProgressBar: true,
+        useColorInTitle: true,
+        useColorInUserData: true,
+        showBlurBackground: true,
+        blurCorrectionInFrameSide: true,
+        blurCorrectionInAllSides: true,
+        alwaysUseDefaultDeviceIcon: true,
+    },
 },
 ```
 
@@ -137,6 +138,7 @@ Here you can select different update intervals based on module state. If your wi
 | spotifyCodeExperimentalSeparateItem | `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor` <br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-codeseparation.png" aling="left" height="100">  |
 | roundMediaCorners | `true` | If you want rounded corners in the cover art. Affects also the Spotify Code Bar |
 | roundProgressBar | `true` | If you want a rounded progress bar |
+| showVerticalPipe | `true` | Shows or hides the vertical bar (or pipe) in the module header. |
 | useColorInProgressBar | `true` | Use color in the progress bar. If `showBlurBackground` is enabled, the background behaviour differs |
 | useColorInTitle | `true` | Use color in the title, artist and bar |
 | useColorInUserData | `true` | If only the user bar is shown (`displayWhenEmpty: "user"`) |
@@ -234,20 +236,8 @@ Makes the module return a `NOW_PLAYING` notification, regardles of the state of 
 | [`MMM-DolarArgentina`](https://github.com/Fabrizz/MMM-DolarArgentina)<br /><br />This Magic Mirror² module allows you to view the current exchange rate for different USD/ARS types. | <img alt="MMM-DolarArgentina" width="400" src=".github/content/module-dolarargentina.png" aling="left"> |
 
 # Migrating from MMM-NowPlayingInSpotify
-After finishing the installation of the module, you can migrate your old credentials from **MMM-NowPlayingInSpotify**, the keys for the credentials are the same!, make sure to remove/disable MMM-NPOS, you can get rate limited by Spotify.
-```js
-{
-    module: "MMM-OnSpotify",
-        position: "bottom_right",
-        config: {
-            // Spotify credentials from MMM-NowPlayingOnSpotify
-            clientID: "clientID",
-            clientSecret: "clientSecret",
-            accessToken: "accessToken",
-            refreshToken: "refreshToken",
-        }
-}
-```
+### IMPORTANT
+You **cannot** migrate from NowPlayingInSpotify, as the scopes included in the NPOS auth do not enable searching for user data or viewing user generated data.
 
 # Other:
 - You can disable all the color related stuff and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `useColorInProgressBar`, `useColorInTitle`, `useColorInTitleBorder`, `showBlurBackground`, `useColorInUserData`, `spotifyCodeExperimentalUseColor`.<br /> <img alt="MMM-OnSpotify no theming" src=".github/content/image-modulebasic.png" width="200"> <br /> Of course you can still use the Spotify Color bar (White/Gray). This image is the base module. <br /> Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.
