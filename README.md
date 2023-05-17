@@ -139,6 +139,7 @@ Here you can select different update intervals based on module state. If your wi
 | spotifyCodeExperimentalSeparateItem | `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor` <br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-codeseparation.png" aling="left" height="100">  |
 | roundMediaCorners | `true` | If you want rounded corners in the cover art. Affects also the Spotify Code Bar |
 | roundProgressBar | `true` | If you want a rounded progress bar |
+| showVerticalPipe | `true` | Shows or hides the vertical bar (or pipe) in the module header. |
 | useColorInProgressBar | `true` | Use color in the progress bar. If `showBlurBackground` is enabled, the background behaviour differs |
 | useColorInTitle | `true` | Use color in the title, artist and bar |
 | useColorInUserData | `true` | If only the user bar is shown (`displayWhenEmpty: "user"`) |
