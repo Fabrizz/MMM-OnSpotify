@@ -24,6 +24,8 @@ npm install
 
 ### Step 2: Create a Spotify App and authorize the module
 
+> **Warning** You can not use MMM-NowPlayingOnSpotify (or other module) credentials, as the user scopes are not included.
+
 Here we use the **Authentication Service** that guides you on each step of the process:
 
 <img alt="MMM-OnSpotify banner" align="right" height="90" width="160" src=".github/content/banner-authservice.svg">
@@ -44,55 +46,56 @@ Once you finish with the configuration, you are all set with the basic configura
  ```js
 {
     module: "MMM-OnSpotify",
-        position: "bottom_right",
-        config: {
-            // Spotify authentication (Authentication Service)
-            clientID: "key",
-            clientSecret: "key",
-            accessToken: "key",
-            refreshToken: "key",
+    position: "bottom_right",
+    config: {
+        // Spotify authentication (Authentication Service)
+        clientID: "key",
+        clientSecret: "key",
+        accessToken: "key",
+        refreshToken: "key",
 
-            // General module options [SEE BELOW]
-            advertisePlayerTheme: true,
-            displayWhenEmpty: "both",
-            userAffinityUseTracks: false,
-            prefersLargeImageSize: false,
-            hideTrackLenghtAndAnimateProgress: false,
-            showDebugPalette: true,
-            userDataMaxAge: 14400,
-            userAffinityMaxAge: 36000,
+        // General module options [SEE BELOW]
+        advertisePlayerTheme: true,
+        displayWhenEmpty: "both",
+        userAffinityUseTracks: false,
+        prefersLargeImageSize: false,
+        hideTrackLenghtAndAnimateProgress: false,
+        showDebugPalette: true,
+        userDataMaxAge: 14400,
+        userAffinityMaxAge: 36000,
 
-            // Update intervals [SEE BELOW]
-            isPlaying: 1,
-            isEmpty: 2,
-            isPlayingHidden: 2,
-            isEmptyHidden: 4,
-            onReconnecting: 4,
-            onError: 8,
+        // Update intervals [SEE BELOW]
+        isPlaying: 1,
+        isEmpty: 2,
+        isPlayingHidden: 2,
+        isEmptyHidden: 4,
+        onReconnecting: 4,
+        onError: 8,
 
-            // Animations [SEE BELOW]
-            mediaAnimations: false,
-            fadeAnimations: false,
-            transitionAnimations: true,
+        // Animations [SEE BELOW]
+        mediaAnimations: false,
+        fadeAnimations: false,
+        transitionAnimations: true,
 
-            // Spotify Code (EXPERMIENTAL)
-            spotifyCodeExperimentalShow: true,
-            spotifyCodeExperimentalUseColor: true,
-            spotifyCodeExperimentalSeparateItem: true,
+        // Spotify Code (EXPERMIENTAL)
+        spotifyCodeExperimentalShow: true,
+        spotifyCodeExperimentalUseColor: true,
+        spotifyCodeExperimentalSeparateItem: true,
 
-            // Theming General
-            roundMediaCorners: true,
-            roundProgressBar: true,
-            useColorInProgressBar: true,
-            useColorInTitle: true,
-            useColorInUserData: true,
-            showBlurBackground: true,
-            blurCorrectionInFrameSide: true,
-            blurCorrectionInAllSides: true,
-            alwaysUseDefaultDeviceIcon: true,
-            },
-        }
-},
+        // Theming General
+        roundMediaCorners: true,
+        roundProgressBar: true,
+        showVerticalPipe: true, 
+        useColorInProgressBar: true,
+        useColorInTitle: true,
+        useColorInUserData: true,
+        showBlurBackground: true,
+        blurCorrectionInFrameSide: true,
+        blurCorrectionInAllSides: true,
+        alwaysUseDefaultDeviceIcon: true,
+    },
+}
+,
 ```
 
 ### General module options: 

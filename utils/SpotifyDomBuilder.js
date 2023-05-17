@@ -281,7 +281,7 @@ class SpotifyDomBuilder {
 
     names.appendChild(title);
     names.appendChild(subtitle);
-    header.appendChild(visual);
+    this.config.theming.showVerticalPipe ? header.appendChild(visual) : null;
     header.appendChild(names);
 
     /* Cover */
