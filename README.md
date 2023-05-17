@@ -94,8 +94,7 @@ Once you finish with the configuration, you are all set with the basic configura
         blurCorrectionInAllSides: true,
         alwaysUseDefaultDeviceIcon: true,
     },
-}
-,
+},
 ```
 
 ### General module options: 
