@@ -1,6 +1,6 @@
 {
     "name": "mmm-onspotify",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "description": "A MagicMirror2 module to display Spotify Connect data. Highly customizable. Allows DynamicTheming.",
     "repository": {
         "type": "git",
