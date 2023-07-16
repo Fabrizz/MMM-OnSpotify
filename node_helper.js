@@ -205,8 +205,11 @@ module.exports = NodeHelper.create({
                 name: item.name,
                 image: (item.type === "track" ? item.album.images : item.images)
                   // Here we use medium sized images || Maybe later even the icon ones, as its just a background
-                  .filter(
-                    (image) => image.width >= 240 && image.width <= 360,
+                  .filter((image) =>
+                    image.width >= 240 && image.width <= 360
+                      ? image.width >= 240 && image.width <= 360
+                      : // Fallback to any of the available image sizes.
+                        image,
                   )[0].url,
               }),
             );
