@@ -128,7 +128,7 @@ Module.register("MMM-OnSpotify", {
     this.firstSongOnLoad = true;
 
     ///////////////////////
-    this.version = "2.3.0";
+    this.version = "2.3.1";
     ///////////////////////
 
     this.displayUser =
@@ -206,11 +206,7 @@ Module.register("MMM-OnSpotify", {
           // --[ONSP]-[VIBRANT]-[VIBRANT-SCHEME-COLOR]
           providerPrefix: "ONSP",
           providerScheme: "VIBRANT",
-          // Lock on [MMM-OnSpotify] until [provider] decides (player is empty)
           set: "lock",
-          until: "provider",
-          // Override other providers as its an ongoing event
-          priority: true,
         });
         this.globalThemeSelected = true;
       }

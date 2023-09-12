@@ -478,7 +478,7 @@ class SpotifyDomBuilder {
         );
         this.root.style.setProperty(
           "--ONSP-INTERNAL-AFFINITY-TEXT",
-          "'Connecting to Spotify...'", // translator("STABLISHING_CONNECTION"),
+          this.translate("STABLISHING_CONNECTION"),
         );
       });
     }

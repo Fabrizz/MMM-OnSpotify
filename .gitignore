@@ -40,4 +40,6 @@ package-lock.json
 
 # Example responeses
 ex.json
+test.json
+api.json
 

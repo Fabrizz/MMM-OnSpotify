@@ -10,4 +10,4 @@ updates:
     schedule:
       interval: "monthly"
     ignore:
-      - dependency-name: "node_fetch"
+      - dependency-name: "node_fetch" # Allows older node versions to work correctly
