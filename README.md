@@ -162,11 +162,7 @@ You can show lyrics in a realy nice way using [MMM-LiveLyrics](https://github.co
     provider: "MMM-OnSpotify",
     providerPrefix: "ONSP",
     providerScheme: "VIBRANT",
-    // CSS VARS: --(ONSP)-(VIBRANT)-(VIBRANT-SCHEME-COLOR]
-    set: "lock",
-    until: "provider",
-    priority: true,
-    // Lock on [MMM-OnSpotify] until [provider] decides (player is empty)
+    set: "lock", // CSS token: --ONSP-VIBRANT-[COLOR LABEL]
 }
 
 { /* Player empty */
@@ -200,7 +196,7 @@ Everytime the player changes states or the song changes, the module sends a noti
 ```
 
 ### `DEVICE_CHANGE` -->
-Everytime the device that is set as the output changes, this notification is fired.
+Everytime the Spotify Connect target changes, this notification is fired.
 
 ```js
 {
@@ -209,11 +205,11 @@ Everytime the device that is set as the output changes, this notification is fir
 }
 ```
 ### `ONSPOTIFY_NOTICE` -->
-Everytime the device that is set as the output changes, this notification is fired.
+This notification signals other modules that OnSpotify is available.
 
 ```js
 {
-    version: "2.1.0" // Version string
+    version: "2.3.1" // Version string
     directColorData: true // Loads Vibrant
     loadsSpotifyCode: true // if it shows Spotify Codes
 }

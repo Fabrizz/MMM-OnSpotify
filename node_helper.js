@@ -222,7 +222,7 @@ module.exports = NodeHelper.create({
           break;
       }
     } catch (error) {
-      console.log(error);
+      console.error("\x1b[41m%s\x1b[0m", "[MMM-NPOS] [Node Helper] >> ", error);
     }
   },
 
