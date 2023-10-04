@@ -7,6 +7,14 @@
 
 /* eslint-disable no-undef */
 
+// Try to directly attach the plugin to Moment
+// There are other modules that attach the plugin to Moment
+try {
+  momentDurationFormatSetup(moment);
+} catch (error) {
+  null;
+}
+
 class SpotifyDomBuilder {
   constructor(pathPrefix, config, other, translator) {
     this.pathPrefix = pathPrefix;
@@ -21,6 +29,23 @@ class SpotifyDomBuilder {
     this.constrainBottom = null;
     this.affinityGridElements = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
     this.backgroundColors = ["AAA", "BBB", "CCC", "DDD", "EEE", "FFF"];
+    this.currentAnimations = { playerTitle: false, playerTarget: false };
+    try {
+      this.animationDefaultDelayFromCSS = Number(
+        getComputedStyle(this.root)
+          .getPropertyValue("--ONSP-INTERNAL-PLAYER-TEXT-TIME")
+          .replace("ms", ""),
+      );
+    } catch (error) {
+      console.warn(
+        "%c· MMM-OnSpotify %c %c[WARN]%c " + this.translate("USER_CSS_ERROR"),
+        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "",
+        "background-color:orange;color:black",
+        "",
+      );
+      this.animationDefaultDelayFromCSS = 600;
+    }
 
     // Corrects the background blur and sizes so it does not reach the
     // body borders (actual display size borders). This makes it look good
@@ -78,8 +103,19 @@ class SpotifyDomBuilder {
         "--ONSP-INTERNAL-PLAYER-COLOR-PROGRESS-BG",
         "rgb(0,0,0,0.48)",
       );
+
     if (this.config.theming.fadeAnimations)
       this.root.style.setProperty("--ONSP-INTERNAL-LOWPOWER-FADEIN", "fadein");
+    if (this.config.theming.textAnimations) {
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-LOWPOWER-TEXT",
+        "animation-slide",
+      );
+      this.root.style.setProperty(
+        "--ONSP-INTERNAL-LOWPOWER-TARGET",
+        "animation-text",
+      );
+    }
     if (this.config.theming.mediaAnimations)
       this.root.style.setProperty(
         "--ONSP-INTERNAL-LOWPOWER-COVER",
@@ -406,23 +442,43 @@ class SpotifyDomBuilder {
       this.getSanitizedTime(data.playerProgress, data.itemDuration);
 
     if (data.statusIsDeviceChange) {
-      document.getElementById("VSNO-TARGET-DEVICE").innerText = data.deviceName;
-      document
-        .getElementById("VSNO-TARGET-PATH")
-        .setAttribute(
-          "d",
-          this.config.theming.alwaysUseDefaultDeviceIcon
-            ? this.svgs.default
-            : this.svgs[data.deviceType]
-            ? this.svgs[data.deviceType]
-            : this.svgs.default,
-        );
+      const playerDevice = document.getElementById("VSNO-TARGET-DEVICE");
+      const playerDeviceIcon = document.getElementById("VSNO-TARGET-PATH");
+
+      playerDevice.innerText = data.deviceName;
+      playerDeviceIcon.setAttribute(
+        "d",
+        this.config.theming.alwaysUseDefaultDeviceIcon
+          ? this.svgs.default
+          : this.svgs[data.deviceType]
+          ? this.svgs[data.deviceType]
+          : this.svgs.default,
+      );
+
+      // Handle text animation clearing
+      if (this.config.theming.textAnimations) {
+        playerDevice.classList.add("animation-text");
+        playerDeviceIcon.classList.add("animation-text");
+        if (this.currentAnimations.playerTarget)
+          clearTimeout(this.currentAnimations.playerTarget);
+        this.currentAnimations.playerTarget = setTimeout(() => {
+          document
+            .getElementById("VSNO-TARGET-DEVICE")
+            .classList.remove("animation-text");
+          document
+            .getElementById("VSNO-TARGET-PATH")
+            .classList.remove("animation-text");
+        }, this.animationDefaultDelayFromCSS);
+      }
     }
 
     if (data.statusIsNewSong || data.itemUri !== this.lastItemURI) {
-      document.getElementById("VSNO-TARGET-TITLE").innerText = data.itemName;
-      document.getElementById("VSNO-TARGET-SUBTITLE").innerText =
-        data.itemArtists ? data.itemArtists : data.itemShowName;
+      const playerTitle = document.getElementById("VSNO-TARGET-TITLE");
+      const playerSubtitle = document.getElementById("VSNO-TARGET-SUBTITLE");
+      playerTitle.innerText = data.itemName;
+      playerSubtitle.innerText = data.itemArtists
+        ? data.itemArtists
+        : data.itemShowName;
       // document.getElementById("VSNO-TARGET-COVER").src = this.selectImage(data.itemImages); <-- transitions do not affect src
 
       // LATER: Add a couple of miliseconds of artificial delay so Vibrant can prefetch the image and
@@ -430,6 +486,23 @@ class SpotifyDomBuilder {
 
       // LATER: Update the new image using two elements on top of each other. different vars for each,
       // keep track of current one and create below/delete on top...
+
+      // Handle text animation clearing
+      if (this.config.theming.textAnimations) {
+        playerTitle.classList.add("animation-slide");
+        playerSubtitle.classList.add("animation-slide");
+
+        if (this.currentAnimations.playerTitle)
+          clearTimeout(this.currentAnimations.playerTitle);
+        this.currentAnimations.playerTitle = setTimeout(() => {
+          document
+            .getElementById("VSNO-TARGET-TITLE")
+            .classList.remove("animation-slide");
+          document
+            .getElementById("VSNO-TARGET-SUBTITLE")
+            .classList.remove("animation-slide");
+        }, this.animationDefaultDelayFromCSS);
+      }
 
       document.getElementById(
         "VSNO-TARGET-COVER",
@@ -454,7 +527,11 @@ class SpotifyDomBuilder {
     grid.classList.add("grid");
     this.affinityGridElements.forEach((element) => {
       const img = document.createElement("span");
-      img.classList.add("gridElement", "gridElement-" + element);
+      img.classList.add(
+        "gridElement",
+        "gridElement-" + element,
+        this.config.theming.fadeAnimations ? "animation-shine" : "no-animation",
+      );
       img.style.backgroundImage = `var(--ONSP-INTERNAL-AFFINITY-IMAGES-${element})`;
       grid.appendChild(img);
     });
@@ -469,6 +546,12 @@ class SpotifyDomBuilder {
           `url('${element.image}')`,
         );
       });
+      if (this.config.theming.fadeAnimations)
+        Array.from(document.getElementsByClassName("gridElement")).forEach(
+          (element) => {
+            element.classList.remove("animation-shine");
+          },
+        );
       this.root.style.setProperty("--ONSP-INTERNAL-AFFINITY-TEXT", ``);
     } else {
       this.affinityGridElements.forEach((element) => {

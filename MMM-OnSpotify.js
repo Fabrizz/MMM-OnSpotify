@@ -49,6 +49,7 @@ Module.register("MMM-OnSpotify", {
       mediaAnimations: false,
       fadeAnimations: false,
       transitionAnimations: true,
+      textAnimations: true,
       // Show the Spotify Code Bar [EXPERIMENTAL]
       spotifyCodeExperimentalShow: true,
       // Themes the code and bars using the cover art
@@ -95,7 +96,8 @@ Module.register("MMM-OnSpotify", {
     onError: 8,
     mediaAnimations: false,
     fadeAnimations: false,
-    transitionAnimations: true,
+    textAnimations: true,
+    transitionAnimations: false,
     spotifyCodeExperimentalShow: true,
     spotifyCodeExperimentalUseColor: true,
     spotifyCodeExperimentalSeparateItem: true,
@@ -128,7 +130,7 @@ Module.register("MMM-OnSpotify", {
     this.firstSongOnLoad = true;
 
     ///////////////////////
-    this.version = "2.3.1";
+    this.version = "2.3.2";
     ///////////////////////
 
     this.displayUser =
@@ -241,6 +243,8 @@ Module.register("MMM-OnSpotify", {
   },
   getScripts: function () {
     let files = [
+      // MM2 loader handles loading the same library, MM2 itself loads moment
+      this.file("node_modules/moment/min/moment.min.js"),
       this.file(
         "node_modules/moment-duration-format/lib/moment-duration-format.js",
       ),
@@ -598,6 +602,9 @@ Module.register("MMM-OnSpotify", {
     typeof this.config.transitionAnimations === "boolean"
       ? (this.config.theming.transitionAnimations =
           this.config.transitionAnimations)
+      : null;
+    typeof this.config.textAnimations === "boolean"
+      ? (this.config.theming.textAnimations = this.config.textAnimations)
       : null;
 
     typeof this.config.spotifyCodeExperimentalShow === "boolean"

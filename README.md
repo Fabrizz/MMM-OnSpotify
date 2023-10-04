@@ -75,6 +75,7 @@ Once you finish with the configuration, you are all set with the basic configura
         // Animations [SEE BELOW]
         mediaAnimations: false,
         fadeAnimations: false,
+        textAnimations: true,
         transitionAnimations: true,
 
         // Spotify Code (EXPERMIENTAL)
@@ -124,18 +125,19 @@ Here you can select different update intervals based on module state. If your wi
 > Also see: [Disabling **all** color theming](#other)
 
 > **Warning**
-> - If you are using a **RPI4** I recommend to keep the default theming settings (or less)
-> - If you are using the server separatelly or using a **higher power device**, you can turn on all the animations, the fade and transitions look really good!
+> - If you are using a **RPI4** I recommend to keep the default theming settings. (enabling text animations should not be a problem)
 > - If you are using a **RPI3** or below, disabling all the animations or diasabling the blurred background, as the effect is the most demanding. 
+> - If you using a **higher power device** (**RPI5**), you can turn on all the animations, the fade, text and transition animations look really good! 
 
 | Key | Default | Description |
 | :-- | :-: | :-- |
-| mediaAnimations | `false` | Disable cover fade, useful if you are using a system that is not GPU powerful (RPIs).  |
-| fadeAnimations | `false` | Disable fade in/out animations, useful if you are using a system that is not GPU powerful (RPIs). |
-| transitionAnimations| `true` | Disable color transitions, useful if you are using a system that is not GPU powerful (RPIs). |
 | spotifyCodeExperimentalShow | `true` | Shows the Spotify Bar Code for the current song/podcast/etc. This is an experimental feature, as the API is not documented <br /><br /><img alt="Spotify code" src=".github/content/image-spotifycode.png" aling="left" height="40"> |
 | spotifyCodeExperimentalUseColor | `true` | As shown on the image above, color the spotify code bar using cover art colors |
 | spotifyCodeExperimentalSeparateItem | `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor` <br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-codeseparation.png" aling="left" height="100">  |
+| mediaAnimations | `false` | Disable cover fade, useful if you are using a system that is not GPU powerful (RPIs).  |
+| fadeAnimations | `false` | Disable fade in/out animations, useful if you are using a system that is not GPU powerful (RPIs). |
+| transitionAnimations | `true` | Disable color transitions, useful if you are using a system that is not GPU powerful (RPIs). |
+| textAnimations | `true` | Disable text transitions, useful if you are using a system that is not GPU powerful (RPIs). |
 | roundMediaCorners | `true` | If you want rounded corners in the cover art. Affects also the Spotify Code Bar |
 | roundProgressBar | `true` | If you want a rounded progress bar |
 | showVerticalPipe | `true` | Shows or hides the vertical bar (or pipe) in the module header. |
