@@ -49,7 +49,7 @@ Module.register("MMM-OnSpotify", {
       mediaAnimations: false,
       fadeAnimations: false,
       transitionAnimations: true,
-      textAnimations: false,
+      textAnimations: true,
       // Show the Spotify Code Bar [EXPERIMENTAL]
       spotifyCodeExperimentalShow: true,
       // Themes the code and bars using the cover art
@@ -96,7 +96,7 @@ Module.register("MMM-OnSpotify", {
     onError: 8,
     mediaAnimations: false,
     fadeAnimations: false,
-    textAnimations: false,
+    textAnimations: true,
     transitionAnimations: false,
     spotifyCodeExperimentalShow: true,
     spotifyCodeExperimentalUseColor: true,
