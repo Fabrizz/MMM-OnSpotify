@@ -50,6 +50,7 @@ Module.register("MMM-OnSpotify", {
       fadeAnimations: false,
       transitionAnimations: true,
       textAnimations: true,
+      spotifyVectorAnimations: false,
       // Show the Spotify Code Bar [EXPERIMENTAL]
       spotifyCodeExperimentalShow: true,
       // Themes the code and bars using the cover art
@@ -97,6 +98,7 @@ Module.register("MMM-OnSpotify", {
     mediaAnimations: false,
     fadeAnimations: false,
     textAnimations: true,
+    spotifyVectorAnimations: false,
     transitionAnimations: false,
     spotifyCodeExperimentalShow: true,
     spotifyCodeExperimentalUseColor: true,
@@ -605,6 +607,10 @@ Module.register("MMM-OnSpotify", {
       : null;
     typeof this.config.textAnimations === "boolean"
       ? (this.config.theming.textAnimations = this.config.textAnimations)
+      : null;
+    typeof this.config.spotifyVectorAnimations === "boolean"
+      ? (this.config.theming.spotifyVectorAnimations =
+          this.config.spotifyVectorAnimations)
       : null;
 
     typeof this.config.spotifyCodeExperimentalShow === "boolean"

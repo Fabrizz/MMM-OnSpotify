@@ -4,6 +4,7 @@
     "CONNECTION_WARNING": "There was a connection error. Slowing the polling of api.spotify/...",
     "CONNECTION_ERROR": "Connection errors persists. Slowing the polling more. Hiding old player data.",
     "VIBRANT_NOT_LOADED": "(vendor) Vibrant did not load correctly.",
+    "USER_CSS_ERROR": "There was an error extracting CSS information. (The duration of animations/transitions should be in \"ms\")",
     "STABLISHING_CONNECTION": "Connecting to Spotify...",
     "NOTHING_PLAYING": "Nothing is playing",
     "SPOTIFY_HEADER": "MMM-OnSpotify",

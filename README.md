@@ -38,6 +38,8 @@ npm run auth
 Once you finish with the configuration, you are all set with the basic configuration. You can see all the theming/options below.
 > When the service is running you can access it from your Raspberry Pi going to `http://localhost:8100/`. You can also access it remotely using `http://<IP>:8100/`. Note that using the Raspberry Pi is recommended, as its easier to copy the configuration snippet.
 
+The module includes the following translations: **ES, EN**. You can add translations changing `translations/yourLanguaje.json`. You can also make a pull request so its included for everyone by default!
+
 # Options
 #### This is an example entry of `config.js` (all options). Scroll down to see the description/default value for each value.
 > **Note**
@@ -77,6 +79,7 @@ Once you finish with the configuration, you are all set with the basic configura
         fadeAnimations: false,
         textAnimations: true,
         transitionAnimations: true,
+        spotifyCodeAnimations: false,
 
         // Spotify Code (EXPERMIENTAL)
         spotifyCodeExperimentalShow: true,
@@ -134,10 +137,11 @@ Here you can select different update intervals based on module state. If your wi
 | spotifyCodeExperimentalShow | `true` | Shows the Spotify Bar Code for the current song/podcast/etc. This is an experimental feature, as the API is not documented <br /><br /><img alt="Spotify code" src=".github/content/image-spotifycode.png" aling="left" height="40"> |
 | spotifyCodeExperimentalUseColor | `true` | As shown on the image above, color the spotify code bar using cover art colors |
 | spotifyCodeExperimentalSeparateItem | `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor` <br /><br /><img alt="Spotify code bar separation" src=".github/content/banner-codeseparation.png" aling="left" height="100">  |
-| mediaAnimations | `false` | Disable cover fade, useful if you are using a system that is not GPU powerful (RPIs).  |
-| fadeAnimations | `false` | Disable fade in/out animations, useful if you are using a system that is not GPU powerful (RPIs). |
-| transitionAnimations | `true` | Disable color transitions, useful if you are using a system that is not GPU powerful (RPIs). |
-| textAnimations | `true` | Disable text transitions, useful if you are using a system that is not GPU powerful (RPIs). |
+| mediaAnimations | `false` | Disable cover fade, useful if you are using a system that does not have a powerful GPU (RPI).  |
+| fadeAnimations | `false` | Disable fade in/out animations, useful if you are using a system that does not have a powerful GPU (RPI). |
+| transitionAnimations | `true` | Disable color transitions, useful if you are using a system that does not have a powerful GPU (RPI). |
+| textAnimations | `true` | Disable text transitions, useful if you are using a system that does not have a powerful GPU (RPI). |
+| spotifyCodeAnimations | `false` | Disable animating the code bars, useful if you are using a system that does not have a powerful GPU (RPI). |
 | roundMediaCorners | `true` | If you want rounded corners in the cover art. Affects also the Spotify Code Bar |
 | roundProgressBar | `true` | If you want a rounded progress bar |
 | showVerticalPipe | `true` | Shows or hides the vertical bar (or pipe) in the module header. |
