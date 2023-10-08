@@ -30,6 +30,17 @@ class SpotifyDomBuilder {
     this.affinityGridElements = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
     this.backgroundColors = ["AAA", "BBB", "CCC", "DDD", "EEE", "FFF"];
     this.currentAnimations = { playerTitle: false, playerTarget: false };
+    this.ONSPcolorVerboseMatch = {
+      text: "--ONSP-VIBRANT-DOMINANTBRIGHT",
+      background: "--ONSP-VIBRANT-DOMINANTDARK",
+      palette_vibrant: "--ONSP-VIBRANT-VIBRANT",
+      palette_vibrantlight: "--ONSP-VIBRANT-LIGHTVIBRANT",
+      palette_vibrantdark: "--ONSP-VIBRANT-DARKVIBRANT",
+      palette_muted: "--ONSP-VIBRANT-MUTED",
+      palette_mutedlight: "--ONSP-VIBRANT-LIGHTMUTED",
+      palette_muteddark: "--ONSP-VIBRANT-DARKMUTED",
+      brand_spotify: "--ONSP-BRANDCOLOR-SPOTIFY",
+    };
     try {
       this.animationDefaultDelayFromCSS = Number(
         getComputedStyle(this.root)
@@ -38,7 +49,7 @@ class SpotifyDomBuilder {
       );
     } catch (error) {
       console.warn(
-        "%c· MMM-OnSpotify %c %c[WARN]%c " + this.translate("USER_CSS_ERROR"),
+        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate("USER_CSS_ERROR")}`,
         "background-color:#84CC16;color:black;border-radius:0.4em",
         "",
         "background-color:orange;color:black",
@@ -282,10 +293,16 @@ class SpotifyDomBuilder {
     const code = document.createComment(
       ` MMM-OnSpotify by Fabrizz | https://github.com/Fabrizz/MMM-OnSpotify `,
     );
+    const override = document.createComment(
+      ` [!] OnSpotify is using user defined CSS overrides [!] `,
+    );
     wrapper.classList.add("ONSP-Base", "ONSP-Custom");
     wrapper.id = "ONSP-WRAPPER";
     wrapper.appendChild(version);
     wrapper.appendChild(code);
+    typeof this.config.theming.experimentalCSSOverridesForMM2 === "object"
+      ? wrapper.appendChild(override)
+      : null;
 
     return wrapper;
   }
@@ -423,7 +440,7 @@ class SpotifyDomBuilder {
     );
     this.backgroundColors.forEach((c) => {
       let a = document.createElement("div");
-      a.classList.add("backgroundBox", "backgroundBox" + c);
+      a.classList.add("backgroundBox", `backgroundBox${c}`);
       bg.appendChild(a);
     });
     return bg;
@@ -561,7 +578,7 @@ class SpotifyDomBuilder {
       const img = document.createElement("span");
       img.classList.add(
         "gridElement",
-        "gridElement-" + element,
+        `gridElement-${element}`,
         this.config.theming.fadeAnimations ? "animation-shine" : "no-animation",
       );
       img.style.backgroundImage = `var(--ONSP-INTERNAL-AFFINITY-IMAGES-${element})`;
@@ -574,7 +591,7 @@ class SpotifyDomBuilder {
       data.forEach((element) => {
         const name = this.affinityGridElements[data.indexOf(element)];
         this.root.style.setProperty(
-          "--ONSP-INTERNAL-AFFINITY-IMAGES-" + name,
+          `--ONSP-INTERNAL-AFFINITY-IMAGES-${name}`,
           `url('${element.image}')`,
         );
       });
@@ -712,7 +729,7 @@ class SpotifyDomBuilder {
     for (const element in palette) {
       let rgb = palette[element].rgb;
       this.root.style.setProperty(
-        "--ONSP-VIBRANT-" + element.toLocaleUpperCase(),
+        `--ONSP-VIBRANT-${element.toLocaleUpperCase()}`,
         `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
       );
     }
@@ -801,11 +818,9 @@ class SpotifyDomBuilder {
           this.config.theming.spotifyCodeExperimentalUseColor ? "SPCBG" : ""
         }%c ${
           this.config.theming.spotifyCodeExperimentalUseColor
-            ? "VHSP: " +
-              Math.round(
+            ? `VHSP: ${Math.round(
                 (Brightness_By_Color(palette.Vibrant.hex) / 255) * 100,
-              ) +
-              "%"
+              )}%`
             : ""
         } | ${ch}${data.itemName} | ${url}`,
         `padding:0.7em;border-radius:3em;background-color:${palette.Vibrant.hex}`,
@@ -828,7 +843,7 @@ class SpotifyDomBuilder {
           palette
             ? this.root.style.setProperty(
                 "--ONSP-INTERNAL-USER-BG-COLOR",
-                palette.Vibrant.hex + "20",
+                `${palette.Vibrant.hex}20`,
               )
             : this.root.style.setProperty(
                 "--ONSP-INTERNAL-USER-BG-COLOR",
@@ -844,8 +859,9 @@ class SpotifyDomBuilder {
     this.lastUrlProcessed = url;
     if (!("Vibrant" in window)) {
       console.error(
-        "%c· MMM-OnSpotify %c %c[WARN]%c " +
-          this.translate("VIBRANT_NOT_LOADED"),
+        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+          "VIBRANT_NOT_LOADED",
+        )}`,
         "background-color:#84CC16;color:black;border-radius:0.4em",
         "",
         "background-color:orange;color:black",
@@ -874,29 +890,55 @@ class SpotifyDomBuilder {
         )
     );
   }
-  /* Utils */
-  selectImage(im) {
-    return im[this.config.prefersLargeImageSize ? "large" : "medium"];
+
+  /* MM2 VARIABLE OVERRIDES */
+  setMM2colors(userConfig) {
+    try {
+      userConfig.forEach((entry) => {
+        let originalVariable = this.ONSPcolorVerboseMatch.hasOwnProperty(
+          entry[1],
+        )
+          ? this.ONSPcolorVerboseMatch[entry[1]]
+          : entry[1]; /* Allow users to just override whatever they want when ONSP is playing */
+        this.root.style.setProperty(entry[0], `var(${originalVariable})`);
+      });
+    } catch (e) {
+      console.error(
+        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+          "CSSOVERRIDE_MALFORMED",
+        )}`,
+        e,
+        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "",
+        "background-color:orange;color:black",
+        "",
+      );
+    }
   }
-  getPercentage(n, t) {
-    return ((n / t) * 100).toFixed(3);
+  removeMM2colors() {
+    try {
+      userConfig.forEach((entry) => {
+        if (entry[2]) {
+          this.root.style.setProperty(entry[0], entry[2]);
+        } else {
+          this.root.style.removeProperty(entry[0], originalVariable);
+        }
+      });
+    } catch (e) {
+      console.error(
+        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+          "CSSOVERRIDE_MALFORMED",
+        )}`,
+        e,
+        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "",
+        "background-color:orange;color:black",
+        "",
+      );
+    }
   }
-  getSanitizedTime(n, t) {
-    const lg = moment.duration(n).format();
-    const fl = moment.duration(t).format();
-    let str = this.config.hideTrackLenghtAndAnimateProgress
-      ? fl
-      : lg + " / " + fl;
-    if (
-      str.includes("second") &&
-      !this.config.hideTrackLenghtAndAnimateProgress
-    )
-      str = "0:00 / " + fl;
-    return str;
-  }
-  getSpotifyScannablesUrl(uri) {
-    return `https://scannables.scdn.co/uri/plain/svg/ffffff/black/260/${uri}`;
-  }
+
+  /* SPOTIFY SCANNABLES SET, GET & ANIMATION */
   async fetchSpotifyCode(uri) {
     const response = await fetch(
       this.getSpotifyScannablesUrl(
@@ -939,7 +981,6 @@ class SpotifyDomBuilder {
 
     return attributesList;
   }
-
   async setSpotifyCode(uri, id, animate) {
     const code = await this.fetchSpotifyCode(uri);
     if (this.config.theming.spotifyVectorAnimations) {
@@ -1023,12 +1064,36 @@ class SpotifyDomBuilder {
           : `<svg style="" `,
       );
   }
+
+  /* Utils */
+  selectImage(im) {
+    return im[this.config.prefersLargeImageSize ? "large" : "medium"];
+  }
+  getPercentage(n, t) {
+    return ((n / t) * 100).toFixed(3);
+  }
+  getSanitizedTime(n, t) {
+    const lg = moment.duration(n).format();
+    const fl = moment.duration(t).format();
+    let str = this.config.hideTrackLenghtAndAnimateProgress
+      ? fl
+      : `${lg} / ${fl}`;
+    if (
+      str.includes("second") &&
+      !this.config.hideTrackLenghtAndAnimateProgress
+    )
+      str = `0:00 / ${fl}`;
+    return str;
+  }
+  getSpotifyScannablesUrl(uri) {
+    return `https://scannables.scdn.co/uri/plain/svg/ffffff/black/260/${uri}`;
+  }
 }
 
 // By Trizkit & Mike 'Pomax' Kamermans | https://stackoverflow.com/a/13542669
-// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq
-const RGB_Linear_Shade = (p, c) => {var i = parseInt, r = Math.round, [a, b, c, d] = c.split(","), P = p < 0, t = P ? 0 : 255 * p, P = P ? 1 + p : 1 - p; return "rgb" + (d ? "a(" : "(") + r(i(a[3] == "a" ? a.slice(5) : a.slice(4)) * P + t) + "," + r(i(b) * P + t) + "," + r(i(c) * P + t) + (d ? "," + d : ")");};
+// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq, no-param-reassign
+const RGB_Linear_Shade = (p, c) => {var i = parseInt, r = Math.round, [a, b, c, d] = c.split(","), P = p < 0, t = P ? 0 : 255 * p, P = P ? 1 + p : 1 - p; return `rgb${  d ? "a(" : "("  }${r(i(a[3] == "a" ? a.slice(5) : a.slice(4)) * P + t)  },${  r(i(b) * P + t)  },${  r(i(c) * P + t)  }${d ? `,${  d}` : ")"}`;};
 
 // By Max Chuhryaev & danilocastro-toast | https://gist.github.com/w3core/e3d9b5b6d69a3ba8671cc84714cca8a4?permalink_comment_id=3125287#gistcomment-3125287
-// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq
-const Brightness_By_Color = (color) => {var r, g, b, hsp; if (color.match(/^rgb/)) {color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/); r = color[1]; g = color[2]; b = color[3];} else {/* HEX > RGB http://gist.github.com/983661 */color = +("0x" + color.slice(1).replace(color.length < 5 && /./g, '$&$&')); r = color >> 16; g = color >> 8 & 255; b = color & 255;} /* HSP equation http://alienryderflex.com/hsp.html */hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)); return hsp; };
+// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq, no-param-reassign
+const Brightness_By_Color = (color) => {var r, g, b, hsp; if (color.match(/^rgb/)) {color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/); r = color[1]; g = color[2]; b = color[3];} else {/* HEX > RGB http://gist.github.com/983661 */color = +(`0x${  color.slice(1).replace(color.length < 5 && /./g, '$&$&')}`); r = color >> 16; g = color >> 8 & 255; b = color & 255;} /* HSP equation http://alienryderflex.com/hsp.html */hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)); return hsp; };

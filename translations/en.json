@@ -12,5 +12,7 @@
     "SPOTIFYCODE_EXPERIMENTAL": "<spotifyCodeExperimentalShow> is enabled. The api to generate codes is not public, and can end without prior notice. (https://github.com/Fabrizz/MMM-OnSpotify#other)",
     "RESUME": "Resuming module",
     "SUSPEND": "Suspending module",
-    "LIVELYRICS_NOTICE": "MMM-LiveLyrics found! - Check MMM-LL logs to see more. (https://github.com/Fabrizz/MMM-LiveLyrics)"
+    "LIVELYRICS_NOTICE": "MMM-LiveLyrics found! - Check MMM-LL logs to see more. (https://github.com/Fabrizz/MMM-LiveLyrics)",
+    "CSSOVERRIDE_NOTICE": "You are overriding default MM2 CSS variables. Check for spelling errors and contrast issues",
+    "CSSOVERRIDE_MALFORMED": "There was an error parsing your \"experimentalCSSOverridesForMM2\" array. Remove your custom config entry or check it for errors"
 }

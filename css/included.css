@@ -16,6 +16,8 @@
     --ONSP-INTERNAL-COLOR-BRIGHT: #FFF;
     --ONSP-INTERNAL-COLOR-MUTED: #b9b9b9;
 
+    --ONSP-BRANDCOLOR-SPOTIFY: #1DB954;
+
     /* User defaults */
     --ONSP-INTERNAL-USER-IMAGE-BASE: 2.8em;
     --ONSP-INTERNAL-USER-IMAGE-EMPTY: 1em;
@@ -431,7 +433,7 @@
 .ONSP-Base .user .profile .data .title .badge {
     display: inline-flex;
     font-size: 0.6em;
-    color: #1DB954; /* Spotify Green */
+    color: var(--ONSP-BRANDCOLOR-SPOTIFY); /* Spotify Green */
 }
 .ONSP-Base .user .profile .data .title .badge:before {
     content: var(--ONSP-INTERNAL-USER-PRODUCT);

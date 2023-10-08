@@ -11,7 +11,7 @@ const SpotifyFetcher = require("./utils/SpotifyFetcher");
 
 module.exports = NodeHelper.create({
   start: function () {
-    console.log("\x1b[46m%s\x1b[0m", "[Node Helper] Init >> " + this.name);
+    console.log("\x1b[46m%s\x1b[0m", `[Node Helper] Init >> ${this.name}`);
     this.fetcher = undefined;
     // Helps keping track of when the player becomes empty
     this.lastPlayerStatus = false;
