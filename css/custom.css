@@ -4,7 +4,7 @@
  */
 
 /* [ONSP TEMPLATE] */ /* Add transitions to .dimmed elements and icons */
-:root { --ONSP-OVERRIDES-ICONS-COLOR: var(--color-text) !important; --ONSP-OVERRIDES-TRANSITIONS-COLOR: none }
+:root { --ONSP-OVERRIDES-ICONS-COLOR: var(--color-text); --ONSP-OVERRIDES-TRANSITIONS-COLOR: none }
 .module-header, .dimmed, .fas, .fa-fw, .wi, .weathericon { transition: var(--ONSP-OVERRIDES-TRANSITIONS-COLOR) 1s !important; } 
 .fas, .fa-fw, .wi, .weathericon { color: var(--ONSP-OVERRIDES-ICONS-COLOR) !important; }
 /* [ONSP TEMPLATE] */
