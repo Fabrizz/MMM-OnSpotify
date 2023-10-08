@@ -132,11 +132,16 @@ class SpotifyDomBuilder {
         "--ONSP-INTERNAL-LOWPOWER-COVER",
         "var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) cubic-bezier(0.25, 0.15, 0.20, 1)",
       );
-    if (this.config.theming.transitionAnimations)
+    if (this.config.theming.transitionAnimations) {
       this.root.style.setProperty(
         "--ONSP-INTERNAL-LOWPOWER-TRANSITIONS",
         "all",
       );
+      if (
+        typeof this.config.theming.experimentalCSSOverridesForMM2 === "object"
+      )
+        this.root.style.setProperty("--EXTERNAL-TRANSITIONS-COLOR", "all");
+    }
 
     this.svgs = {
       default:
@@ -907,21 +912,21 @@ class SpotifyDomBuilder {
         `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
           "CSSOVERRIDE_MALFORMED",
         )}`,
-        e,
         "background-color:#84CC16;color:black;border-radius:0.4em",
         "",
         "background-color:orange;color:black",
         "",
+        e,
       );
     }
   }
-  removeMM2colors() {
+  removeMM2colors(userConfig) {
     try {
       userConfig.forEach((entry) => {
         if (entry[2]) {
           this.root.style.setProperty(entry[0], entry[2]);
         } else {
-          this.root.style.removeProperty(entry[0], originalVariable);
+          this.root.style.removeProperty(entry[0]);
         }
       });
     } catch (e) {
@@ -929,11 +934,11 @@ class SpotifyDomBuilder {
         `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
           "CSSOVERRIDE_MALFORMED",
         )}`,
-        e,
         "background-color:#84CC16;color:black;border-radius:0.4em",
         "",
         "background-color:orange;color:black",
         "",
+        e,
       );
     }
   }

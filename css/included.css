@@ -1,3 +1,12 @@
+/*
+ * MMM-OnSpotify | MIT license
+ * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ */
+
+ /* Use this CSS stylesheet as a template for what you want to override */
+ /* Use the same units as described here. Do not change this file */
+ /* custom.css also handles MM2 overrides (if enabled) */
+
 :root {
     /* Colors extracted from the cover art */
     --ONSP-VIBRANT-VIBRANT: #b9b9b9;
@@ -15,7 +24,6 @@
     /* Base colors */
     --ONSP-INTERNAL-COLOR-BRIGHT: #FFF;
     --ONSP-INTERNAL-COLOR-MUTED: #b9b9b9;
-
     --ONSP-BRANDCOLOR-SPOTIFY: #1DB954;
 
     /* User defaults */
