@@ -222,9 +222,22 @@
     margin-top: -0.16em;
     margin-bottom: -0.1em;
 }
-.ONSP-Base .player .cover {
-    display: block;
+.ONSP-Base .player .swappable {
     height: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
+    display: block;
+    position: relative;
+}
+.ONSP-Base .player .swappable .cover-hidden {
+    opacity: 0;
+}
+.ONSP-Base .player .swappable .cover-swapping {
+    /* While the image is loading this class is applied to the last image */
+}
+.ONSP-Base .player .swappable .cover {
+    position: absolute;
+    display: block;
+    height: 100%;
+    width: 100%;
     background-size: cover;
     transition: var(--ONSP-INTERNAL-LOWPOWER-COVER);
     border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
