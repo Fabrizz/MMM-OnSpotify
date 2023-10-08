@@ -252,7 +252,7 @@
     transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME), width var(--ONSP-INTERNAL-PLAYER-UPDATE-TIME) var(--ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION) 0s;
 }
 .ONSP-Base .player .footer .target {
-    color: #FFF;
+    color: #e8e8e8;
     display: flex;
     align-items: center;
     flex-flow: row nowrap;
@@ -418,7 +418,7 @@
 .ONSP-Base .user .profile .data .title .badge {
     display: inline-flex;
     font-size: 0.6em;
-    color: #1DB954;
+    color: #1DB954; /* Spotify Green */
 }
 .ONSP-Base .user .profile .data .title .badge:before {
     content: var(--ONSP-INTERNAL-USER-PRODUCT);

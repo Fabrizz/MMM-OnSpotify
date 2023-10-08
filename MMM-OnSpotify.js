@@ -150,7 +150,6 @@ Module.register("MMM-OnSpotify", {
       this.config.advertisePlayerTheme ||
       this.config.theming.useColorInProgressBar ||
       this.config.theming.useColorInTitle ||
-      this.config.theming.useColorInTitleBorder ||
       this.config.theming.showBlurBackground ||
       this.config.theming.useColorInUserData ||
       (this.config.theming.spotifyCodeExperimentalShow &&
