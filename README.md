@@ -1,9 +1,164 @@
-[<img alt="Fabrizz logo" src=".github/content/logo-fabrizz-white.svg" align="right">](https://fabriz.co/)
-<br>
-<br>
-
 ### <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-module.png" width="100%">
 
 ### <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
-**MMM-OnSpotify** for MagicMirror² is a highly configurable module designed to display your current Spotify listening activity on your MagicMirror display (including podcasts, and when available, audiobooks). This module offers extensive customization options, allowing you to tailor the display to your preferences. It extracs the color data from the cover art and creates custom palettes to theme itself (and other modules!). 
+**MMM-OnSpotify** for MagicMirror² is a highly configurable module designed to display your current Spotify listening activity on your MagicMirror display (including podcasts, and when available, audiobooks). This module offers extensive customization options, allowing you to tailor the display to your preferences. It extracs the color data from the cover art and creates custom palettes to theme itself (and other modules!).
+
+The module includes an Authentication Service that guide you through the configuration of an Spotify App. MMM-OnSpotify does not use any third party service, its an independent app, just the Spotify Web API.
+
+> [!IMPORTANT]  
+> All the data stays in your mirror. If you have multiple mirrors, the Authentication Service guides you on creating a new Spotify App per mirror.
+
+# Installation
+### Step 1: Clone the module and install dependencies
+```bash
+cd ~/MagicMirror/modules
+git clone https://github.com/Fabrizz/MMM-OnSpotify.git
+cd MMM-OnSpotify
+npm install
+```
+
+### Step 2: Create a Spotify App and authorize the app
+
+> [!WARNING]
+> You can not use MMM-NowPlayingOnSpotify (or other module) credentials, as the API scopes are different.
+
+To help you creating the Spotify App, we start the **Authentication Service**, that guides you on each step of the process:
+
+<img alt="MMM-OnSpotify banner" align="right" height="90" width="160" src=".github/content/readme/banner-authservice.svg">
+
+```bash
+npm run auth
+> [Authorization Service] Open http://localhost:8100/ to configure your mirror. 
+```
+Once you finish, you are all set with the basic configuration. Scroll down to see all the different theming options for the module.
+
+> When the Authorization Service is running, you can access it from your Raspberry Pi going to `http://localhost:8100/`. You can also access it remotely using `http://<IP>:8100/`. Note that using the device where you have Magic Mirror is recommended, as you are going to copy and paste the generated config entry.
+
+# Module Configuration
+#### The configuration section is divided in groups, scroll down or click what to see below:
+### [[**NEW**] Theming 3rd Party Modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Lyrics**](#mmm-livelyrics) | [Dynamic Theme](#dynamic-theme)
+
+**Extended full configuration object:**
+```js
+{
+    module: "MMM-OnSpotify",
+    position: "bottom_right",
+    config: {
+        // Spotify authentication (Authentication Service)
+        clientID: "key",
+        clientSecret: "key",
+        accessToken: "key",
+        refreshToken: "key",
+        // General module options [SEE BELOW]
+        advertisePlayerTheme: true,
+        displayWhenEmpty: "both",
+        userAffinityUseTracks: false,
+        prefersLargeImageSize: false,
+        hideTrackLenghtAndAnimateProgress: false,
+        showDebugPalette: true,
+        userDataMaxAge: 14400,
+        userAffinityMaxAge: 36000,
+        // Update intervals [SEE BELOW]
+        isPlaying: 1,
+        isEmpty: 2,
+        isPlayingHidden: 2,
+        isEmptyHidden: 4,
+        onReconnecting: 4,
+        onError: 8,
+        // Animations [SEE BELOW]
+        mediaAnimations: false,
+        fadeAnimations: false,
+        textAnimations: true,
+        transitionAnimations: true,
+        // Spotify Code (EXPERMIENTAL)
+        spotifyCodeExperimentalShow: true,
+        spotifyCodeExperimentalUseColor: true,
+        spotifyCodeExperimentalSeparateItem: true,
+        // Theming General
+        roundMediaCorners: true,
+        roundProgressBar: true,
+        showVerticalPipe: true, 
+        useColorInProgressBar: true,
+        useColorInTitle: true,
+        useColorInUserData: true,
+        showBlurBackground: true,
+        blurCorrectionInFrameSide: true,
+        blurCorrectionInAllSides: true,
+        alwaysUseDefaultDeviceIcon: true,
+        experimentalCSSOverridesForMM2: false, // [SEE BELOW]
+    },
+},
+```
+
+### Theming 3rd Party Modules: 
+### <img alt="MMM-OnSpotify 3rd Party theming" src=".github/content/readme/ONSP-BANNER-3rd_party_theming.png" width="100%">
+
+### General options: 
+| Key | Description |
+| :-- | :-- |
+| advertisePlayerTheme <br> `true` | If the module should send notifications when the theme status changes. |
+| displayWhenEmpty <br> `"both"` | What to display when the player is empty. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing<br /><br /><img alt="Display when empty " src=".github/content/readme/banner-onidle.png"> |
+| userAffinityUseTracks <br> `false` | If you have selected to show your affinity data on idle, you can choose between showing tracks or albums. |
+| prefersLargeImageSize <br> `false` | If you prefer to use higher resolution images. Not recommended for normal use. |
+| hideTrackLenghtAndAnimateProgress <br> `false` | Depending on your internet conection or your selected polling rate, you may want to hide the actual seconds and animate the progress bar. |
+| showDebugPalette <br> `false` | Shows the Vibrant output as a palette in the web console. <br /><br /> <img alt="Debug palette" src=".github/content/readme/image-debugpalette.png" width="80%"> |
+| userDataMaxAge <br> `14400` | (Seconds) The time in seconds of user data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot |
+| userAffinityMaxAge <br> `36000` | (Seconds) The time in seconds of affinity data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot  |
+
+### Polling Intervals:
+| Key | Description |
+| :-- | :-- |
+| isPlaying <br> `1` | Default interval when something is playing in Spotify. |
+| isEmpty <br> `2` | Interval when the player is idle. | 
+| isPlayingHidden <br> `2` | Interval when the module is hidden from another module and there is something playing in Spotify. |
+| isEmptyHidden <br> `3` | Interval when the module is hidden and the player is idle. |
+| onReconnecting <br> `4` | Interval when there is an error fetching from the Spotify API. |
+| onError <br> `8` | After trying to reconnect for a long time, the module enters an error state where the polling is rate is longer than "onReconnecting". |
+
+### Theming:
+> See also: [Disabling **all** color based theming](#other)
+
+> [!WARNING]
+> - If you are using a **RPI4** I recommend to keep the default theming settings. (enabling some animations should not be a problem)
+> - If you are using a **RPI3** or below, I recommend turning off the animations and the blurred background, as its GPU intensive.
+> - If you using a **higher power device** (**RPI5**), you can turn on all the animations, the fade, text and transition animations look really good! 
+
+| Key |  Description |
+| :-- | :-- |
+| spotifyCodeExperimentalShow <br> `true` | Shows the Spotify Code (SpotifyScannable) for the current Song/Podcast/Audiobook. This is an experimental feature, as the API is not documented. <br /><br /><img alt="Spotify code" src=".github/content/readme/image-spotifycode.png" aling="left" height="40"> |
+| spotifyCodeExperimentalUseColor <br> `true` | As shown on the image above, color the Spotify Code bar using cover art colors. |
+| spotifyCodeExperimentalSeparateItem <br> `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor`. <br /><br /><img alt="Spotify code bar separation" src=".github/content/readme/banner-codeseparation.png" aling="left" height="100">  |
+| mediaAnimations <br> `false` | Disable cover fade, useful if you are using a system that does not have a lot of GPU power (RPIs).  |
+| fadeAnimations <br> `false` | Disable fade in/out animations, useful if you are using a system that does not have a lot of GPU power (RPIs). |
+| transitionAnimations <br> `true` | Disable color transitions, useful if you are using a system that does not have a lot of GPU power (RPIs). It also affects other modules if you are using `experimentalCSSOverridesForMM2` default CSS config. |
+| textAnimations <br> `true` | Disable text transitions, useful if you are using a system that does not have a lot of GPU power (RPIs). |
+| roundMediaCorners <br> `true` | If cover art (and Spotify Code) should have rounded corners. |
+| roundProgressBar <br> `true` | If you want a rounded progress bar. |
+| showVerticalPipe <br> `true` | Shows or hides the vertical bar (or pipe) in the module header. |
+| useColorInProgressBar <br> `true` | Use color in the progress bar. If `showBlurBackground` is enabled, the background behaviour differs to balance it. |
+| useColorInTitle <br> `true` | Use color in the title, artist and bar. |
+| useColorInUserData <br> `true` | Only when `displayWhenEmpty: "user"` is selected. |
+| showBlurBackground <br> `true` | Renders the background for the module (Heavy GPU use). |
+| blurCorrectionInFrameSide <br> `false` | Fixes the color blur in the frame side of the module, making it look like there is no gap between the actual border and the display. View ilustration below.<br /><br /><img alt="Blur separation" src=".github/content/readme/banner-blurcorrection.png" aling="left"> |
+| blurCorrectionInAllSides <br> `false` | Same as `blurCorrectionInFrameSide`, but applies the correction on all of the borders for a more subtle effect. |
+| alwaysUseDefaultDeviceIcon <br> `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it. |
+| experimentalCSSOverridesForMM2 <br> `false` | An array containing CSS overrides, OnSpotify manages the status depending on what is displayed on the screen and lets you customize other modules. [See above](#theming-3rd-party-modules) |
+
+### Dynamic Theme
+> [!WARNING]  
+> Using Dynamic Theming notifications is **deprecated**, use [CSS variables and overrides](#theming-3rd-party-modules).
+
+The module sends the following notifications on status change:
+```js
+/* Playing     */ { provider: "MMM-OnSpotify" providerPrefix: "ONSP" providerScheme: "VIBRANT", set: "lock" }
+/* Player idle */ { provider: "MMM-OnSpotify", set: "unlock" }
+```
+You can disable this behaviour using `advertisePlayerTheme: false`.
+
+### MMM-LiveLyrics
+View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics). This module uses web scrapping to get the Lyrics from Genius. Not recommended for basic usage.
+### <img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="70%">
+
+
+[<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriz.co/)
