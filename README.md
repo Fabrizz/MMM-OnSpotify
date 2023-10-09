@@ -94,6 +94,20 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 ## Theming 3rd Party Modules: 
 <img alt="MMM-OnSpotify 3rd Party theming" src=".github/content/readme/ONSP-BANNER-3rd_party_theming.png" width="100%">
 
+```js
+/* Keys */
+text background palette_vibrant palette_vibrantlight palette_vibrantdark palette_muted palette_mutedlight palette_muteddark brand_spotify
+```
+```js
+/* Example */
+experimentalCSSOverridesForMM2: [
+	["--color-text-dimmed", "palette_vibrantlight"],
+	["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"], /* View custom.css */
+],
+```
+> **NOTE**
+> You can use other variables that are not from OnSpotify, just replace `palette_vibrantlight` with whatever variable you like, it gets wrapped on a `var(x)` function automatically.
+
 ### General options: 
 | Key | Description |
 | :-- | :-- |
@@ -164,11 +178,22 @@ View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-
 ## Notification API
 | key | Description |
 | :-- | :-- |
-| `THEME_PREFERENCE` | **DEPRECATED**, from [Dynamic Theme](#dynamic-theme). |
-| `NOW_PLAYING` | When the player state changes, the module sends a notification so other modules can, for example, [show lyrics](#lyrics). |
-| `DEVICE_CHANGE` | Everytime the Spotify Connect target changes, this notification is fired. |
-| `ONSPOTIFY_NOTICE` | This notification signals other modules that OnSpotify is available. |
-| `ONSPOTIFY_GET` | Returns a **ONSPOTIFY_NOTICE** |
-| `GET_PLAYING` | Return a **NOW_PLAYING** notification, regardles of the state of the player. (Used by [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics)) |
+| `THEME_PREFERENCE` ↑ | **DEPRECATED**, from [Dynamic Theme](#dynamic-theme). |
+| `NOW_PLAYING` ↑ | When the player state changes, the module sends a notification so other modules can, for example, [show lyrics](#lyrics). |
+| `DEVICE_CHANGE` ↑ | Everytime the Spotify Connect target changes, this notification is fired. |
+| `ONSPOTIFY_NOTICE` ↑ | This notification signals other modules that OnSpotify is available. |
+| `ONSPOTIFY_GET` ↓ | Returns a **ONSPOTIFY_NOTICE** |
+| `GET_PLAYING` ↓ | Return a **NOW_PLAYING** notification, regardles of the state of the player. (Used by [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics)) |
 
+# Migrating from MMM-NowPlayingOnSpotify
+You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS auth do not enable searching for user data or viewing user generated data.
+
+# Other:
+- You can disable all the color related theming and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `useColorInProgressBar`, `useColorInTitle`, `useColorInTitleBorder`, `showBlurBackground`, `useColorInUserData`, `spotifyCodeExperimentalUseColor`, `experimentalCSSOverridesForMM2`. Of course you can still use the Spotify Code (White/Gray). Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.
+
+- The API for Spotify Codes is not public, as its part of the Spotify CDN (_scannables.scdn.co_). The API could change without notice. Many libraries rely on it and using it does not go againts the ToS.
+
+- Contributions wanted! Add features or your languaje using `translations/yourLanguaje.json`.
+
+With <3 by Fabrizio | [fabriz.co](https://fabriz.co/) | Star this repository! 
 [<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriz.co/)
