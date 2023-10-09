@@ -2,16 +2,16 @@
 
 <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
-
-https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/5d78672e-8feb-45de-92f4-ed44f0771432
-
-
 **MMM-OnSpotify** for MagicMirror² is a highly configurable module designed to display your current Spotify listening activity on your MagicMirror display (including podcasts, and when available, audiobooks). This module offers extensive customization options, allowing you to tailor the display to your preferences. It extracs the color data from the cover art and creates custom palettes to theme itself (and other modules!).
 
 The module includes an Authentication Service that guide you through the configuration of an Spotify App. MMM-OnSpotify does not use any third party service, its an independent app, just the Spotify Web API.
 
 > **IMPORTANT**  
 > All the data stays in your mirror. If you have multiple mirrors, the Authentication Service guides you on creating a new Spotify App per mirror.
+
+
+https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/5d78672e-8feb-45de-92f4-ed44f0771432
+
 
 # Installation
 ### Step 1: Clone the module and install dependencies
