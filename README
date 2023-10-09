@@ -1,6 +1,6 @@
-### <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-module.png" width="100%">
+<img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-module.png" width="100%">
 
-### <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
+<img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
 **MMM-OnSpotify** for MagicMirror² is a highly configurable module designed to display your current Spotify listening activity on your MagicMirror display (including podcasts, and when available, audiobooks). This module offers extensive customization options, allowing you to tailor the display to your preferences. It extracs the color data from the cover art and creates custom palettes to theme itself (and other modules!).
 
@@ -91,8 +91,8 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 },
 ```
 
-### Theming 3rd Party Modules: 
-### <img alt="MMM-OnSpotify 3rd Party theming" src=".github/content/readme/ONSP-BANNER-3rd_party_theming.png" width="100%">
+## Theming 3rd Party Modules: 
+<img alt="MMM-OnSpotify 3rd Party theming" src=".github/content/readme/ONSP-BANNER-3rd_party_theming.png" width="100%">
 
 ### General options: 
 | Key | Description |
@@ -158,7 +158,7 @@ You can disable this behaviour using `advertisePlayerTheme: false`.
 
 ### MMM-LiveLyrics
 View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics). This module uses web scrapping to get the Lyrics from Genius. Not recommended for basic usage.
-### <img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="70%">
+<img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="70%">
 
 
 [<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriz.co/)
