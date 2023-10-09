@@ -6,7 +6,7 @@
 
 The module includes an Authentication Service that guide you through the configuration of an Spotify App. MMM-OnSpotify does not use any third party service, its an independent app, just the Spotify Web API.
 
-> [!IMPORTANT]  
+> **IMPORTANT**  
 > All the data stays in your mirror. If you have multiple mirrors, the Authentication Service guides you on creating a new Spotify App per mirror.
 
 # Installation
@@ -20,7 +20,7 @@ npm install
 
 ### Step 2: Create a Spotify App and authorize the app
 
-> [!WARNING]
+> **WARNING**
 > You can not use MMM-NowPlayingOnSpotify (or other module) credentials, as the API scopes are different.
 
 To help you creating the Spotify App, we start the **Authentication Service**, that guides you on each step of the process:
@@ -119,7 +119,7 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 ### Theming:
 > See also: [Disabling **all** color based theming](#other)
 
-> [!WARNING]
+> **WARNING**
 > - If you are using a **RPI4** I recommend to keep the default theming settings. (enabling some animations should not be a problem)
 > - If you are using a **RPI3** or below, I recommend turning off the animations and the blurred background, as its GPU intensive.
 > - If you using a **higher power device** (**RPI5**), you can turn on all the animations, the fade, text and transition animations look really good! 
@@ -145,8 +145,8 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 | alwaysUseDefaultDeviceIcon <br> `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it. |
 | experimentalCSSOverridesForMM2 <br> `false` | An array containing CSS overrides, OnSpotify manages the status depending on what is displayed on the screen and lets you customize other modules. [See above](#theming-3rd-party-modules) |
 
-### Dynamic Theme
-> [!WARNING]  
+## Dynamic Theme
+> **WARNING**
 > Using Dynamic Theming notifications is **deprecated**, use [CSS variables and overrides](#theming-3rd-party-modules).
 
 The module sends the following notifications on status change:
@@ -156,9 +156,19 @@ The module sends the following notifications on status change:
 ```
 You can disable this behaviour using `advertisePlayerTheme: false`.
 
-### MMM-LiveLyrics
+## MMM-LiveLyrics
 View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics). This module uses web scrapping to get the Lyrics from Genius. Not recommended for basic usage.
+
 <img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="70%">
 
+## Notification API
+| key | Description |
+| :-- | :-- |
+| `THEME_PREFERENCE` | **DEPRECATED**, from [Dynamic Theme](#dynamic-theme). |
+| `NOW_PLAYING` | When the player state changes, the module sends a notification so other modules can, for example, [show lyrics](#lyrics). |
+| `DEVICE_CHANGE` | Everytime the Spotify Connect target changes, this notification is fired. |
+| `ONSPOTIFY_NOTICE` | This notification signals other modules that OnSpotify is available. |
+| `ONSPOTIFY_GET` | Returns a **ONSPOTIFY_NOTICE** |
+| `GET_PLAYING` | Return a **NOW_PLAYING** notification, regardles of the state of the player. (Used by [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics)) |
 
 [<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriz.co/)
