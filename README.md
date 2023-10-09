@@ -178,12 +178,12 @@ View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-
 ## Notification API
 | key | Description |
 | :-- | :-- |
-| `THEME_PREFERENCE ↑` | **DEPRECATED**, from [Dynamic Theme](#dynamic-theme). |
-| `NOW_PLAYING ↑` | When the player state changes, the module sends a notification so other modules can, for example, [show lyrics](#lyrics). |
-| `DEVICE_CHANGE ↑` | Everytime the Spotify Connect target changes, this notification is fired. |
-| `ONSPOTIFY_NOTICE ↑` | This notification signals other modules that OnSpotify is available. |
-| `ONSPOTIFY_GET ↓` | Returns a **ONSPOTIFY_NOTICE** |
-| `GET_PLAYING ↓` | Return a **NOW_PLAYING** notification, regardles of the state of the player. (Used by [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics)) |
+| `THEME_PREFERENCE` | ↑ **DEPRECATED**, from [Dynamic Theme](#dynamic-theme). |
+| `NOW_PLAYING` | ↑ When the player state changes, the module sends a notification so other modules can, for example, [show lyrics](#lyrics). |
+| `DEVICE_CHANGE` | ↑ Everytime the Spotify Connect target changes, this notification is fired. |
+| `ONSPOTIFY_NOTICE` | ↑ This notification signals other modules that OnSpotify is available. |
+| `ONSPOTIFY_GET` | ↓ Returns a **ONSPOTIFY_NOTICE** |
+| `GET_PLAYING` | ↓ Return a **NOW_PLAYING** notification, regardles of the state of the player. (Used by [MMM-LiveLyrics](https://github.com/Fabrizz/MMM-LiveLyrics)) |
 
 # Migrating from MMM-NowPlayingOnSpotify
 You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS auth do not enable searching for user data or viewing user generated data.
