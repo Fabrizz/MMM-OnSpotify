@@ -202,12 +202,12 @@ You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS 
         clientSecret: "key",
         accessToken: "key",
         refreshToken: "key",
-
-		mediaAnimations: true,
-		fadeAnimations: true,
-		textAnimations: true,
-		transitionAnimations: true,
-		spotifyVectorAnimations: true,
+	
+	mediaAnimations: true,
+	fadeAnimations: true,
+	textAnimations: true,
+	transitionAnimations: true,
+	spotifyVectorAnimations: true,
         experimentalCSSOverridesForMM2: [
 			["--color-text-dimmed", "palette_vibrantlight"],
 			["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"],
