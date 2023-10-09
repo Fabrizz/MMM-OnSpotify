@@ -2,6 +2,9 @@
 
 <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
+<img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
+
+
 **MMM-OnSpotify** for MagicMirror² is a highly configurable module designed to display your current Spotify listening activity on your MagicMirror display (including podcasts, and when available, audiobooks). This module offers extensive customization options, allowing you to tailor the display to your preferences. It extracs the color data from the cover art and creates custom palettes to theme itself (and other modules!).
 
 The module includes an Authentication Service that guide you through the configuration of an Spotify App. MMM-OnSpotify does not use any third party service, its an independent app, just the Spotify Web API.
@@ -165,7 +168,7 @@ experimentalCSSOverridesForMM2: [
 
 The module sends the following notifications on status change:
 ```js
-/* Playing     */ { provider: "MMM-OnSpotify" providerPrefix: "ONSP" providerScheme: "VIBRANT", set: "lock" }
+/* Playing     */ { provider: "MMM-OnSpotify", providerPrefix: "ONSP", providerScheme: "VIBRANT", set: "lock" }
 /* Player idle */ { provider: "MMM-OnSpotify", set: "unlock" }
 ```
 You can disable this behaviour using `advertisePlayerTheme: false`.
@@ -187,6 +190,30 @@ View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-
 
 # Migrating from MMM-NowPlayingOnSpotify
 You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS auth do not enable searching for user data or viewing user generated data.
+
+### Enabling every animation and the included CSS override:
+```js
+{
+    module: "MMM-OnSpotify",
+    position: "bottom_right",
+    config: {
+        clientID: "key",
+        clientSecret: "key",
+        accessToken: "key",
+        refreshToken: "key",
+
+		mediaAnimations: true,
+		fadeAnimations: true,
+		textAnimations: true,
+		transitionAnimations: true,
+		spotifyVectorAnimations: true,
+        experimentalCSSOverridesForMM2: [
+			["--color-text-dimmed", "palette_vibrantlight"],
+			["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"],
+		],
+    },
+},
+```
 
 # Other:
 - You can disable all the color related theming and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `useColorInProgressBar`, `useColorInTitle`, `useColorInTitleBorder`, `showBlurBackground`, `useColorInUserData`, `spotifyCodeExperimentalUseColor`, `experimentalCSSOverridesForMM2`. Of course you can still use the Spotify Code (White/Gray). Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.

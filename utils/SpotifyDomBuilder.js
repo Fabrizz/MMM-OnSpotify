@@ -140,7 +140,10 @@ class SpotifyDomBuilder {
       if (
         typeof this.config.theming.experimentalCSSOverridesForMM2 === "object"
       )
-        this.root.style.setProperty("--EXTERNAL-TRANSITIONS-COLOR", "all");
+        this.root.style.setProperty(
+          "--ONSP-OVERRIDES-TRANSITIONS-COLOR",
+          "all",
+        );
     }
 
     this.svgs = {
