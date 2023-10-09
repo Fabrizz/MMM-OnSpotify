@@ -50,6 +50,7 @@ Module.register("MMM-OnSpotify", {
       fadeAnimations: false,
       transitionAnimations: true,
       textAnimations: true,
+      spotifyVectorAnimations: false,
       // Show the Spotify Code Bar [EXPERIMENTAL]
       spotifyCodeExperimentalShow: true,
       // Themes the code and bars using the cover art
@@ -58,6 +59,8 @@ Module.register("MMM-OnSpotify", {
       spotifyCodeExperimentalUseColor: true,
       // If the code should be shown standalone or separated from the cover art.
       spotifyCodeExperimentalSeparateItem: true,
+      // Allows to override CSS variables for MM2 included modules (or custom modules)
+      experimentalCSSOverridesForMM2: false, // <-- merge for older versions ?
       // Round cover art and Spotify Code corners
       roundMediaCorners: true,
       roundProgressBar: true,
@@ -97,10 +100,12 @@ Module.register("MMM-OnSpotify", {
     mediaAnimations: false,
     fadeAnimations: false,
     textAnimations: true,
+    spotifyVectorAnimations: false,
     transitionAnimations: false,
     spotifyCodeExperimentalShow: true,
     spotifyCodeExperimentalUseColor: true,
     spotifyCodeExperimentalSeparateItem: true,
+    experimentalCSSOverridesForMM2: false,
     roundMediaCorners: true,
     roundProgressBar: true,
     useColorInProgressBar: true,
@@ -128,10 +133,12 @@ Module.register("MMM-OnSpotify", {
     this.lastStatus = "isPlaying";
     this.muduleHidden = false;
     this.firstSongOnLoad = true;
+    this.usesCssOverrides =
+      typeof this.config.theming.experimentalCSSOverridesForMM2 === "object";
 
-    ///////////////////////
-    this.version = "2.3.2";
-    ///////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    this.version = "3.0.0";
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
     this.displayUser =
       this.config.displayWhenEmpty.toLowerCase() === "user" ||
@@ -148,7 +155,6 @@ Module.register("MMM-OnSpotify", {
       this.config.advertisePlayerTheme ||
       this.config.theming.useColorInProgressBar ||
       this.config.theming.useColorInTitle ||
-      this.config.theming.useColorInTitleBorder ||
       this.config.theming.showBlurBackground ||
       this.config.theming.useColorInUserData ||
       (this.config.theming.spotifyCodeExperimentalShow &&
@@ -272,7 +278,7 @@ Module.register("MMM-OnSpotify", {
     this.moduleHidden = true;
     this.smartUpdate();
     console.info(
-      "%c· MMM-OnSpotify %c %c[INFO]%c " + this.translate("SUSPEND"),
+      `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate("SUSPEND")}`,
       "background-color:#84CC16;color:black;border-radius:0.4em",
       "",
       "background-color:darkcyan;color:black;",
@@ -281,7 +287,7 @@ Module.register("MMM-OnSpotify", {
   },
   resume: function () {
     console.info(
-      "%c· MMM-OnSpotify %c %c[INFO]%c " + this.translate("RESUME"),
+      `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate("RESUME")}`,
       "background-color:#84CC16;color:black;border-radius:0.4em",
       "",
       "background-color:darkcyan;color:black;",
@@ -315,9 +321,18 @@ Module.register("MMM-OnSpotify", {
               deviceType: payload.deviceType,
             });
           this.firstSongOnLoad = false;
+          if (this.usesCssOverrides)
+            this.builder.setMM2colors(
+              this.config.theming.experimentalCSSOverridesForMM2,
+            );
         }
-        if (payload.statusIsChangeToEmptyPlayer)
+        if (payload.statusIsChangeToEmptyPlayer) {
+          if (this.usesCssOverrides)
+            this.builder.removeMM2colors(
+              this.config.theming.experimentalCSSOverridesForMM2,
+            );
           this.sendNotification("NOW_PLAYING", { playerIsEmpty: true });
+        }
         if (payload.statusIsDeviceChange)
           this.sendNotification("DEVICE_CHANGE", {
             device: payload.deviceName,
@@ -331,8 +346,9 @@ Module.register("MMM-OnSpotify", {
         this.smartUpdate("USER_DATA");
         if (this.userData.product !== "premium")
           console.warn(
-            "%c· MMM-OnSpotify %c %c[WARN]%c " +
-              this.translate("PRODUCT_WARNING"),
+            `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+              "PRODUCT_WARNING",
+            )}`,
             "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
             "background-color:orange;color:black;",
@@ -348,8 +364,9 @@ Module.register("MMM-OnSpotify", {
       case "CONNECTION_ERRONED":
         if (this.isConnectedToSpotify) {
           console.info(
-            "%c· MMM-OnSpotify %c %c[WARN]%c " +
-              this.translate("CONNECTION_WARNING"),
+            `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+              "CONNECTION_WARNING",
+            )}`,
             "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
             "background-color:orange;color:black;",
@@ -396,8 +413,9 @@ Module.register("MMM-OnSpotify", {
           break;
         case "LIVELYRICS_NOTICE":
           console.info(
-            "%c· MMM-OnSpotify %c %c[INFO]%c " +
-              this.translate("LIVELYRICS_NOTICE"),
+            `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+              "LIVELYRICS_NOTICE",
+            )}`,
             "background-color:#84CC16;color:black;border-radius:0.4em",
             "",
             "background-color:darkcyan;color:black;",
@@ -407,8 +425,9 @@ Module.register("MMM-OnSpotify", {
         case "ALL_MODULES_STARTED":
           if (this.config.showDebugPalette)
             console.info(
-              "%c· MMM-OnSpotify %c %c[INFO]%c " +
-                this.translate("DEBUG_COLORS"),
+              `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+                "DEBUG_COLORS",
+              )}`,
               "background-color:#84CC16;color:black;border-radius:0.4em",
               "",
               "background-color:darkcyan;color:black;",
@@ -416,11 +435,22 @@ Module.register("MMM-OnSpotify", {
             );
           if (this.config.theming.spotifyCodeExperimentalShow)
             console.info(
-              "%c· MMM-OnSpotify %c %c[WARN]%c " +
-                this.translate("SPOTIFYCODE_EXPERIMENTAL"),
+              `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+                "SPOTIFYCODE_EXPERIMENTAL",
+              )}`,
               "background-color:#84CC16;color:black;border-radius:0.4em",
               "",
               "background-color:orange;color:black;",
+              "",
+            );
+          if (this.config.theming.experimentalCSSOverridesForMM2)
+            console.info(
+              `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+                "CSSOVERRIDE_NOTICE",
+              )}`,
+              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "",
+              "background-color:darkcyan;color:black;",
               "",
             );
           this.sendNotification("LIVELYRICS_GET");
@@ -498,8 +528,9 @@ Module.register("MMM-OnSpotify", {
       this.retries = this.retries > 25 ? this.retries : this.retries + 1;
       if (this.retries === 25) {
         console.error(
-          "%c· MMM-OnSpotify %c %c[ERRO]%c " +
-            this.translate("CONNECTION_ERROR"),
+          `%c· MMM-OnSpotify %c %c[ERRO]%c ${this.translate(
+            "CONNECTION_ERROR",
+          )}`,
           "background-color:#84CC16;color:black;border-radius:0.4em",
           "",
           "background-color:darkred;color:black;",
@@ -606,6 +637,10 @@ Module.register("MMM-OnSpotify", {
     typeof this.config.textAnimations === "boolean"
       ? (this.config.theming.textAnimations = this.config.textAnimations)
       : null;
+    typeof this.config.spotifyVectorAnimations === "boolean"
+      ? (this.config.theming.spotifyVectorAnimations =
+          this.config.spotifyVectorAnimations)
+      : null;
 
     typeof this.config.spotifyCodeExperimentalShow === "boolean"
       ? (this.config.theming.spotifyCodeExperimentalShow =
@@ -618,6 +653,11 @@ Module.register("MMM-OnSpotify", {
     typeof this.config.spotifyCodeExperimentalSeparateItem === "boolean"
       ? (this.config.theming.spotifyCodeExperimentalSeparateItem =
           this.config.spotifyCodeExperimentalSeparateItem)
+      : null;
+
+    typeof this.config.experimentalCSSOverridesForMM2 === "object"
+      ? (this.config.theming.experimentalCSSOverridesForMM2 =
+          this.config.experimentalCSSOverridesForMM2)
       : null;
 
     typeof this.config.roundMediaCorners === "boolean"

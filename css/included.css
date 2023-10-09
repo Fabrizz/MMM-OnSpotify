@@ -1,3 +1,12 @@
+/*
+ * MMM-OnSpotify | MIT license
+ * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ */
+
+ /* Use this CSS stylesheet as a template for what you want to override */
+ /* Use the same units as described here. Do not change this file */
+ /* custom.css also handles MM2 overrides (if enabled) */
+
 :root {
     /* Colors extracted from the cover art */
     --ONSP-VIBRANT-VIBRANT: #b9b9b9;
@@ -15,6 +24,7 @@
     /* Base colors */
     --ONSP-INTERNAL-COLOR-BRIGHT: #FFF;
     --ONSP-INTERNAL-COLOR-MUTED: #b9b9b9;
+    --ONSP-BRANDCOLOR-SPOTIFY: #1DB954;
 
     /* User defaults */
     --ONSP-INTERNAL-USER-IMAGE-BASE: 2.8em;
@@ -222,9 +232,22 @@
     margin-top: -0.16em;
     margin-bottom: -0.1em;
 }
-.ONSP-Base .player .cover {
-    display: block;
+.ONSP-Base .player .swappable {
     height: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
+    display: block;
+    position: relative;
+}
+.ONSP-Base .player .swappable .cover-hidden {
+    opacity: 0;
+}
+.ONSP-Base .player .swappable .cover-swapping {
+    /* While the image is loading this class is applied to the last image */
+}
+.ONSP-Base .player .swappable .cover {
+    position: absolute;
+    display: block;
+    height: 100%;
+    width: 100%;
     background-size: cover;
     transition: var(--ONSP-INTERNAL-LOWPOWER-COVER);
     border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
@@ -252,7 +275,7 @@
     transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME), width var(--ONSP-INTERNAL-PLAYER-UPDATE-TIME) var(--ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION) 0s;
 }
 .ONSP-Base .player .footer .target {
-    color: #FFF;
+    color: #e8e8e8;
     display: flex;
     align-items: center;
     flex-flow: row nowrap;
@@ -418,7 +441,7 @@
 .ONSP-Base .user .profile .data .title .badge {
     display: inline-flex;
     font-size: 0.6em;
-    color: #1DB954;
+    color: var(--ONSP-BRANDCOLOR-SPOTIFY); /* Spotify Green */
 }
 .ONSP-Base .user .profile .data .title .badge:before {
     content: var(--ONSP-INTERNAL-USER-PRODUCT);

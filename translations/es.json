@@ -4,6 +4,7 @@
     "CONNECTION_WARNING": "Hubo un problema de conexión. Ralentizando el polling a api.spotify/...",
     "CONNECTION_ERROR": "Los problemas de conexión persisten. Ralentizando más el polling. Ocultando la reprocucción antigua.",
     "VIBRANT_NOT_LOADED": "(vendor) Vibrant no se cargó correctamente.",
+    "USER_CSS_ERROR": "Se produjo un error al extraer información desde las declaraciones CSS. (El tiempo de animaciones/transiciones debe ser en \"ms\")",
     "STABLISHING_CONNECTION": "Conectando a Spotify...",
     "NOTHING_PLAYING": "No se esta reproduciendo nada",
     "SPOTIFY_HEADER": "MMM-OnSpotify",
@@ -11,5 +12,7 @@
     "SPOTIFYCODE_EXPERIMENTAL": "<spotifyCodeExperimentalShow> esta activado. La API no se encuentra abierta al publico, puede dejar de funcionar sin aviso previo. (https://github.com/Fabrizz/MMM-OnSpotify#other)",
     "RESUME": "Reanudando modulo...",
     "SUSPEND": "Suspendiendo modulo...",
-    "LIVELYRICS_NOTICE": "MMM-LiveLyrics encontrado! - Mira los logs de MMM-LL para ver más información. (https://github.com/Fabrizz/MMM-LiveLyrics)"
+    "LIVELYRICS_NOTICE": "MMM-LiveLyrics encontrado! - Mira los logs de MMM-LL para ver más información. (https://github.com/Fabrizz/MMM-LiveLyrics)",
+    "CSSOVERRIDE_NOTICE": "Estas sobreescribiendo variables CSS incluidas con MM2. Chequea errores de escritura y de contraste",
+    "CSSOVERRIDE_MALFORMED": "Hubo un error al procesar tu configuración \"experimentalCSSOverridesForMM2\". Elimina esta entrada o chequeala por errores de escritura."
 }

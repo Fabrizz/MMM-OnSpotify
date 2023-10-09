@@ -30,6 +30,17 @@ class SpotifyDomBuilder {
     this.affinityGridElements = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
     this.backgroundColors = ["AAA", "BBB", "CCC", "DDD", "EEE", "FFF"];
     this.currentAnimations = { playerTitle: false, playerTarget: false };
+    this.ONSPcolorVerboseMatch = {
+      text: "--ONSP-VIBRANT-DOMINANTBRIGHT",
+      background: "--ONSP-VIBRANT-DOMINANTDARK",
+      palette_vibrant: "--ONSP-VIBRANT-VIBRANT",
+      palette_vibrantlight: "--ONSP-VIBRANT-LIGHTVIBRANT",
+      palette_vibrantdark: "--ONSP-VIBRANT-DARKVIBRANT",
+      palette_muted: "--ONSP-VIBRANT-MUTED",
+      palette_mutedlight: "--ONSP-VIBRANT-LIGHTMUTED",
+      palette_muteddark: "--ONSP-VIBRANT-DARKMUTED",
+      brand_spotify: "--ONSP-BRANDCOLOR-SPOTIFY",
+    };
     try {
       this.animationDefaultDelayFromCSS = Number(
         getComputedStyle(this.root)
@@ -38,7 +49,7 @@ class SpotifyDomBuilder {
       );
     } catch (error) {
       console.warn(
-        "%c· MMM-OnSpotify %c %c[WARN]%c " + this.translate("USER_CSS_ERROR"),
+        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate("USER_CSS_ERROR")}`,
         "background-color:#84CC16;color:black;border-radius:0.4em",
         "",
         "background-color:orange;color:black",
@@ -121,11 +132,19 @@ class SpotifyDomBuilder {
         "--ONSP-INTERNAL-LOWPOWER-COVER",
         "var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) cubic-bezier(0.25, 0.15, 0.20, 1)",
       );
-    if (this.config.theming.transitionAnimations)
+    if (this.config.theming.transitionAnimations) {
       this.root.style.setProperty(
         "--ONSP-INTERNAL-LOWPOWER-TRANSITIONS",
         "all",
       );
+      if (
+        typeof this.config.theming.experimentalCSSOverridesForMM2 === "object"
+      )
+        this.root.style.setProperty(
+          "--ONSP-OVERRIDES-TRANSITIONS-COLOR",
+          "all",
+        );
+    }
 
     this.svgs = {
       default:
@@ -141,6 +160,8 @@ class SpotifyDomBuilder {
         "M4,6H20V16H4M20,18A2,2 0 0,0 22,16V6C22,4.89 21.1,4 20,4H4C2.89,4 2,4.89 2,6V16A2,2 0 0,0 4,18H0V20H24V18H20Z",
       Smartphone:
         "M3,4H20A2,2 0 0,1 22,6V8H18V6H5V18H14V20H3A2,2 0 0,1 1,18V6A2,2 0 0,1 3,4M17,10H23A1,1 0 0,1 24,11V21A1,1 0 0,1 23,22H17A1,1 0 0,1 16,21V11A1,1 0 0,1 17,10M18,12V19H22V12H18Z",
+      SpotifyScannableLogo:
+        "M30,0A30,30,0,1,1,0,30,30,30,0,0,1,30,0M43.73,43.2a1.85,1.85,0,0,0-.47-2.43,5,5,0,0,0-.48-.31,30.64,30.64,0,0,0-5.92-2.72,37.07,37.07,0,0,0-11.56-1.84c-1.33.07-2.67.12-4,.23a52.44,52.44,0,0,0-7.08,1.12,3.45,3.45,0,0,0-.54.16,1.83,1.83,0,0,0-1.11,2.08A1.79,1.79,0,0,0,14.37,41a4.29,4.29,0,0,0,.88-.12,48.93,48.93,0,0,1,8.66-1.15,35.33,35.33,0,0,1,6.75.37,28.29,28.29,0,0,1,10.25,3.61,4.77,4.77,0,0,0,.5.27,1.85,1.85,0,0,0,2.33-.74M47.41,35a2.34,2.34,0,0,0-.78-3.19l-.35-.21a35.72,35.72,0,0,0-7.38-3.3,45.39,45.39,0,0,0-15.7-2.13,41.19,41.19,0,0,0-7.39.92c-1,.22-2,.48-2.94.77A2.26,2.26,0,0,0,11.29,30a2.32,2.32,0,0,0,1.44,2.2,2.47,2.47,0,0,0,1.67,0,37,37,0,0,1,10.38-1.46,43,43,0,0,1,7.91.74,35.46,35.46,0,0,1,9.58,3.18c.66.34,1.3.72,1.95,1.08A2.33,2.33,0,0,0,47.41,35m.35-8.49A2.79,2.79,0,0,0,52,24.11c0-.2,0-.4-.08-.6a2.78,2.78,0,0,0-1.4-1.85,35.91,35.91,0,0,0-6.41-2.91,56.19,56.19,0,0,0-16.86-2.89,58.46,58.46,0,0,0-7,.21,48.31,48.31,0,0,0-6.52,1c-.87.2-1.73.42-2.58.7a2.73,2.73,0,0,0-1.85,2.68,2.79,2.79,0,0,0,2,2.61,2.9,2.9,0,0,0,1.6,0c.87-.23,1.75-.47,2.63-.66a45.52,45.52,0,0,1,7.26-.91,57.42,57.42,0,0,1,6.4,0,53.7,53.7,0,0,1,6.11.72,42.63,42.63,0,0,1,8.49,2.35,33.25,33.25,0,0,1,4,2",
     };
     this.images = {
       placeholder: "assets/placeholder.png",
@@ -280,10 +301,16 @@ class SpotifyDomBuilder {
     const code = document.createComment(
       ` MMM-OnSpotify by Fabrizz | https://github.com/Fabrizz/MMM-OnSpotify `,
     );
+    const override = document.createComment(
+      ` [!] OnSpotify is using user defined CSS overrides [!] `,
+    );
     wrapper.classList.add("ONSP-Base", "ONSP-Custom");
     wrapper.id = "ONSP-WRAPPER";
     wrapper.appendChild(version);
     wrapper.appendChild(code);
+    typeof this.config.theming.experimentalCSSOverridesForMM2 === "object"
+      ? wrapper.appendChild(override)
+      : null;
 
     return wrapper;
   }
@@ -321,12 +348,27 @@ class SpotifyDomBuilder {
     header.appendChild(names);
 
     /* Cover */
-    const cover = document.createElement("div");
-    cover.id = "VSNO-TARGET-COVER";
-    cover.classList.add("cover");
-    //cover.referrerPolicy = "no-referrer";
-    //cover.src = this.selectImage(data.itemImages);
-    cover.style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
+    // Use 2 images at the same time to stop flickering from image loading times
+    const swappable = document.createElement("div");
+    swappable.classList.add("swappable");
+
+    const coverA = document.createElement("img");
+    coverA.id = "VSNO-TARGET-COVER-A";
+    coverA.classList.add("cover");
+    // coverA.style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
+    coverA.referrerPolicy = "no-referrer";
+    coverA.src = this.selectImage(data.itemImages);
+
+    const coverB = document.createElement("img");
+    coverB.id = "VSNO-TARGET-COVER-B";
+    coverB.classList.add("cover");
+    coverB.classList.add("cover-hidden");
+    coverB.referrerPolicy = "no-referrer";
+
+    this.currentCoverPosition = 0;
+
+    swappable.appendChild(coverA);
+    swappable.appendChild(coverB);
 
     /* Footer -> ProgressBar>Bar | Target>Icon/Device */
     const footer = document.createElement("div");
@@ -387,7 +429,7 @@ class SpotifyDomBuilder {
 
     /* Main */
     player.appendChild(header);
-    player.appendChild(cover);
+    player.appendChild(swappable);
     if (this.config.theming.spotifyCodeExperimentalShow) {
       player.appendChild(this.getSpotifyCodeDom(data.itemUri));
     }
@@ -406,7 +448,7 @@ class SpotifyDomBuilder {
     );
     this.backgroundColors.forEach((c) => {
       let a = document.createElement("div");
-      a.classList.add("backgroundBox", "backgroundBox" + c);
+      a.classList.add("backgroundBox", `backgroundBox${c}`);
       bg.appendChild(a);
     });
     return bg;
@@ -417,8 +459,8 @@ class SpotifyDomBuilder {
     const code = document.createElement("div");
     code.id = "VSNO-TARGET-CODE";
     code.classList.add("code");
-    this.getSpotifyCodeImage(u, "VSNO-TARGET-CODE", true, "ONSP-WRAPPER");
     experimental.appendChild(code);
+    this.setSpotifyCode(u, "VSNO-TARGET-CODE", true);
     return experimental;
   }
   updatePlayerData(data) {
@@ -504,16 +546,31 @@ class SpotifyDomBuilder {
         }, this.animationDefaultDelayFromCSS);
       }
 
-      document.getElementById(
-        "VSNO-TARGET-COVER",
-      ).style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
+      const cvA = document.getElementById("VSNO-TARGET-COVER-A");
+      const cvB = document.getElementById("VSNO-TARGET-COVER-B");
+
+      if (this.currentCoverPosition === 0) {
+        cvB.addEventListener("load", function () {
+          cvB.classList.remove("cover-hidden");
+          cvA.classList.add("cover-hidden");
+          cvA.classList.remove("cover-swapping");
+        });
+        cvA.classList.add("cover-swapping");
+        cvB.src = this.selectImage(data.itemImages); //`url(${this.selectImage(data.itemImages)})`;
+        this.currentCoverPosition = 1;
+      } else {
+        cvA.addEventListener("load", function () {
+          cvA.classList.remove("cover-hidden");
+          cvB.classList.add("cover-hidden");
+          cvB.classList.remove("cover-swapping");
+        });
+        cvB.classList.add("cover-swapping");
+        cvA.src = this.selectImage(data.itemImages); //`url(${this.selectImage(data.itemImages)})`;
+        this.currentCoverPosition = 0;
+      }
+
       if (this.config.theming.spotifyCodeExperimentalShow)
-        this.getSpotifyCodeImage(
-          data.itemUri,
-          "VSNO-TARGET-CODE",
-          false,
-          "ONSP-WRAPPER",
-        );
+        this.updateSpotifyCode(data.itemUri, "VSNO-TARGET-CODE", false);
     }
 
     this.lastItemURI = data.itemUri;
@@ -529,7 +586,7 @@ class SpotifyDomBuilder {
       const img = document.createElement("span");
       img.classList.add(
         "gridElement",
-        "gridElement-" + element,
+        `gridElement-${element}`,
         this.config.theming.fadeAnimations ? "animation-shine" : "no-animation",
       );
       img.style.backgroundImage = `var(--ONSP-INTERNAL-AFFINITY-IMAGES-${element})`;
@@ -542,7 +599,7 @@ class SpotifyDomBuilder {
       data.forEach((element) => {
         const name = this.affinityGridElements[data.indexOf(element)];
         this.root.style.setProperty(
-          "--ONSP-INTERNAL-AFFINITY-IMAGES-" + name,
+          `--ONSP-INTERNAL-AFFINITY-IMAGES-${name}`,
           `url('${element.image}')`,
         );
       });
@@ -680,7 +737,7 @@ class SpotifyDomBuilder {
     for (const element in palette) {
       let rgb = palette[element].rgb;
       this.root.style.setProperty(
-        "--ONSP-VIBRANT-" + element.toLocaleUpperCase(),
+        `--ONSP-VIBRANT-${element.toLocaleUpperCase()}`,
         `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
       );
     }
@@ -769,11 +826,9 @@ class SpotifyDomBuilder {
           this.config.theming.spotifyCodeExperimentalUseColor ? "SPCBG" : ""
         }%c ${
           this.config.theming.spotifyCodeExperimentalUseColor
-            ? "VHSP: " +
-              Math.round(
+            ? `VHSP: ${Math.round(
                 (Brightness_By_Color(palette.Vibrant.hex) / 255) * 100,
-              ) +
-              "%"
+              )}%`
             : ""
         } | ${ch}${data.itemName} | ${url}`,
         `padding:0.7em;border-radius:3em;background-color:${palette.Vibrant.hex}`,
@@ -796,7 +851,7 @@ class SpotifyDomBuilder {
           palette
             ? this.root.style.setProperty(
                 "--ONSP-INTERNAL-USER-BG-COLOR",
-                palette.Vibrant.hex + "20",
+                `${palette.Vibrant.hex}20`,
               )
             : this.root.style.setProperty(
                 "--ONSP-INTERNAL-USER-BG-COLOR",
@@ -812,8 +867,9 @@ class SpotifyDomBuilder {
     this.lastUrlProcessed = url;
     if (!("Vibrant" in window)) {
       console.error(
-        "%c· MMM-OnSpotify %c %c[WARN]%c " +
-          this.translate("VIBRANT_NOT_LOADED"),
+        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+          "VIBRANT_NOT_LOADED",
+        )}`,
         "background-color:#84CC16;color:black;border-radius:0.4em",
         "",
         "background-color:orange;color:black",
@@ -842,83 +898,210 @@ class SpotifyDomBuilder {
         )
     );
   }
+
+  /* MM2 VARIABLE OVERRIDES */
+  setMM2colors(userConfig) {
+    try {
+      userConfig.forEach((entry) => {
+        let originalVariable = this.ONSPcolorVerboseMatch.hasOwnProperty(
+          entry[1],
+        )
+          ? this.ONSPcolorVerboseMatch[entry[1]]
+          : entry[1]; /* Allow users to just override whatever they want when ONSP is playing */
+        this.root.style.setProperty(entry[0], `var(${originalVariable})`);
+      });
+    } catch (e) {
+      console.error(
+        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+          "CSSOVERRIDE_MALFORMED",
+        )}`,
+        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "",
+        "background-color:orange;color:black",
+        "",
+        e,
+      );
+    }
+  }
+  removeMM2colors(userConfig) {
+    try {
+      userConfig.forEach((entry) => {
+        if (entry[2]) {
+          this.root.style.setProperty(entry[0], entry[2]);
+        } else {
+          this.root.style.removeProperty(entry[0]);
+        }
+      });
+    } catch (e) {
+      console.error(
+        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+          "CSSOVERRIDE_MALFORMED",
+        )}`,
+        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "",
+        "background-color:orange;color:black",
+        "",
+        e,
+      );
+    }
+  }
+
+  /* SPOTIFY SCANNABLES SET, GET & ANIMATION */
+  async fetchSpotifyCode(uri) {
+    const response = await fetch(
+      this.getSpotifyScannablesUrl(
+        uri,
+        this.config.theming.spotifyCodeExperimentalUseColor,
+      ),
+      {
+        method: "GET",
+        referrerPolicy: "no-referrer",
+      },
+    );
+    return await response.text();
+  }
+  getSpotifyCodeData(code, color) {
+    const rectElements = code.match(/<rect\s+([^>]+)>/g);
+    let attributesList = [];
+
+    if (rectElements) {
+      attributesList = rectElements.map((rectElement) => {
+        const attributeRegex = /(\w+)="([^"]*)"/g;
+        const attributes = {};
+
+        let match;
+        while ((match = attributeRegex.exec(rectElement))) {
+          const attributeName = match[1];
+          let attributeValue = match[2];
+
+          if (attributeName === "fill") {
+            if (attributeValue === "#ffffff") {
+              attributeValue = "#00000000";
+            } else {
+              attributeValue = color;
+            }
+          }
+          attributes[attributeName] = attributeValue;
+        }
+        return attributes;
+      });
+    }
+
+    return attributesList;
+  }
+  async setSpotifyCode(uri, id, animate) {
+    const code = await this.fetchSpotifyCode(uri);
+    if (this.config.theming.spotifyVectorAnimations) {
+      const color = "var(--ONSP-INTERNAL-PLAYER-CODE-BARS)";
+      const barsData = this.getSpotifyCodeData(code, color);
+      const vect = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg",
+      );
+      vect.style.animation = animate
+        ? "var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);"
+        : "";
+      vect.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+      vect.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      vect.setAttribute("viewBox", "0 0 400 100");
+      vect.setAttribute("height", "65");
+      vect.setAttribute("width", "260");
+
+      if (barsData) {
+        let n = 1;
+        barsData.forEach((bar) => {
+          const rect = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "rect",
+          );
+          for (const [key, value] of Object.entries(bar)) {
+            rect.setAttribute(key, value);
+          }
+          rect.id = `VSNO-SPOTIFY-CODE-RECT-${n}`;
+          vect.append(rect);
+          n++;
+        });
+      }
+
+      const logo = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      logo.setAttribute("transform", "translate(20,20)");
+      const innerLogo = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path",
+      );
+      innerLogo.setAttribute("d", this.svgs.SpotifyScannableLogo);
+      innerLogo.setAttribute("fill", color);
+      logo.append(innerLogo);
+      vect.append(logo);
+      document.getElementById(id).appendChild(vect);
+    } else {
+      this.basicSetSpotifyCode(code, id, animate);
+    }
+  }
+  async updateSpotifyCode(uri, id, animate) {
+    const code = await this.fetchSpotifyCode(uri);
+    if (this.config.theming.spotifyVectorAnimations) {
+      const color = "var(--ONSP-INTERNAL-PLAYER-CODE-BARS)";
+      const barsData = this.getSpotifyCodeData(code, color);
+
+      if (barsData) {
+        let n = 1;
+        barsData.forEach((bar) => {
+          const rect = document.getElementById(`VSNO-SPOTIFY-CODE-RECT-${n}`);
+          rect.style.transition =
+            "all var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) var(--ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION)";
+          for (const [key, value] of Object.entries(bar)) {
+            rect.setAttribute(key, value);
+          }
+          n++;
+        });
+      }
+    } else {
+      this.basicSetSpotifyCode(code, id, animate);
+    }
+  }
+
+  async basicSetSpotifyCode(code, id, animate) {
+    document.getElementById(id).innerHTML = DOMPurify.sanitize(code)
+      .replaceAll("#000000", "var(--ONSP-INTERNAL-PLAYER-CODE-BARS)")
+      .replace("#ffffff", "#00000000")
+      .replace(
+        "<svg ",
+        animate
+          ? `<svg style="animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME)" `
+          : `<svg style="" `,
+      );
+  }
+
   /* Utils */
   selectImage(im) {
     return im[this.config.prefersLargeImageSize ? "large" : "medium"];
   }
   getPercentage(n, t) {
-    return (n / t) * 100;
+    return ((n / t) * 100).toFixed(3);
   }
   getSanitizedTime(n, t) {
     const lg = moment.duration(n).format();
     const fl = moment.duration(t).format();
     let str = this.config.hideTrackLenghtAndAnimateProgress
       ? fl
-      : lg + " / " + fl;
+      : `${lg} / ${fl}`;
     if (
       str.includes("second") &&
       !this.config.hideTrackLenghtAndAnimateProgress
     )
-      str = "0:00 / " + fl;
+      str = `0:00 / ${fl}`;
     return str;
   }
-  getSpotifyCodeImage(uri, id, animate, dataId) {
-    fetch(
-      `https://scannables.scdn.co/uri/plain/${
-        this.config.theming.spotifyCodeExperimentalUseColor
-          ? "svg/ffffff/black"
-          : "svg/000000/white"
-      }/260/${uri}`,
-      {
-        method: "GET",
-        referrerPolicy: "no-referrer",
-      },
-    ).then((response) =>
-      response.text().then(
-        (external) =>
-          // FUTURE UPDATE, get every <rect> element inside the svg and update the existing
-          // svg rects, this allows animating the bars vertically and color transition. Visually
-          // it would be much better, but more gpu consuming
-          (document.getElementById(id).innerHTML = DOMPurify.sanitize(external)
-            .replaceAll(
-              this.config.theming.spotifyCodeExperimentalUseColor
-                ? `#000000`
-                : "unknown",
-              "var(--ONSP-INTERNAL-PLAYER-CODE-BARS)",
-            )
-            .replace(
-              this.config.theming.spotifyCodeExperimentalUseColor
-                ? "#ffffff"
-                : "#000000",
-              "#00000000",
-            )
-            .replace(
-              "<svg ",
-              animate
-                ? `<svg style="animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME)" `
-                : `<svg style="" `,
-            )
-            .replace(
-              "<svg ",
-              `<svg data-onsp-changes="${
-                this.config.theming.spotifyCodeExperimentalUseColor
-                  ? `#000000`
-                  : "unknown"
-              }:var(--ONSP-INTERNAL-PLAYER-CODE-BARS),${
-                this.config.theming.spotifyCodeExperimentalUseColor
-                  ? "#ffffff"
-                  : "#000000"
-              }:#00000000"`,
-            )),
-      ),
-    );
+  getSpotifyScannablesUrl(uri) {
+    return `https://scannables.scdn.co/uri/plain/svg/ffffff/black/260/${uri}`;
   }
 }
 
 // By Trizkit & Mike 'Pomax' Kamermans | https://stackoverflow.com/a/13542669
-// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq
-const RGB_Linear_Shade = (p, c) => {var i = parseInt, r = Math.round, [a, b, c, d] = c.split(","), P = p < 0, t = P ? 0 : 255 * p, P = P ? 1 + p : 1 - p; return "rgb" + (d ? "a(" : "(") + r(i(a[3] == "a" ? a.slice(5) : a.slice(4)) * P + t) + "," + r(i(b) * P + t) + "," + r(i(c) * P + t) + (d ? "," + d : ")");};
+// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq, no-param-reassign
+const RGB_Linear_Shade = (p, c) => {var i = parseInt, r = Math.round, [a, b, c, d] = c.split(","), P = p < 0, t = P ? 0 : 255 * p, P = P ? 1 + p : 1 - p; return `rgb${  d ? "a(" : "("  }${r(i(a[3] == "a" ? a.slice(5) : a.slice(4)) * P + t)  },${  r(i(b) * P + t)  },${  r(i(c) * P + t)  }${d ? `,${  d}` : ")"}`;};
 
 // By Max Chuhryaev & danilocastro-toast | https://gist.github.com/w3core/e3d9b5b6d69a3ba8671cc84714cca8a4?permalink_comment_id=3125287#gistcomment-3125287
-// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq
-const Brightness_By_Color = (color) => {var r, g, b, hsp; if (color.match(/^rgb/)) {color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/); r = color[1]; g = color[2]; b = color[3];} else {/* HEX > RGB http://gist.github.com/983661 */color = +("0x" + color.slice(1).replace(color.length < 5 && /./g, '$&$&')); r = color >> 16; g = color >> 8 & 255; b = color & 255;} /* HSP equation http://alienryderflex.com/hsp.html */hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)); return hsp; };
+// eslint-disable-next-line prettier/prettier, no-redeclare, eqeqeq, no-param-reassign
+const Brightness_By_Color = (color) => {var r, g, b, hsp; if (color.match(/^rgb/)) {color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/); r = color[1]; g = color[2]; b = color[3];} else {/* HEX > RGB http://gist.github.com/983661 */color = +(`0x${  color.slice(1).replace(color.length < 5 && /./g, '$&$&')}`); r = color >> 16; g = color >> 8 & 255; b = color & 255;} /* HSP equation http://alienryderflex.com/hsp.html */hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)); return hsp; };
