@@ -245,12 +245,17 @@ Module.register("MMM-OnSpotify", {
     }
   },
   getStyles: function () {
-    return [this.file("css/included.css"), this.file("css/custom.css")];
+    let files = [this.file("css/included.css"), this.file("css/custom.css")];
+    // Load theming.css only if experimentalCSSOverridesForMM2 is enabled
+    if (
+      this.config.theming.experimentalCSSOverridesForMM2 ||
+      this.config.experimentalCSSOverridesForMM2
+    )
+      files.push(this.file("css/theming.css"));
+    return files;
   },
   getScripts: function () {
     let files = [
-      // MM2 loader handles loading the same library, MM2 itself loads moment
-      this.file("node_modules/moment/min/moment.min.js"),
       this.file(
         "node_modules/moment-duration-format/lib/moment-duration-format.js",
       ),
@@ -261,11 +266,17 @@ Module.register("MMM-OnSpotify", {
     ];
     // eslint-disable-next-line no-undef
     if (
-      this.config.theming.spotifyCodeExperimentalShow &&
+      (this.config.theming.spotifyCodeExperimentalShow ||
+        this.config.spotifyCodeExperimentalShow) &&
       // Check if other modules load DOMPurify
       !("DOMPurify" in window)
     )
       files.push(this.file("node_modules/dompurify/dist/purify.min.js"));
+
+    // Only load moment if for some reason MM2 has not loaded it yet, fixes https://github.com/Fabrizz/MMM-OnSpotify/issues/32
+    if (!("moment" in window)) {
+      files.push(this.file("node_modules/moment/min/moment.min.js"));
+    }
     return files;
   },
   getTranslations: function () {
@@ -463,7 +474,7 @@ Module.register("MMM-OnSpotify", {
 
   /* Utils */
   updateFetchingLoop: function (n) {
-    if (this.currentIntervalId) clearInterval(this.currentIntervalId);
+    clearInterval(this.currentIntervalId);
     this.currentIntervalId = setInterval(() => {
       if (this.isConnectedToSpotify || this.currentStatus === "onReconnecting")
         this.instantUpdate();
