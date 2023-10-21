@@ -2,7 +2,7 @@
  * MMM-OnSpotify
  * MIT license
  *
- * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ * By Fabrizio <3 (Fabrizz) | https://github.com/Fabrizz/MMM-OnSpotify
  */
 
 /* eslint-disable no-undef */
@@ -323,7 +323,7 @@ class SpotifyDomBuilder {
     const player = document.createElement("div");
     player.classList.add(
       "player",
-      data.currently_playing_type ? data.currently_playing_type : "unknown",
+      data.playerMediaType ? data.playerMediaType : "unknown",
     );
 
     /* Header -> Title | Subtitle */
@@ -343,7 +343,7 @@ class SpotifyDomBuilder {
     subtitle.classList.add("subtitle");
     subtitle.innerText = data.itemArtists
       ? data.itemArtists
-      : data.itemShowName;
+      : `${data.itemShowName} - ${data.itemPublisher}`;
 
     names.appendChild(title);
     names.appendChild(subtitle);
@@ -523,7 +523,7 @@ class SpotifyDomBuilder {
       playerTitle.innerText = data.itemName;
       playerSubtitle.innerText = data.itemArtists
         ? data.itemArtists
-        : data.itemShowName;
+        : `${data.itemShowName} - ${data.itemPublisher}`;
       // document.getElementById("VSNO-TARGET-COVER").src = this.selectImage(data.itemImages); <-- transitions do not affect src
 
       // LATER: Add a couple of miliseconds of artificial delay so Vibrant can prefetch the image and
@@ -1084,8 +1084,8 @@ class SpotifyDomBuilder {
     return ((n / t) * 100).toFixed(3);
   }
   getSanitizedTime(n, t) {
-    /*const lg = moment.duration(n).format();*/ const lg = n;
-    /*const fl = moment.duration(t).format();*/ const fl = t;
+    const lg = moment.duration(n).format(); //const lg = n;
+    const fl = moment.duration(t).format(); //const fl = t;
 
     let str = this.config.hideTrackLenghtAndAnimateProgress
       ? fl

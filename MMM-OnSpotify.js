@@ -2,7 +2,7 @@
  * MMM-OnSpotify
  * MIT license
  *
- * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ * By Fabrizio <3 (Fabrizz) | https://github.com/Fabrizz/MMM-OnSpotify
  */
 
 "use strict";
