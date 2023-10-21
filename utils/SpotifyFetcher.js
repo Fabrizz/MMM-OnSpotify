@@ -2,7 +2,7 @@
  * MMM-OnSpotify
  * MIT license
  *
- * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ * By Fabrizio <3 (Fabrizz) | https://github.com/Fabrizz/MMM-OnSpotify
  * Original implementation: Raywo | https://github.com/raywo/MMM-NowPlayingOnSpotify
  */
 
@@ -27,9 +27,9 @@ module.exports = class SpotifyFetcher {
       if (res.ok) {
         console.log(
           "\x1b[46m%s\x1b[0m",
-          "[MMM-NPOS] [Node Helper] Access token expired: >> " +
-            this.tokenExpiresAt.format("HH:mm:ss") +
-            " | Refreshed successfully.",
+          `[MMM-NPOS] [Node Helper] Access token expired: >> ${this.tokenExpiresAt.format(
+            "HH:mm:ss",
+          )} | Refreshed successfully.`,
         );
       }
       this.credentials.accessToken = res.access_token;
@@ -184,9 +184,9 @@ module.exports = class SpotifyFetcher {
         refresh_token: refresh_token,
       }),
       headers: {
-        Authorization:
-          "Basic " +
-          Buffer.from(client_id + ":" + client_secret).toString("base64"),
+        Authorization: `Basic ${Buffer.from(
+          `${client_id}:${client_secret}`,
+        ).toString("base64")}`,
       },
     })
       .then((res) => {

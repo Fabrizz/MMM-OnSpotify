@@ -4,7 +4,7 @@
  * MMM-OnSpotify
  * MIT License
  *
- * By Fabrizz <3
+ * By Fabrizio <3 (Fabrizz)
  *
  * Based on the example oAuth2 flow from:
  * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow

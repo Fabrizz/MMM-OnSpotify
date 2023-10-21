@@ -1,15 +1,9 @@
 /*
  * MMM-OnSpotify | MIT license
- * By Fabrizz <3 | https://github.com/Fabrizz/MMM-OnSpotify
+ * By Fabrizio <3 (Fabrizz) | https://github.com/Fabrizz/MMM-OnSpotify
  */
 
-/* [ONSP TEMPLATE] */ /* Add transitions to .dimmed elements and icons */
-:root { --ONSP-OVERRIDES-ICONS-COLOR: var(--color-text); --ONSP-OVERRIDES-TRANSITIONS-COLOR: none }
-.module-header, .dimmed, .fas, .fa-fw, .wi, .weathericon { transition: var(--ONSP-OVERRIDES-TRANSITIONS-COLOR) 1s !important; } 
-.fas, .fa-fw, .wi, .weathericon { color: var(--ONSP-OVERRIDES-ICONS-COLOR) !important; }
-/* [ONSP TEMPLATE] */
+/* Do you want to theme your/other module automatically using just CSS? */
+/* https://github.com/Fabrizz/MMM-OnSpotify#theming-other-mm2-modules */
 
-/* Do you want to theme your module automatically usiong just CSS? https://github.com/Fabrizz/MMM-OnSpotify#theming-other-mm2-modules */
-
-
-/************************* ADD YOUR CUSTOM STYLES BELOW THIS LINE *************************/
+/*************************************** ADD YOUR CUSTOM STYLES BELOW THIS LINE /***************************************

@@ -1,0 +1,22 @@
+/*
+ * MMM-OnSpotify | MIT license
+ * By Fabrizio <3 (Fabrizz) | https://github.com/Fabrizz/MMM-OnSpotify
+ */
+
+ /* ONLY LOADED IF "experimentalCSSOverridesForMM2" IS CONFIGURED */
+
+/*************************************** [ONSP TEMPLATE] ***************************************/
+
+/* Defaults for icons and transitions */
+:root { --ONSP-OVERRIDES-ICONS-COLOR: var(--color-text); --ONSP-OVERRIDES-TRANSITIONS-COLOR: none }
+
+/* Sets the new variable as the color for icons, this could colide with user defined colors */
+/* As this file is only loaded if needed, this should not be an issue */
+.fas, .fa-fw, .wi, .weathericon { color: var(--ONSP-OVERRIDES-ICONS-COLOR) !important; }
+
+/* Applies transition: all <player time> to every element if enabled on the module itself */
+/* This is normal behaviour as most users are not going to use custom CSS for external modules */
+.module-header, .dimmed, .fas, .fa-fw, .wi, .weathericon
+    { transition: var(--ONSP-OVERRIDES-TRANSITIONS-COLOR) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME) !important; } 
+
+/*************************************** [ONSP TEMPLATE] ***************************************/
