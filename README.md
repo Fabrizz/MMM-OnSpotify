@@ -221,7 +221,7 @@ You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS 
 
 - The API for Spotify Codes is not public, as its part of the Spotify CDN (_scannables.scdn.co_). The API could change without notice. Many libraries rely on it and using it does not go againts the ToS.
 
-- Contributions wanted! Add features or your languaje using `translations/yourLanguaje.json`.
+- Contributions wanted! Add features or your languaje using `translations/yourLanguaje.json`. Currently we have translations for: Spanish, English, German
 
 With <3 by Fabrizio | [fabriz.co](https://fabriz.co/) | Star this repository! 
 [<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriz.co/)
