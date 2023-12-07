@@ -284,6 +284,7 @@ Module.register("MMM-OnSpotify", {
     return {
       en: "translations/en.json",
       es: "translations/es.json",
+      de: "translations/de.json",
     };
   },
   suspend: function () {
