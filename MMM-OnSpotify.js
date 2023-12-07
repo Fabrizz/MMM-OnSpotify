@@ -177,7 +177,7 @@ Module.register("MMM-OnSpotify", {
     /* Future update:
      * Maybe cache music lyrics based on the queue based on module notfs ? (MMM-Lyrics)
      * Show queue instead of nowplaying or (nowplaying + next)
-     * cache next song images on slow networs ? <--- Nah, more api calls
+     * cache next song images on slow networks ? <--- Nah, more api calls
      */
     this.userData = null;
     this.playerData = null;
@@ -274,6 +274,7 @@ Module.register("MMM-OnSpotify", {
       files.push(this.file("node_modules/dompurify/dist/purify.min.js"));
 
     // Only load moment if for some reason MM2 has not loaded it yet, fixes https://github.com/Fabrizz/MMM-OnSpotify/issues/32
+    // Actually https://github.com/Fabrizz/MMM-OnSpotify/pull/33 fixed it.
     if (!("moment" in window)) {
       files.push(this.file("node_modules/moment/min/moment.min.js"));
     }
