@@ -32,6 +32,10 @@ Module.register("MMM-OnSpotify", {
     // state, as user data does not change that much, this prevents unnecessary api calls.
     userDataMaxAge: 14400,
     userAffinityMaxAge: 36000,
+    // Filter which devices show up in the module
+    deviceFilter: [],
+    deviceFilterExclude: false,
+    filterNoticeSubtitle: true,
 
     updateInterval: {
       isPlaying: 1,
@@ -190,6 +194,8 @@ Module.register("MMM-OnSpotify", {
     this.sendSocketNotification("SET_CREDENTIALS_REFRESH", {
       preferences: {
         userAffinityUseTracks: this.config.userAffinityUseTracks,
+        deviceFilter: this.config.deviceFilter,
+        deviceFilterExclude: this.config.deviceFilterExclude,
       },
       credentials: {
         clientId: this.config.clientID,
@@ -351,7 +357,12 @@ Module.register("MMM-OnSpotify", {
           });
         break;
       case "USER_DATA":
-        this.userData = payload;
+        this.userData = {
+          ...payload,
+          subtitleOverride:
+            this.playerData && this.config.filteredDeviceNotice ?
+              this.playerData.notAllowedDevice : false,
+        };
         this.userData.age = Date.now();
         this.requestUserData = false;
         this.smartUpdate("USER_DATA");

@@ -1,0 +1,19 @@
+{
+    "DISPLAY_PRIVATE": "Private Spotify-Sitzung",
+    "FILTERED_PLAYING": "Nothing is playing in this room.",
+    "PRODUCT_WARNING": "Das aktuelle Konto hat kein Spotify Premium. Dieses Modul erfordert ein Premium-Konto!",
+    "CONNECTION_WARNING": "Es gab einen Verbindungsfehler. Verlangsamung des Abfragezyklus von api.spotify/...",
+    "CONNECTION_ERROR": "Verbindungsfehler bestehen weiterhin. Weitere Verlangsamung des Abfragezyklus. Alte Player-Daten werden ausgeblendet.",
+    "VIBRANT_NOT_LOADED": "(vendor) Vibrant wurde nicht korrekt geladen.",
+    "USER_CSS_ERROR": "Es gab einen Fehler beim Extrahieren von CSS-Informationen. (Die Dauer von Animationen/Übergängen sollte in \"ms\" sein)",
+    "STABLISHING_CONNECTION": "Verbindung zu Spotify wird hergestellt...",
+    "NOTHING_PLAYING": "Es wird nichts abgespielt",
+    "SPOTIFY_HEADER": "MMM-OnSpotify",
+    "DEBUG_COLORS": "Debug-Paletten werden angezeigt, weil <showDebugPalette> aktiviert ist",
+    "SPOTIFYCODE_EXPERIMENTAL": "<spotifyCodeExperimentalShow> ist aktiviert. Die API zum Generieren von Codes ist nicht öffentlich und kann unerwartet ändern. (https://github.com/Fabrizz/MMM-OnSpotify#other)",
+    "RESUME": "Modul fortsetzen",
+    "SUSPEND": "Modul anhalten",
+    "LIVELYRICS_NOTICE": "MMM-LiveLyrics gefunden! - Lies die MMM-LL Logs für mehr Infos. (https://github.com/Fabrizz/MMM-LiveLyrics)",
+    "CSSOVERRIDE_NOTICE": "Du überschreibst die Standard-MM2-CSS-Variablen. Überprüfe sie auf Rechtschreibfehler und Kontrastprobleme.",
+    "CSSOVERRIDE_MALFORMED": "Es gab einen Fehler beim Parsen \"experimentalCSSOverridesForMM2\" Arrays. Entferne deinen Eintrag oder überprüfe ihn auf Fehler."
+}

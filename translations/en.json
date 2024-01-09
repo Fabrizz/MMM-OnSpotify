@@ -1,5 +1,6 @@
 {
     "DISPLAY_PRIVATE": "Private Spotify session",
+    "FILTERED_PLAYING": "Nothing is playing in this room.",
     "PRODUCT_WARNING": "The current account is not using Spotify Premium. This module requieres a Premium account.",
     "CONNECTION_WARNING": "There was a connection error. Slowing the polling of api.spotify/...",
     "CONNECTION_ERROR": "Connection errors persists. Slowing the polling more. Hiding old player data.",

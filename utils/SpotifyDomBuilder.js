@@ -42,6 +42,9 @@ class SpotifyDomBuilder {
       palette_muteddark: "--ONSP-VIBRANT-DARKMUTED",
       brand_spotify: "--ONSP-BRANDCOLOR-SPOTIFY",
     };
+    this.changeSubtitleForNotice =
+      this.config.deviceFilter.length > 0 && this.config.filterNoticeSubtitle ?
+      "FILTERED_PLAYING" : "NOTHING_PLAYING"
     try {
       this.animationDefaultDelayFromCSS = Number(
         getComputedStyle(this.root)
@@ -665,7 +668,7 @@ class SpotifyDomBuilder {
       );
       this.root.style.setProperty(
         "--ONSP-INTERNAL-USER-SUBTITLE",
-        `'${this.translate("NOTHING_PLAYING")}'`,
+        `'${this.translate(this.changeSubtitleForNotice)}'`,
       );
       if (!data.image) {
         this.root.style.setProperty(
