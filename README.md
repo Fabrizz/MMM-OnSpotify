@@ -60,9 +60,12 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         userAffinityUseTracks: false,
         prefersLargeImageSize: false,
         hideTrackLenghtAndAnimateProgress: false,
-        showDebugPalette: true,
+        showDebugPalette: false,
         userDataMaxAge: 14400,
         userAffinityMaxAge: 36000,
+        deviceFilter: [],
+        deviceFilterExclude: false,
+        filterNoticeSubtitle: true,
         // Update intervals [SEE BELOW]
         isPlaying: 1,
         isEmpty: 2,
@@ -87,9 +90,9 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         useColorInTitle: true,
         useColorInUserData: true,
         showBlurBackground: true,
-        blurCorrectionInFrameSide: true,
-        blurCorrectionInAllSides: true,
-        alwaysUseDefaultDeviceIcon: true,
+        blurCorrectionInFrameSide: false,
+        blurCorrectionInAllSides: false,
+        alwaysUseDefaultDeviceIcon: false,
         experimentalCSSOverridesForMM2: false, // [SEE BELOW]
     },
 },
@@ -123,6 +126,9 @@ experimentalCSSOverridesForMM2: [
 | showDebugPalette <br> `false` | Shows the Vibrant output as a palette in the web console. <br /><br /> <img alt="Debug palette" src=".github/content/readme/image-debugpalette.png" width="80%"> |
 | userDataMaxAge <br> `14400` | (Seconds) The time in seconds of user data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot |
 | userAffinityMaxAge <br> `36000` | (Seconds) The time in seconds of affinity data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot  |
+| deviceFilter <br> `list[]` | List of device names to filter from the module, by default, its an inclusion list, you can change this using `deviceFilterExclude` (making it an exclusion list). When a filtered device plays `displayWhenEmpty` shows. Example: `["Sonos Bedroom", "DESKTOP-ABCD123"]` |
+| deviceFilterExclude <br> `false` | Inverts the `deviceFilter` list, making it exclude devices |
+| filterNoticeSubtitle <br> `true`| Changes the subtitle of `displayWhenEmpty`, to not show a false status if the `deviceFilter` is set |
 
 ### Polling Intervals:
 | Key | Description |

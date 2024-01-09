@@ -1,5 +1,6 @@
 {
     "DISPLAY_PRIVATE": "Private Spotify-Sitzung",
+    "FILTERED_PLAYING": "Nothing is playing in this room.",
     "PRODUCT_WARNING": "Das aktuelle Konto hat kein Spotify Premium. Dieses Modul erfordert ein Premium-Konto!",
     "CONNECTION_WARNING": "Es gab einen Verbindungsfehler. Verlangsamung des Abfragezyklus von api.spotify/...",
     "CONNECTION_ERROR": "Verbindungsfehler bestehen weiterhin. Weitere Verlangsamung des Abfragezyklus. Alte Player-Daten werden ausgeblendet.",
