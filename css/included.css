@@ -58,6 +58,11 @@
     --ONSP-INTERNAL-PLAYER-CODE-BARS: #ffffff;
     --ONSP-INTERNAL-PLAYER-CODE-MARGIN: calc(0px - var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH) - var(--ONSP-INTERNAL-PLAYER-GAP) + 0.1em);
     --ONSP-INTERNAL-PLAYER-CODE-PADDING: calc(var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH) - 0.1em);
+
+    --ONSP-INTERNAL-SCROLLER-SIZE-TITLE: 0px;
+    --ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE: 0px;
+    --ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE: 0ms;
+    --ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE: 0ms;
 }
 
 /* DYNAMIC BACKGROUND */
@@ -212,6 +217,7 @@
     white-space: nowrap;
     max-width: 100%;
     flex: 1;
+    align-items: flex-start;
 }
 .ONSP-Base .player .header .names .title {
     display: flex;
@@ -231,6 +237,22 @@
     font-weight: 100;
     margin-top: -0.16em;
     margin-bottom: -0.1em;
+}
+.ONSP-Base .player .header .names .title.scroll {
+    /*animation: scrollTitle 8s cubic-bezier(0.5, 0, 0.50, 1) 0s infinite alternate both;*/
+    animation: scrollTitle var(--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE) linear 0s infinite alternate both;
+}
+.ONSP-Base .player .header .names .subtitle.scroll {
+    /*animation: scrollSubtitle 8s cubic-bezier(0.5, 0, 0.50, 1) 0s infinite alternate both;*/
+    animation: scrollSubtitle var(--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE) linear 0s infinite alternate both;
+}
+@keyframes scrollTitle {
+    0%, 10%, 20% { transform:translateX(0px); }
+    80%, 90%, 100% { transform:translateX(calc(0px - var(--ONSP-INTERNAL-SCROLLER-SIZE-TITLE))); }
+}
+@keyframes scrollSubtitle {
+    0%, 10%, 20% { transform: translateX(0px); }
+    80%, 90%, 100% { transform: translateX(calc(0px - var(--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE))); }
 }
 .ONSP-Base .player .swappable {
     height: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
