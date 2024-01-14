@@ -1110,12 +1110,12 @@ class SpotifyDomBuilder {
           const titleData = [
             title,
             title - containerWidth,
-            5000 + (title - containerWidth) * 5,
+            5000 + (title - containerWidth) * 6,
           ];
           const subtitleData = [
             subtitle,
             subtitle - containerWidth,
-            5000 + (subtitle - containerWidth) * 5,
+            5000 + (subtitle - containerWidth) * 6,
           ];
 
           if (titleData[1] > 0 && subtitleData[1] > 0) {
@@ -1170,7 +1170,6 @@ class SpotifyDomBuilder {
       }
     } else {
       if (this.scrollerStatus) {
-        console.log("STOP SCROLL");
         this.scrollerStatus = false;
         this.root.style.setProperty(
           "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
