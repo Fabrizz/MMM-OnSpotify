@@ -44,8 +44,9 @@ class SpotifyDomBuilder {
       brand_spotify: "--ONSP-BRANDCOLOR-SPOTIFY",
     };
     this.changeSubtitleForNotice =
-      this.config.deviceFilter.length > 0 && this.config.filterNoticeSubtitle ?
-      "FILTERED_PLAYING" : "NOTHING_PLAYING"
+      this.config.deviceFilter.length > 0 && this.config.filterNoticeSubtitle
+        ? "FILTERED_PLAYING"
+        : "NOTHING_PLAYING";
     try {
       this.animationDefaultDelayFromCSS = Number(
         getComputedStyle(this.root)
@@ -1116,10 +1117,8 @@ class SpotifyDomBuilder {
             subtitle - containerWidth,
             5000 + (subtitle - containerWidth) * 5,
           ];
-          console.log(titleData, subtitleData);
 
           if (titleData[1] > 0 && subtitleData[1] > 0) {
-            console.log("BOTH");
             this.root.style.setProperty(
               "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
               `${titleData[1]}px`,
@@ -1143,7 +1142,6 @@ class SpotifyDomBuilder {
               `${subtitleData[2]}ms`,
             );
           } else if (titleData[1] > 0) {
-            console.log("TITLE");
             this.root.style.setProperty(
               "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
               `${titleData[1]}px`,
@@ -1156,7 +1154,6 @@ class SpotifyDomBuilder {
               `${titleData[2]}ms`,
             );
           } else if (subtitleData[1] > 0) {
-            console.log("SUBTITLE");
             this.root.style.setProperty(
               "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
               `${subtitleData[1]}px`,
