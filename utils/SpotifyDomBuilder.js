@@ -31,6 +31,7 @@ class SpotifyDomBuilder {
     this.affinityGridElements = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
     this.backgroundColors = ["AAA", "BBB", "CCC", "DDD", "EEE", "FFF"];
     this.currentAnimations = { playerTitle: false, playerTarget: false };
+    this.scrollerStatus = false;
     this.ONSPcolorVerboseMatch = {
       text: "--ONSP-VIBRANT-DOMINANTBRIGHT",
       background: "--ONSP-VIBRANT-DOMINANTDARK",
@@ -43,8 +44,9 @@ class SpotifyDomBuilder {
       brand_spotify: "--ONSP-BRANDCOLOR-SPOTIFY",
     };
     this.changeSubtitleForNotice =
-      this.config.deviceFilter.length > 0 && this.config.filterNoticeSubtitle ?
-      "FILTERED_PLAYING" : "NOTHING_PLAYING"
+      this.config.deviceFilter.length > 0 && this.config.filterNoticeSubtitle
+        ? "FILTERED_PLAYING"
+        : "NOTHING_PLAYING";
     try {
       this.animationDefaultDelayFromCSS = Number(
         getComputedStyle(this.root)
@@ -334,6 +336,7 @@ class SpotifyDomBuilder {
     header.classList.add("header");
     const names = document.createElement("div");
     names.classList.add("names");
+    names.id = "VSNO-TARGET-TEXTCONTAINER";
     const visual = document.createElement("span");
     visual.classList.add("visual");
 
@@ -432,6 +435,8 @@ class SpotifyDomBuilder {
 
     footer.appendChild(progressbar);
     footer.appendChild(target);
+
+    if (this.config.theming.scrollAnimations) this.setScrollAnimation(true);
 
     /* Main */
     player.appendChild(header);
@@ -578,6 +583,13 @@ class SpotifyDomBuilder {
       if (this.config.theming.spotifyCodeExperimentalShow)
         this.updateSpotifyCode(data.itemUri, "VSNO-TARGET-CODE", false);
     }
+
+    if (this.config.theming.scrollAnimations)
+      this.setScrollAnimation(
+        false,
+        data.statusIsNewSong || data.itemUri !== this.lastItemURI,
+        data.playerProgress,
+      );
 
     this.lastItemURI = data.itemUri;
   }
@@ -1077,6 +1089,110 @@ class SpotifyDomBuilder {
           ? `<svg style="animation: var(--ONSP-INTERNAL-LOWPOWER-FADEIN) var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME)" `
           : `<svg style="" `,
       );
+  }
+
+  /* TEXT DYNAMIC SCROLL */
+  setScrollAnimation(disable, newSong, ts) {
+    if (!disable && !newSong) {
+      if (Number(ts) > 8000) {
+        if (!this.scrollerStatus) {
+          this.scrollerStatus = true;
+          const container = document.getElementById(
+            "VSNO-TARGET-TEXTCONTAINER",
+          );
+          const subtitle = document.getElementById(
+            "VSNO-TARGET-SUBTITLE",
+          ).offsetWidth;
+          const title =
+            document.getElementById("VSNO-TARGET-TITLE").offsetWidth;
+
+          const containerWidth = container.offsetWidth;
+          const titleData = [
+            title,
+            title - containerWidth,
+            5000 + (title - containerWidth) * 6,
+          ];
+          const subtitleData = [
+            subtitle,
+            subtitle - containerWidth,
+            5000 + (subtitle - containerWidth) * 6,
+          ];
+
+          if (titleData[1] > 0 && subtitleData[1] > 0) {
+            this.root.style.setProperty(
+              "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
+              `${titleData[1]}px`,
+            );
+            document
+              .getElementById("VSNO-TARGET-TITLE")
+              .classList.add("scroll");
+            this.root.style.setProperty(
+              "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
+              `${subtitleData[1]}px`,
+            );
+            document
+              .getElementById("VSNO-TARGET-SUBTITLE")
+              .classList.add("scroll");
+            this.root.style.setProperty(
+              "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
+              `${titleData[2]}ms`,
+            );
+            this.root.style.setProperty(
+              "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
+              `${subtitleData[2]}ms`,
+            );
+          } else if (titleData[1] > 0) {
+            this.root.style.setProperty(
+              "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
+              `${titleData[1]}px`,
+            );
+            document
+              .getElementById("VSNO-TARGET-TITLE")
+              .classList.add("scroll");
+            this.root.style.setProperty(
+              "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
+              `${titleData[2]}ms`,
+            );
+          } else if (subtitleData[1] > 0) {
+            this.root.style.setProperty(
+              "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
+              `${subtitleData[1]}px`,
+            );
+            document
+              .getElementById("VSNO-TARGET-SUBTITLE")
+              .classList.add("scroll");
+            this.root.style.setProperty(
+              "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
+              `${subtitleData[2]}ms`,
+            );
+          }
+        }
+      }
+    } else {
+      if (this.scrollerStatus) {
+        this.scrollerStatus = false;
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
+          "0px",
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
+          "0px",
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
+          "0ms",
+        );
+        this.root.style.setProperty(
+          "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
+          "0ms",
+        );
+        document
+          .getElementById("VSNO-TARGET-SUBTITLE")
+          .classList.remove("scroll");
+        document.getElementById("VSNO-TARGET-TITLE").classList.remove("scroll");
+      }
+    }
   }
 
   /* Utils */
