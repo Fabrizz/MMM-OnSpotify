@@ -6,7 +6,7 @@
 
 The module includes an Authentication Service that guide you through the configuration of an Spotify App. MMM-OnSpotify does not use any third party service, its an independent app, just the Spotify Web API.
 
-> **IMPORTANT**  
+> [!NOTE]
 > All the data stays in your mirror. If you have multiple mirrors, the Authentication Service guides you on creating a new Spotify App per mirror.
 
 
@@ -24,7 +24,7 @@ npm install
 
 ### Step 2: Create a Spotify App and authorize the app
 
-> **WARNING**
+> [!WARNING]
 > You can not use MMM-NowPlayingOnSpotify (or other module) credentials, as the API scopes are different.
 
 To help you creating the Spotify App, we start the **Authentication Service**, that guides you on each step of the process:
@@ -112,7 +112,7 @@ experimentalCSSOverridesForMM2: [
 	["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"], /* View custom.css */
 ],
 ```
-> **NOTE**
+> [!TIP]
 > You can use other variables that are not from OnSpotify, just replace `palette_vibrantlight` with whatever variable you like, it gets wrapped on a `var(x)` function automatically.
 
 ### General options: 
@@ -143,20 +143,23 @@ experimentalCSSOverridesForMM2: [
 ### Theming:
 > See also: [Disabling **all** color based theming](#other)
 
-> **WARNING**
+> [!IMPORTANT]
+> - If you are using a **RPI5** Not tested, any insight is helpful!
 > - If you are using a **RPI4** I recommend to keep the default theming settings. (enabling some animations should not be a problem)
 > - If you are using a **RPI3** or below, I recommend turning off the animations and the blurred background, as its GPU intensive.
 > - If you using a **higher power device** (**RPI5**), you can turn on all the animations, the fade, text and transition animations look really good! 
 
 | Key |  Description |
 | :-- | :-- |
-| spotifyCodeExperimentalShow <br> `true` | Shows the Spotify Code (SpotifyScannable) for the current Song/Podcast/Audiobook. This is an experimental feature, as the API is not documented. <br /><br /><img alt="Spotify code" src=".github/content/readme/image-spotifycode.png" aling="left" height="40"> |
+| spotifyCodeExperimentalShow <br> `true` | Shows the Spotify Code (SpotifyScannable) for the current Song/Podcast/Audiobook. This is an experimental feature, as the API is not documented. SVG elements from the Spotify CDN are sanitized and parsed to allow animations (`spotifyVectorAnimations`). <br /><br /><img alt="Spotify code" src=".github/content/readme/image-spotifycode.png" aling="left" height="40"> |
 | spotifyCodeExperimentalUseColor <br> `true` | As shown on the image above, color the Spotify Code bar using cover art colors. |
 | spotifyCodeExperimentalSeparateItem <br> `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor`. <br /><br /><img alt="Spotify code bar separation" src=".github/content/readme/banner-codeseparation.png" aling="left" height="100">  |
-| mediaAnimations <br> `false` | Disable cover fade, useful if you are using a system that does not have a lot of GPU power (RPIs).  |
-| fadeAnimations <br> `false` | Disable fade in/out animations, useful if you are using a system that does not have a lot of GPU power (RPIs). |
-| transitionAnimations <br> `true` | Disable color transitions, useful if you are using a system that does not have a lot of GPU power (RPIs). It also affects other modules if you are using `experimentalCSSOverridesForMM2` default CSS config. |
-| textAnimations <br> `true` | Disable text transitions, useful if you are using a system that does not have a lot of GPU power (RPIs). |
+| mediaAnimations <br> `false` | Control the cover crossfade, this animation type waits for the image to be dowmloaded to do the fade between new/old media. (See the warning for RPIs above) |
+| fadeAnimations <br> `false` | Controls the fade effects between module status changes. Not too GPU intensive. (See the warning for RPIs above) |
+| scrollAnimations <br> `false` | Controls text scrolling for long music/podcast names/artist/show. (See the warning for RPIs above) |
+| transitionAnimations <br> `true` | Controls the transition between color changes, GPU intensive, but looks really good. (See the warning for RPIs above) (It also affects other modules if you are using `experimentalCSSOverridesForMM2` default CSS config.) |
+| textAnimations <br> `true` | Control the animation of text on music/podcast change, also affects the "current device" text. (See the warning for RPIs above) |
+| spotifyVectorAnimations <br> `false` | Control the animation of the Spotify code, It look really good, as it transitions seamless. (See the warning for RPIs above) |
 | roundMediaCorners <br> `true` | If cover art (and Spotify Code) should have rounded corners. |
 | roundProgressBar <br> `true` | If you want a rounded progress bar. |
 | showVerticalPipe <br> `true` | Shows or hides the vertical bar (or pipe) in the module header. |
@@ -170,7 +173,7 @@ experimentalCSSOverridesForMM2: [
 | experimentalCSSOverridesForMM2 <br> `false` | An array containing CSS overrides, OnSpotify manages the status depending on what is displayed on the screen and lets you customize other modules. [See above](#theming-3rd-party-modules) |
 
 ## Dynamic Theme
-> **WARNING**
+> [!CAUTION]
 > Using Dynamic Theming notifications is **deprecated**, use [CSS variables and overrides](#theming-3rd-party-modules).
 
 The module sends the following notifications on status change:
