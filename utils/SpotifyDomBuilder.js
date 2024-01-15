@@ -1093,106 +1093,117 @@ class SpotifyDomBuilder {
 
   /* TEXT DYNAMIC SCROLL */
   setScrollAnimation(disable, newSong, ts) {
-    if (!disable && !newSong) {
-      if (Number(ts) > 8000) {
-        if (!this.scrollerStatus) {
-          this.scrollerStatus = true;
-          const container = document.getElementById(
-            "VSNO-TARGET-TEXTCONTAINER",
-          );
-          const subtitle = document.getElementById(
-            "VSNO-TARGET-SUBTITLE",
-          ).offsetWidth;
-          const title =
-            document.getElementById("VSNO-TARGET-TITLE").offsetWidth;
+    try {
+      if (!disable && !newSong) {
+        if (Number(ts) > 8000) {
+          if (!this.scrollerStatus) {
+            this.scrollerStatus = true;
+            const container = document.getElementById(
+              "VSNO-TARGET-TEXTCONTAINER",
+            );
+            const subtitle = document.getElementById(
+              "VSNO-TARGET-SUBTITLE",
+            ).offsetWidth;
+            const title =
+              document.getElementById("VSNO-TARGET-TITLE").offsetWidth;
 
-          const containerWidth = container.offsetWidth;
-          const titleData = [
-            title,
-            title - containerWidth,
-            5000 + (title - containerWidth) * 6,
-          ];
-          const subtitleData = [
-            subtitle,
-            subtitle - containerWidth,
-            5000 + (subtitle - containerWidth) * 6,
-          ];
+            const containerWidth = container.offsetWidth;
+            const titleData = [
+              title,
+              title - containerWidth,
+              5000 + (title - containerWidth) * 6,
+            ];
+            const subtitleData = [
+              subtitle,
+              subtitle - containerWidth,
+              5000 + (subtitle - containerWidth) * 6,
+            ];
 
-          if (titleData[1] > 0 && subtitleData[1] > 0) {
-            this.root.style.setProperty(
-              "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
-              `${titleData[1]}px`,
-            );
-            document
-              .getElementById("VSNO-TARGET-TITLE")
-              .classList.add("scroll");
-            this.root.style.setProperty(
-              "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
-              `${subtitleData[1]}px`,
-            );
-            document
-              .getElementById("VSNO-TARGET-SUBTITLE")
-              .classList.add("scroll");
-            this.root.style.setProperty(
-              "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
-              `${titleData[2]}ms`,
-            );
-            this.root.style.setProperty(
-              "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
-              `${subtitleData[2]}ms`,
-            );
-          } else if (titleData[1] > 0) {
-            this.root.style.setProperty(
-              "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
-              `${titleData[1]}px`,
-            );
-            document
-              .getElementById("VSNO-TARGET-TITLE")
-              .classList.add("scroll");
-            this.root.style.setProperty(
-              "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
-              `${titleData[2]}ms`,
-            );
-          } else if (subtitleData[1] > 0) {
-            this.root.style.setProperty(
-              "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
-              `${subtitleData[1]}px`,
-            );
-            document
-              .getElementById("VSNO-TARGET-SUBTITLE")
-              .classList.add("scroll");
-            this.root.style.setProperty(
-              "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
-              `${subtitleData[2]}ms`,
-            );
+            if (titleData[1] > 0 && subtitleData[1] > 0) {
+              this.root.style.setProperty(
+                "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
+                `${titleData[1]}px`,
+              );
+              document
+                .getElementById("VSNO-TARGET-TITLE")
+                .classList.add("scroll");
+              this.root.style.setProperty(
+                "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
+                `${subtitleData[1]}px`,
+              );
+              document
+                .getElementById("VSNO-TARGET-SUBTITLE")
+                .classList.add("scroll");
+              this.root.style.setProperty(
+                "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
+                `${titleData[2]}ms`,
+              );
+              this.root.style.setProperty(
+                "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
+                `${subtitleData[2]}ms`,
+              );
+            } else if (titleData[1] > 0) {
+              this.root.style.setProperty(
+                "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
+                `${titleData[1]}px`,
+              );
+              document
+                .getElementById("VSNO-TARGET-TITLE")
+                .classList.add("scroll");
+              this.root.style.setProperty(
+                "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
+                `${titleData[2]}ms`,
+              );
+            } else if (subtitleData[1] > 0) {
+              this.root.style.setProperty(
+                "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
+                `${subtitleData[1]}px`,
+              );
+              document
+                .getElementById("VSNO-TARGET-SUBTITLE")
+                .classList.add("scroll");
+              this.root.style.setProperty(
+                "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
+                `${subtitleData[2]}ms`,
+              );
+            }
           }
         }
+      } else {
+        if (this.scrollerStatus) {
+          this.scrollerStatus = false;
+          this.root.style.setProperty(
+            "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
+            "0px",
+          );
+          this.root.style.setProperty(
+            "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
+            "0px",
+          );
+          this.root.style.setProperty(
+            "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
+            "0ms",
+          );
+          this.root.style.setProperty(
+            "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
+            "0ms",
+          );
+          document
+            .getElementById("VSNO-TARGET-SUBTITLE")
+            .classList.remove("scroll");
+          document.getElementById("VSNO-TARGET-TITLE").classList.remove("scroll");
+        }
       }
-    } else {
-      if (this.scrollerStatus) {
-        this.scrollerStatus = false;
-        this.root.style.setProperty(
-          "--ONSP-INTERNAL-SCROLLER-SIZE-TITLE",
-          "0px",
-        );
-        this.root.style.setProperty(
-          "--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE",
-          "0px",
-        );
-        this.root.style.setProperty(
-          "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-TITLE",
-          "0ms",
-        );
-        this.root.style.setProperty(
-          "--ONSP-INTERNAL-SCROLLER-TIMING-SUM-SUBTITLE",
-          "0ms",
-        );
-        document
-          .getElementById("VSNO-TARGET-SUBTITLE")
-          .classList.remove("scroll");
-        document.getElementById("VSNO-TARGET-TITLE").classList.remove("scroll");
-      }
+    } catch (error) {
+      console.info(
+        `%c· MMM-OnSpotify %c %c[INFO]%c Unknown unsync, could not change scroller status`,
+        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "",
+        "background-color:orange;color:black",
+        "",
+      );
     }
+    
   }
 
   /* Utils */
