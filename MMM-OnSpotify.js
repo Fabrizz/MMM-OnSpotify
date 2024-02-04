@@ -36,6 +36,7 @@ Module.register("MMM-OnSpotify", {
     deviceFilter: [],
     deviceFilterExclude: false,
     filterNoticeSubtitle: true,
+    lang: config.language,
 
     updateInterval: {
       isPlaying: 1,
@@ -196,6 +197,7 @@ Module.register("MMM-OnSpotify", {
     this.sendSocketNotification("SET_CREDENTIALS_REFRESH", {
       preferences: {
         userAffinityUseTracks: this.config.userAffinityUseTracks,
+        language: this.config.lang,
         deviceFilter: this.config.deviceFilter,
         deviceFilterExclude: this.config.deviceFilterExclude,
       },

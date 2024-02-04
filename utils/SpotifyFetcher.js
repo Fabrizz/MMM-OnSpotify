@@ -16,6 +16,7 @@ module.exports = class SpotifyFetcher {
   constructor(payload) {
     this.credentials = payload.credentials;
     this.preferences = payload.preferences;
+    this.language = payload.language,
     this.tokenExpiresAt = moment();
   }
 
@@ -40,6 +41,9 @@ module.exports = class SpotifyFetcher {
 
   requestData(type) {
     let sl = "v1/me/top/artists?limit=9";
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${this.credentials.accessToken}`);
+    headers.append("Accept-Language", this.language);
     switch (type) {
       case "PLAYER":
         return fetch(
@@ -47,9 +51,7 @@ module.exports = class SpotifyFetcher {
           {
             method: "GET",
             referrerPolicy: "no-referrer",
-            headers: {
-              Authorization: `Bearer ${this.credentials.accessToken}`,
-            },
+            headers: headers,
           },
         )
           .then((res) => {
@@ -75,7 +77,7 @@ module.exports = class SpotifyFetcher {
         return fetch(new URL("v1/me", userBase), {
           method: "GET",
           referrerPolicy: "no-referrer",
-          headers: { Authorization: `Bearer ${this.credentials.accessToken}` },
+          headers: headers,
         })
           .then((res) => {
             if (!res.ok && res.status === 429)
@@ -98,7 +100,7 @@ module.exports = class SpotifyFetcher {
         return fetch(new URL("v1/me/player/queue", userBase), {
           method: "GET",
           referrerPolicy: "no-referrer",
-          headers: { Authorization: `Bearer ${this.credentials.accessToken}` },
+          headers: headers,
         })
           .then((res) => {
             if (!res.ok && res.status === 429)
@@ -123,9 +125,7 @@ module.exports = class SpotifyFetcher {
         return fetch(new URL(sl, userBase), {
           method: "GET",
           referrerPolicy: "no-referrer",
-          headers: {
-            Authorization: `Bearer ${this.credentials.accessToken}`,
-          },
+          headers: headers,
         })
           .then((res) => {
             if (!res.ok && res.status === 429)
@@ -148,9 +148,7 @@ module.exports = class SpotifyFetcher {
         return fetch(new URL("v1/me/player/recently-played", userBase), {
           method: "GET",
           referrerPolicy: "no-referrer",
-          headers: {
-            Authorization: `Bearer ${this.credentials.accessToken}`,
-          },
+          headers: headers,
         })
           .then((res) => {
             if (!res.ok && res.status === 429)
