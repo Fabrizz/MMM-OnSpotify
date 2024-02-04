@@ -197,7 +197,6 @@ Module.register("MMM-OnSpotify", {
     this.sendSocketNotification("SET_CREDENTIALS_REFRESH", {
       preferences: {
         userAffinityUseTracks: this.config.userAffinityUseTracks,
-        language: this.config.lang,
         deviceFilter: this.config.deviceFilter,
         deviceFilterExclude: this.config.deviceFilterExclude,
       },
@@ -207,6 +206,7 @@ Module.register("MMM-OnSpotify", {
         accessToken: this.config.accessToken,
         refreshToken: this.config.refreshToken,
       },
+      language: this.config.lang,
     });
     this.updateFetchingLoop(this.config.updateInterval[this.lastStatus]);
   },
