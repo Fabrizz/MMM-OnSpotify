@@ -11,10 +11,9 @@
  * and Raywoo implementation:
  * https://github.com/raywo/MMM-NowPlayingOnSpotify/tree/master/authorization
  */
-
+const querystring = require("querystring");
 const express = require("express");
 const request = require("request");
-const querystring = require("querystring");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 
@@ -75,9 +74,9 @@ function getAuthOptions(code) {
       grant_type: "authorization_code",
     },
     headers: {
-      Authorization:
-        "Basic " +
-        Buffer.from(client_id + ":" + client_secret).toString("base64"),
+      Authorization: `Basic ${Buffer.from(
+        `${client_id}:${client_secret}`,
+      ).toString("base64")}`,
     },
     json: true,
   };
@@ -88,19 +87,18 @@ function redirectToSuccess(response, body) {
   let refresh_token = body.refresh_token;
   // we can also pass the token to the browser to make requests from there
   response.redirect(
-    "/#" +
-      querystring.stringify({
-        access_token: access_token,
-        refresh_token: refresh_token,
-        client_id: client_id,
-        client_secret: client_secret,
-      }),
+    `/#${querystring.stringify({
+      access_token: access_token,
+      refresh_token: refresh_token,
+      client_id: client_id,
+      client_secret: client_secret,
+    })}`,
   );
 }
 
 let stateKey = "spotify_auth_state";
 let app = express();
-app.use(express.static(__dirname + "/client"));
+app.use(express.static(`${__dirname}/client`));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

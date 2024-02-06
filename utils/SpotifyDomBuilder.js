@@ -1191,19 +1191,15 @@ class SpotifyDomBuilder {
           document
             .getElementById("VSNO-TARGET-SUBTITLE")
             .classList.remove("scroll");
-          document.getElementById("VSNO-TARGET-TITLE").classList.remove("scroll");
+          document
+            .getElementById("VSNO-TARGET-TITLE")
+            .classList.remove("scroll");
         }
       }
     } catch (error) {
-      console.info(
-        `%c· MMM-OnSpotify %c %c[INFO]%c Unknown unsync, could not change scroller status`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
-        "",
-        "background-color:orange;color:black",
-        "",
-      );
+      /* This effect is based on the current TS of the song, the module reference is going to always be some ms behind,
+      here we catch, any even if it never happens, the error thown if the player changes state */
     }
-    
   }
 
   /* Utils */
