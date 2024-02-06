@@ -36,6 +36,7 @@ Module.register("MMM-OnSpotify", {
     deviceFilter: [],
     deviceFilterExclude: false,
     filterNoticeSubtitle: true,
+    lang: config.language,
 
     updateInterval: {
       isPlaying: 1,
@@ -205,6 +206,7 @@ Module.register("MMM-OnSpotify", {
         accessToken: this.config.accessToken,
         refreshToken: this.config.refreshToken,
       },
+      language: this.config.lang,
     });
     this.updateFetchingLoop(this.config.updateInterval[this.lastStatus]);
   },
