@@ -36,7 +36,8 @@ Module.register("MMM-OnSpotify", {
     deviceFilter: [],
     deviceFilterExclude: false,
     filterNoticeSubtitle: true,
-    lang: config.language,
+    // Changes the language sent to Spotify
+    language: config.language,
 
     updateInterval: {
       isPlaying: 1,
@@ -206,7 +207,7 @@ Module.register("MMM-OnSpotify", {
         accessToken: this.config.accessToken,
         refreshToken: this.config.refreshToken,
       },
-      language: this.config.lang,
+      language: this.config.language,
     });
     this.updateFetchingLoop(this.config.updateInterval[this.lastStatus]);
   },
@@ -366,8 +367,9 @@ Module.register("MMM-OnSpotify", {
         this.userData = {
           ...payload,
           subtitleOverride:
-            this.playerData && this.config.filteredDeviceNotice ?
-              this.playerData.notAllowedDevice : false,
+            this.playerData && this.config.filteredDeviceNotice
+              ? this.playerData.notAllowedDevice
+              : false,
         };
         this.userData.age = Date.now();
         this.requestUserData = false;
@@ -666,8 +668,7 @@ Module.register("MMM-OnSpotify", {
       ? (this.config.theming.textAnimations = this.config.textAnimations)
       : null;
     typeof this.config.scrollAnimations === "boolean"
-      ? (this.config.theming.scrollAnimations =
-        this.config.scrollAnimations)
+      ? (this.config.theming.scrollAnimations = this.config.scrollAnimations)
       : null;
     typeof this.config.spotifyVectorAnimations === "boolean"
       ? (this.config.theming.spotifyVectorAnimations =

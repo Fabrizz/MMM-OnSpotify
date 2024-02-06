@@ -16,7 +16,7 @@ module.exports = class SpotifyFetcher {
   constructor(payload) {
     this.credentials = payload.credentials;
     this.preferences = payload.preferences;
-    this.language = payload.language,
+    this.language = payload.language;
     this.tokenExpiresAt = moment();
   }
 
@@ -43,7 +43,8 @@ module.exports = class SpotifyFetcher {
     let sl = "v1/me/top/artists?limit=9";
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${this.credentials.accessToken}`);
-    headers.append("Accept-Language", this.language);
+    // TODO: Check if using &locale= (or &market=) has any different effect, as its not documented correctly
+    if (this.language) headers.append("Accept-Language", this.language);
     switch (type) {
       case "PLAYER":
         return fetch(

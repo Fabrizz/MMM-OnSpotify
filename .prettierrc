@@ -4,5 +4,6 @@
     "trailingComma": "all",
     "bracketSpacing": true,
     "arrowParens": "always",
-    "proseWrap": "always"
+    "proseWrap": "always",
+    "endOfLine": "auto"
 }

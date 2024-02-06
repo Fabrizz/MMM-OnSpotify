@@ -30,7 +30,7 @@ module.exports = NodeHelper.create({
       case "SET_CREDENTIALS_REFRESH":
         this.fetcher = new SpotifyFetcher(payload);
         this.fetchSpotifyData("PLAYER");
-        this.preferences = payload.preferences
+        this.preferences = payload.preferences;
         break;
       case "REFRESH_PLAYER":
         this.fetchSpotifyData("PLAYER");
@@ -61,7 +61,12 @@ module.exports = NodeHelper.create({
       switch (type) {
         case "PLAYER":
           // CASE S1 The data is OK and the target is a filtered device
-          if (data && data.device && data.device.name && !this.isAllowedDevice(data.device.name)) {
+          if (
+            data &&
+            data.device &&
+            data.device.name &&
+            !this.isAllowedDevice(data.device.name)
+          ) {
             this.sendSocketNotification("PLAYER_DATA", {
               statusIsPlayerEmpty: true,
               statusIsNewSong: false,
@@ -69,15 +74,15 @@ module.exports = NodeHelper.create({
               statusIsChangeToMediaPlayer: false,
               statusPlayerUpdating: false,
               statusIsDeviceChange: false,
-              notAllowedDevice: data.device.name
+              notAllowedDevice: data.device.name,
             });
             this.lastMediaUri = "empty";
             this.lastPlayerStatus = false;
             this.lastPlayerStatusCount = 0;
             this.lastDeviceName = "unknown";
-            break
+            break;
           }
-          // CASE S2 The data is OK and the target is in a private session 
+          // CASE S2 The data is OK and the target is in a private session
           if (data && data.device && data.device.is_private_session) {
             let payload = {
               /* Player data */
@@ -97,7 +102,7 @@ module.exports = NodeHelper.create({
               statusPlayerUpdating: false,
               statusIsDeviceChange:
                 this.lastDeviceName !== data.device.name ? true : false,
-              notAllowedDevice: false
+              notAllowedDevice: false,
             };
             this.sendSocketNotification("PLAYER_DATA", payload);
             this.lastMediaUri = "privatesession";
@@ -150,7 +155,7 @@ module.exports = NodeHelper.create({
               statusPlayerUpdating: false,
               statusIsDeviceChange:
                 this.lastDeviceName !== data.device.name ? true : false,
-              notAllowedDevice: false
+              notAllowedDevice: false,
             };
             this.sendSocketNotification("PLAYER_DATA", payload);
             this.lastMediaUri = data.item.uri;
@@ -169,7 +174,7 @@ module.exports = NodeHelper.create({
                 statusIsChangeToMediaPlayer: false,
                 statusPlayerUpdating: true,
                 statusIsDeviceChange: false,
-                notAllowedDevice: false
+                notAllowedDevice: false,
               });
               this.lastPlayerStatusCount = this.lastPlayerStatusCount + 1;
               this.lastPlayerStatus = true;
@@ -182,7 +187,7 @@ module.exports = NodeHelper.create({
                 statusIsChangeToMediaPlayer: false,
                 statusPlayerUpdating: false,
                 statusIsDeviceChange: false,
-                notAllowedDevice: false
+                notAllowedDevice: false,
               });
               this.lastMediaUri = "empty";
               this.lastPlayerStatus = false;
@@ -197,7 +202,7 @@ module.exports = NodeHelper.create({
               statusIsChangeToMediaPlayer: false,
               statusPlayerUpdating: false,
               statusIsDeviceChange: false,
-              notAllowedDevice: false
+              notAllowedDevice: false,
             });
             this.lastMediaUri = "empty";
             this.lastPlayerStatus = false;
@@ -254,10 +259,14 @@ module.exports = NodeHelper.create({
   },
 
   isAllowedDevice: function (currentDevice) {
-    if (!this.preferences.deviceFilter || this.preferences.deviceFilter.length < 1) return true
-    return this.preferences.deviceFilterExclude ?
-      !this.preferences.deviceFilter.includes(currentDevice) :
-      this.preferences.deviceFilter.includes(currentDevice)
+    if (
+      !this.preferences.deviceFilter ||
+      this.preferences.deviceFilter.length < 1
+    )
+      return true;
+    return this.preferences.deviceFilterExclude
+      ? !this.preferences.deviceFilter.includes(currentDevice)
+      : this.preferences.deviceFilter.includes(currentDevice);
   },
   processArtists: (artists) => artists.map((artist) => artist.name).join(", "),
   processImages: (images) => {

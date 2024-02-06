@@ -130,7 +130,7 @@ experimentalCSSOverridesForMM2: [
 | deviceFilter <br> `list[]` | List of device names to filter from the module, by default, its an inclusion list, you can change this using `deviceFilterExclude` (making it an exclusion list). When a filtered device plays `displayWhenEmpty` shows. Example: `["Sonos Bedroom", "DESKTOP-ABCD123"]` |
 | deviceFilterExclude <br> `false` | Inverts the `deviceFilter` list, making it exclude devices |
 | filterNoticeSubtitle <br> `true`| Changes the subtitle of `displayWhenEmpty`, to not show a false status if the `deviceFilter` is set |
-| lanugae <br> `config.language`| Changes the language in which titles of songs are shown. When it is not set, it depends on `config.language`. Example: `en-US` |
+| language <br> `config.language`| Changes the language in which titles of songs are shown. When it is not set, it depends on `config.language`. Example: `en-US` (Or `false` if you prefer the default api response) |
 
 ### Polling Intervals:
 | Key | Description |
