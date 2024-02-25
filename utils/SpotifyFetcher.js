@@ -17,6 +17,8 @@ module.exports = class SpotifyFetcher {
     this.preferences = payload.preferences;
     this.language = payload.language;
     this.tokenExpiresAt = Date.now();
+    this.errorCount = 0;
+    this.showErrorEvery = 14;
   }
 
   async getData(type) {
@@ -44,7 +46,7 @@ module.exports = class SpotifyFetcher {
       minute: "2-digit",
       second: "2-digit",
     });
-    return formattedTime;
+    return formattedTime === "Invalid date" ? milliseconds : formattedTime;
   }
 
   requestData(type) {
@@ -71,15 +73,18 @@ module.exports = class SpotifyFetcher {
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
 
+            this.errorCount = 0;
             if (res.statusText === "No Content") return null;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get player Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-NPOS] [Node Helper] (${this.errorCount}) Get player Data >> `,
+                error,
+              );
             return error;
           });
       case "USER":
@@ -95,14 +100,18 @@ module.exports = class SpotifyFetcher {
                 "[MMM-NPOS] [Node Helper] Get User Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get User Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-NPOS] [Node Helper](${this.errorCount}) Get User Data >> `,
+                error,
+              );
             return error;
           });
       case "QUEUE":
@@ -118,14 +127,18 @@ module.exports = class SpotifyFetcher {
                 "[MMM-NPOS] [Node Helper] Get Queue Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Queue Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-NPOS] [Node Helper] (${this.errorCount}) Get Queue Data >> `,
+                error,
+              );
             return error;
           });
       case "AFFINITY":
@@ -143,14 +156,18 @@ module.exports = class SpotifyFetcher {
                 "[MMM-NPOS] [Node Helper] Get Affinity Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Affinity Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-NPOS] [Node Helper] (${this.errorCount}) Get Affinity Data >> `,
+                error,
+              );
             return error;
           });
       case "RECENT":
@@ -166,14 +183,18 @@ module.exports = class SpotifyFetcher {
                 "[MMM-NPOS] [Node Helper] Get Recently-Played Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Recently-Played Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-NPOS] [Node Helper] (${this.errorCount}) Get Recently-Played Data >> `,
+                error,
+              );
             return error;
           });
     }

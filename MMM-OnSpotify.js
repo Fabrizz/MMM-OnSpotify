@@ -124,6 +124,10 @@ Module.register("MMM-OnSpotify", {
     blurCorrectionInAllSides: false,
     alwaysUseDefaultDeviceIcon: false,
     showVerticalPipe: true,
+
+    // In special use cases where a frontend needs to take over other you can disabl
+    // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
+    matchBackendUUID: true,
   },
 
   start: function () {
@@ -136,7 +140,9 @@ Module.register("MMM-OnSpotify", {
     this.nowDisplaying = null;
     this.globalThemeSelected = null;
     this.currentStatus = "";
-    this.backendExpectId = Date.now().toString(16);
+    this.backendExpectId = this.matchBackendUUID
+      ? Date.now().toString(16)
+      : "ABC";
     this.lastServerId = undefined;
     this.retries = 0;
     this.lastPrivate = [null, null];
