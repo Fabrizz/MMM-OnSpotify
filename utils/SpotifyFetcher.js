@@ -6,7 +6,6 @@
  * Original implementation: Raywo | https://github.com/raywo/MMM-NowPlayingOnSpotify
  */
 
-const moment = require("moment");
 // Use node fetch as most MM2 installs use older node
 const fetch = require("node-fetch");
 const tokenRefreshBase = "https://accounts.spotify.com";
@@ -17,26 +16,35 @@ module.exports = class SpotifyFetcher {
     this.credentials = payload.credentials;
     this.preferences = payload.preferences;
     this.language = payload.language;
-    this.tokenExpiresAt = moment();
+    this.tokenExpiresAt = Date.now();
   }
 
   async getData(type) {
-    if (moment().isBefore(this.tokenExpiresAt)) {
+    const currentTime = Date.now();
+    if (currentTime < this.tokenExpiresAt) {
       return this.requestData(type);
     } else {
       let res = await this.refreshAccessToken();
-      if (res.ok) {
+      if (res) {
         console.log(
-          "\x1b[46m%s\x1b[0m",
-          `[MMM-NPOS] [Node Helper] Access token expired: >> ${this.tokenExpiresAt.format(
-            "HH:mm:ss",
-          )} | Refreshed successfully.`,
+          "[MMM-NPOS] [Node Helper] Access token expired: >> \x1b[46m%s\x1b[0m",
+          `${this.formatTime(this.tokenExpiresAt)}`,
         );
       }
       this.credentials.accessToken = res.access_token;
-      this.tokenExpiresAt = moment().add(res.expires_in, "seconds");
+      this.tokenExpiresAt = currentTime + res.expires_in * 1000;
       return this.requestData(type);
     }
+  }
+
+  formatTime(milliseconds) {
+    const formattedTime = new Date(milliseconds).toLocaleTimeString("en-US", {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return formattedTime;
   }
 
   requestData(type) {

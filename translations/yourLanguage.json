@@ -1,7 +1,7 @@
 {
     "DISPLAY_PRIVATE": "Private Spotify session",
     "FILTERED_PLAYING": "Nothing is playing in this room.",
-    "PRODUCT_WARNING": "The current account is not using Spotify Premium. This module requieres a Premium account.",
+    "PRODUCT_WARNING": "The current account is not using Spotify Premium. This module requires a Premium account.",
     "CONNECTION_WARNING": "There was a connection error. Slowing the polling of api.spotify/...",
     "CONNECTION_ERROR": "Connection errors persists. Slowing the polling more. Hiding old player data.",
     "VIBRANT_NOT_LOADED": "(vendor) Vibrant did not load correctly.",
@@ -15,5 +15,6 @@
     "SUSPEND": "Suspending module",
     "LIVELYRICS_NOTICE": "MMM-LiveLyrics found! - Check MMM-LL logs to see more. (https://github.com/Fabrizz/MMM-LiveLyrics)",
     "CSSOVERRIDE_NOTICE": "You are overriding default MM2 CSS variables. Check for spelling errors and contrast issues",
-    "CSSOVERRIDE_MALFORMED": "There was an error parsing your \"experimentalCSSOverridesForMM2\" array. Remove your custom config entry or check it for errors"
+    "CSSOVERRIDE_MALFORMED": "There was an error parsing your \"experimentalCSSOverridesForMM2\" array. Remove your custom config entry or check it for errors",
+    "BACKEND_REAUTH": "Module backend recovered from restart/stale state. (Backend requested credentials with different uuid)"
 }

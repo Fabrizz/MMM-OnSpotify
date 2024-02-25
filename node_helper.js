@@ -14,33 +14,46 @@ module.exports = NodeHelper.create({
     console.log("\x1b[46m%s\x1b[0m", `[Node Helper] Init >> ${this.name}`);
     this.fetcher = undefined;
     // Helps keping track of when the player becomes empty
-    this.lastPlayerStatus = false;
+    this.lastPlayerStatus = undefined;
     // Helps keping track of when the song actually changes
-    this.lastMediaUri = null;
+    this.lastMediaUri = undefined;
     // Helps keping track of when the current device target is changed
-    this.lastDeviceName = null;
+    this.lastDeviceName = undefined;
     // The times that an available (but empty) player has been returned by the api
     this.isPlayerInTransit = 0;
     // Configuration sent to the helper
-    this.preferences = null;
+    this.preferences = undefined;
+    // Use a identifier to filter socket-io retries.
+    this.appendableId = undefined;
+    this.serversideId = Date.now().toString(16);
   },
 
   socketNotificationReceived: function (notification, payload) {
     switch (notification) {
       case "SET_CREDENTIALS_REFRESH":
+        // Blocks re-requests caused by socket.io implementation
+        if (payload.backendExpectId === this.appendableId) break;
         this.fetcher = new SpotifyFetcher(payload);
         this.fetchSpotifyData("PLAYER");
         this.preferences = payload.preferences;
+        this.appendableId = payload.backendExpectId;
+        console.log(
+          "[MMM-NPOS] [Node Helper] Session identifier: >> \x1b[46m%s\x1b[0m",
+          `${this.appendableId}`,
+        );
         break;
       case "REFRESH_PLAYER":
-        this.fetchSpotifyData("PLAYER");
+        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("PLAYER");
         break;
       case "REFRESH_USER":
-        this.fetchSpotifyData("USER");
+        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("USER");
         break;
       case "REFRESH_AFFINITY":
-        this.fetchSpotifyData("AFFINITY");
+        if (this.isCorrectIdOrRefresh(payload))
+          this.fetchSpotifyData("AFFINITY");
         break;
+
+      /* WIP | Non implemented */
       case "REFRESH_QUEUE":
         this.fetchSpotifyData("QUEUE");
         break;
@@ -258,6 +271,16 @@ module.exports = NodeHelper.create({
     }
   },
 
+  isCorrectIdOrRefresh(rcvd) {
+    if (rcvd !== this.appendableId) {
+      if (typeof this.appendableId === "undefined") {
+        // Means that the backend was restarted and the frontend was maintained
+        this.sendSocketNotification("REQUEST_REAUTH", this.serversideId);
+      }
+      return false;
+    }
+    return true;
+  },
   isAllowedDevice: function (currentDevice) {
     if (
       !this.preferences.deviceFilter ||

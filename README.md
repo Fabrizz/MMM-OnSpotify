@@ -37,7 +37,7 @@ npm run auth
 ```
 Once you finish, you are all set with the basic configuration. Scroll down to see all the different theming options for the module.
 
-> When the Authorization Service is running, you can access it from your Raspberry Pi going to `http://localhost:8100/`. You can also access it remotely using `http://<IP>:8100/`. Note that using the device where you have Magic Mirror is recommended, as you are going to copy and paste the generated config entry.
+> When the Authorization Service is running, you can access it from your Raspberry Pi going to `http://localhost:8100/`. You can also access it remotely using `http://<IP>:8100/`. Note that using the device where you have MagicMirror² installed is recommended, as you are going to copy and paste the generated config entry.
 
 # Module Configuration
 #### The configuration section is divided in groups, scroll down or click what to see below:
@@ -59,7 +59,7 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         displayWhenEmpty: "both",
         userAffinityUseTracks: false,
         prefersLargeImageSize: false,
-        hideTrackLenghtAndAnimateProgress: false,
+        hideTrackLengthAndAnimateProgress: false,
         showDebugPalette: false,
         userDataMaxAge: 14400,
         userAffinityMaxAge: 36000,
@@ -77,8 +77,10 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         // Animations [SEE BELOW]
         mediaAnimations: false,
         fadeAnimations: false,
+        scrollAnimations: false,
         textAnimations: true,
         transitionAnimations: true,
+        spotifyVectorAnimations: false,
         // Spotify Code (EXPERMIENTAL)
         spotifyCodeExperimentalShow: true,
         spotifyCodeExperimentalUseColor: true,
@@ -123,7 +125,7 @@ experimentalCSSOverridesForMM2: [
 | displayWhenEmpty <br> `"both"` | What to display when the player is empty. Options are: <br />- `user`: Displays user card <br />- `affinity`: Shows user top albums/songs <br />- `both`: Combines the user card and affinity data <br />- `logo`: Displays the Spotify logo <br />- `none`: Display only when playing<br /><br /><img alt="Display when empty " src=".github/content/readme/banner-onidle.png"> |
 | userAffinityUseTracks <br> `false` | If you have selected to show your affinity data on idle, you can choose between showing tracks or albums. |
 | prefersLargeImageSize <br> `false` | If you prefer to use higher resolution images. Not recommended for normal use. |
-| hideTrackLenghtAndAnimateProgress <br> `false` | Depending on your internet conection or your selected polling rate, you may want to hide the actual seconds and animate the progress bar. |
+| hideTrackLengthAndAnimateProgress <br> `false` | Depending on your internet conection or your selected polling rate, you may want to hide the actual seconds and animate the progress bar. |
 | showDebugPalette <br> `false` | Shows the Vibrant output as a palette in the web console. <br /><br /> <img alt="Debug palette" src=".github/content/readme/image-debugpalette.png" width="80%"> |
 | userDataMaxAge <br> `14400` | (Seconds) The time in seconds of user data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot |
 | userAffinityMaxAge <br> `36000` | (Seconds) The time in seconds of affinity data TTL. If set to 0, its updated everytime that the player goes to idle, as user data rarely changes, this allows a middle ground between updating always and only on boot  |
@@ -151,17 +153,26 @@ experimentalCSSOverridesForMM2: [
 > - If you are using a **RPI3** or below, I recommend turning off the animations and the blurred background, as its GPU intensive.
 > - If you using a **higher power device** (**RPI5**), you can turn on all the animations, the fade, text and transition animations look really good! 
 
+#### Animations
+| Key |  Description |
+| :-- | :-- |
+| mediaAnimations <br> `false` | Control the cover crossfade, this animation type waits for the image to be dowmloaded to do the fade between new/old media. (See the warning for RPIs above) |
+| fadeAnimations <br> `false` | Controls the fade effects between module status changes. Not too GPU intensive. (See the warning for RPIs above) |
+| scrollAnimations <br> `false` | Controls text scrolling for long music/podcast names/artist/show. (See the warning for RPIs above) |
+| textAnimations <br> `true` | Control the animation of text on music/podcast change, also affects the "current device" text. (See the warning for RPIs above) |
+| transitionAnimations <br> `true` | Controls the transition between color changes, GPU intensive, but looks really good. (See the warning for RPIs above) (It also affects other modules if you are using `experimentalCSSOverridesForMM2` default CSS config.) |
+| spotifyVectorAnimations <br> `false` | Control the animation of the Spotify code, It look really good, as it transitions seamless. (See the warning for RPIs above) |
+
+#### Spotify Code
 | Key |  Description |
 | :-- | :-- |
 | spotifyCodeExperimentalShow <br> `true` | Shows the Spotify Code (SpotifyScannable) for the current Song/Podcast/Audiobook. This is an experimental feature, as the API is not documented. SVG elements from the Spotify CDN are sanitized and parsed to allow animations (`spotifyVectorAnimations`). <br /><br /><img alt="Spotify code" src=".github/content/readme/image-spotifycode.png" aling="left" height="40"> |
 | spotifyCodeExperimentalUseColor <br> `true` | As shown on the image above, color the Spotify Code bar using cover art colors. |
 | spotifyCodeExperimentalSeparateItem <br> `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor`. <br /><br /><img alt="Spotify code bar separation" src=".github/content/readme/banner-codeseparation.png" aling="left" height="100">  |
-| mediaAnimations <br> `false` | Control the cover crossfade, this animation type waits for the image to be dowmloaded to do the fade between new/old media. (See the warning for RPIs above) |
-| fadeAnimations <br> `false` | Controls the fade effects between module status changes. Not too GPU intensive. (See the warning for RPIs above) |
-| scrollAnimations <br> `false` | Controls text scrolling for long music/podcast names/artist/show. (See the warning for RPIs above) |
-| transitionAnimations <br> `true` | Controls the transition between color changes, GPU intensive, but looks really good. (See the warning for RPIs above) (It also affects other modules if you are using `experimentalCSSOverridesForMM2` default CSS config.) |
-| textAnimations <br> `true` | Control the animation of text on music/podcast change, also affects the "current device" text. (See the warning for RPIs above) |
-| spotifyVectorAnimations <br> `false` | Control the animation of the Spotify code, It look really good, as it transitions seamless. (See the warning for RPIs above) |
+
+#### General Theming options
+| Key |  Description |
+| :-- | :-- |
 | roundMediaCorners <br> `true` | If cover art (and Spotify Code) should have rounded corners. |
 | roundProgressBar <br> `true` | If you want a rounded progress bar. |
 | showVerticalPipe <br> `true` | Shows or hides the vertical bar (or pipe) in the module header. |
@@ -174,16 +185,14 @@ experimentalCSSOverridesForMM2: [
 | alwaysUseDefaultDeviceIcon <br> `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it. |
 | experimentalCSSOverridesForMM2 <br> `false` | An array containing CSS overrides, OnSpotify manages the status depending on what is displayed on the screen and lets you customize other modules. [See above](#theming-3rd-party-modules) |
 
-## Dynamic Theme
-> [!CAUTION]
-> Using Dynamic Theming notifications is **deprecated**, use [CSS variables and overrides](#theming-3rd-party-modules).
-
-The module sends the following notifications on status change:
-```js
-/* Playing     */ { provider: "MMM-OnSpotify", providerPrefix: "ONSP", providerScheme: "VIBRANT", set: "lock" }
-/* Player idle */ { provider: "MMM-OnSpotify", set: "unlock" }
-```
-You can disable this behaviour using `advertisePlayerTheme: false`.
+### MMM-HomeKit
+> [!NOTE]
+> Im still writting **MMM-HomeKit** to control you mirror. I need help as im currently using HomeAssistant to test it, but I need apple products to actually test if everytying works. Help needed! https://github.com/Fabrizz/MMM-MMM-HomeKit
+> - Control your screen on/off, brightness
+> - Set the mirror accent color
+> - Turn on/off on-screen lyrics
+> - Send notifications
+> **Nativeliy in the Home app**
 
 ## MMM-LiveLyrics
 View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics). This module uses web scrapping to get the Lyrics from Genius. Not recommended for basic usage.
@@ -219,6 +228,7 @@ You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS 
 	textAnimations: true,
 	transitionAnimations: true,
 	spotifyVectorAnimations: true,
+    scrollAnimations: true,
         experimentalCSSOverridesForMM2: [
 			["--color-text-dimmed", "palette_vibrantlight"],
 			["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"],
@@ -228,11 +238,14 @@ You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS 
 ```
 
 # Other:
+> [!CAUTION]
+> Using Dynamic Theming notifications is **deprecated**, use [CSS variables and overrides](#theming-3rd-party-modules).
+
 - You can disable all the color related theming and use the module as is. You need to disable all the color related fields: <br />`advertisePlayerTheme`, `useColorInProgressBar`, `useColorInTitle`, `useColorInTitleBorder`, `showBlurBackground`, `useColorInUserData`, `spotifyCodeExperimentalUseColor`, `experimentalCSSOverridesForMM2`. Of course you can still use the Spotify Code (White/Gray). Disabling all theming options also stop the module from loading the [Vibrant](/vendor) lib.
 
 - The API for Spotify Codes is not public, as its part of the Spotify CDN (_scannables.scdn.co_). The API could change without notice. Many libraries rely on it and using it does not go againts the ToS.
 
-- Contributions wanted! Add features or your languaje using `translations/yourLanguaje.json`. Currently we have translations for: Spanish, English, German
+- Contributions wanted! Add features or your language using `translations/yourLanguage.json`. Currently we have translations for: Spanish, English, German
 
 With <3 by Fabrizio | [fabriz.co](https://fabriz.co/) | Star this repository! 
 [<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriz.co/)
