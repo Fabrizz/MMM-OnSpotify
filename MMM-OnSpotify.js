@@ -25,7 +25,7 @@ Module.register("MMM-OnSpotify", {
     prefersLargeImageSize: false,
     // If you selected a high interval, you can hide the progress timestamp
     // and animate the seekbar to the timing of the updateInterval, making it look better.
-    hideTrackLenghtAndAnimateProgress: false,
+    hideTrackLengthAndAnimateProgress: false,
     // Shows the Vibrant output in the console as a palette and color data.
     showDebugPalette: false,
     // Max age in seconds for personal data. If set to 0 they update when the player changes
@@ -124,6 +124,10 @@ Module.register("MMM-OnSpotify", {
     blurCorrectionInAllSides: false,
     alwaysUseDefaultDeviceIcon: false,
     showVerticalPipe: true,
+
+    // In special use cases where a frontend needs to take over other you can disabl
+    // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
+    matchBackendUUID: true,
   },
 
   start: function () {
@@ -136,6 +140,10 @@ Module.register("MMM-OnSpotify", {
     this.nowDisplaying = null;
     this.globalThemeSelected = null;
     this.currentStatus = "";
+    this.backendExpectId = this.config.matchBackendUUID
+      ? Date.now().toString(16)
+      : "ABC";
+    this.lastServerId = undefined;
     this.retries = 0;
     this.lastPrivate = [null, null];
     this.lastStatus = "isPlaying";
@@ -145,7 +153,7 @@ Module.register("MMM-OnSpotify", {
       typeof this.config.theming.experimentalCSSOverridesForMM2 === "object";
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-    this.version = "3.3.1";
+    this.version = "4.0.0";
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     this.displayUser =
@@ -195,20 +203,7 @@ Module.register("MMM-OnSpotify", {
 
     this.root = document.querySelector(":root");
 
-    this.sendSocketNotification("SET_CREDENTIALS_REFRESH", {
-      preferences: {
-        userAffinityUseTracks: this.config.userAffinityUseTracks,
-        deviceFilter: this.config.deviceFilter,
-        deviceFilterExclude: this.config.deviceFilterExclude,
-      },
-      credentials: {
-        clientId: this.config.clientID,
-        clientSecret: this.config.clientSecret,
-        accessToken: this.config.accessToken,
-        refreshToken: this.config.refreshToken,
-      },
-      language: this.config.language,
-    });
+    this.sendCredentialsBackend();
     this.updateFetchingLoop(this.config.updateInterval[this.lastStatus]);
   },
 
@@ -267,9 +262,6 @@ Module.register("MMM-OnSpotify", {
   },
   getScripts: function () {
     let files = [
-      this.file(
-        "node_modules/moment-duration-format/lib/moment-duration-format.js",
-      ),
       this.file("utils/SpotifyDomBuilder.js"),
       // Use a custom build of the "node-vibrant" library that fixes the webworker usage
       this.file("vendor/vibrant.worker.min.js"),
@@ -284,11 +276,6 @@ Module.register("MMM-OnSpotify", {
     )
       files.push(this.file("node_modules/dompurify/dist/purify.min.js"));
 
-    // Only load moment if for some reason MM2 has not loaded it yet, fixes https://github.com/Fabrizz/MMM-OnSpotify/issues/32
-    // Actually https://github.com/Fabrizz/MMM-OnSpotify/pull/33 fixed it.
-    if (!("moment" in window)) {
-      files.push(this.file("node_modules/moment/min/moment.min.js"));
-    }
     return files;
   },
   getTranslations: function () {
@@ -302,19 +289,19 @@ Module.register("MMM-OnSpotify", {
     this.moduleHidden = true;
     this.smartUpdate();
     console.info(
-      `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate("SUSPEND")}`,
-      "background-color:#84CC16;color:black;border-radius:0.4em",
+      `%c· MMM-OnSpotify %c %c INFO %c ${this.translate("SUSPEND")}`,
+      "background-color:#84CC16;color:black;border-radius:0.5em",
       "",
-      "background-color:darkcyan;color:black;",
+      "background-color:#02675d;color:white;",
       "",
     );
   },
   resume: function () {
     console.info(
-      `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate("RESUME")}`,
-      "background-color:#84CC16;color:black;border-radius:0.4em",
+      `%c· MMM-OnSpotify %c %c INFO %c ${this.translate("RESUME")}`,
+      "background-color:#84CC16;color:black;border-radius:0.5em",
       "",
-      "background-color:darkcyan;color:black;",
+      "background-color:#02675d;color:white;",
       "",
     );
     this.moduleHidden = false;
@@ -376,12 +363,12 @@ Module.register("MMM-OnSpotify", {
         this.smartUpdate("USER_DATA");
         if (this.userData.product !== "premium")
           console.warn(
-            `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+            `%c· MMM-OnSpotify %c %c WARN %c ${this.translate(
               "PRODUCT_WARNING",
             )}`,
-            "background-color:#84CC16;color:black;border-radius:0.4em",
+            "background-color:#84CC16;color:black;border-radius:0.5em",
             "",
-            "background-color:orange;color:black;",
+            "background-color:#754700;color:white;",
             "",
           );
         break;
@@ -394,17 +381,30 @@ Module.register("MMM-OnSpotify", {
       case "CONNECTION_ERRONED":
         if (this.isConnectedToSpotify) {
           console.info(
-            `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+            `%c· MMM-OnSpotify %c %c INFO %c ${this.translate(
               "CONNECTION_WARNING",
             )}`,
-            "background-color:#84CC16;color:black;border-radius:0.4em",
+            "background-color:#84CC16;color:black;border-radius:0.5em",
             "",
-            "background-color:orange;color:black;",
+            "background-color:#02675d;color:white;",
             "",
           );
         }
         this.isConnectedToSpotify = false;
         this.smartUpdate("PLAYER_DATA");
+        break;
+      case "REQUEST_REAUTH":
+        if (this.lastServerId === payload) break;
+        this.lastServerId = payload;
+        console.warn(
+          `%c· MMM-OnSpotify %c %c WARN %c ${this.translate("BACKEND_REAUTH")}`,
+          "background-color:#84CC16;color:black;border-radius:0.5em",
+          "",
+          "background-color:#754700;color:white;",
+          "",
+        );
+        this.sendNotification("SERVERSIDE_RESTART");
+        this.sendCredentialsBackend();
         break;
     }
   },
@@ -443,44 +443,44 @@ Module.register("MMM-OnSpotify", {
           break;
         case "LIVELYRICS_NOTICE":
           console.info(
-            `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+            `%c· MMM-OnSpotify %c %c INFO %c ${this.translate(
               "LIVELYRICS_NOTICE",
             )}`,
-            "background-color:#84CC16;color:black;border-radius:0.4em",
+            "background-color:#84CC16;color:black;border-radius:0.5em",
             "",
-            "background-color:darkcyan;color:black;",
+            "background-color:#02675d;color:white;",
             "",
           );
           break;
         case "ALL_MODULES_STARTED":
           if (this.config.showDebugPalette)
             console.info(
-              `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+              `%c· MMM-OnSpotify %c %c INFO %c ${this.translate(
                 "DEBUG_COLORS",
               )}`,
-              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "background-color:#84CC16;color:black;border-radius:0.5em",
               "",
-              "background-color:darkcyan;color:black;",
+              "background-color:#02675d;color:white;",
               "",
             );
           if (this.config.theming.spotifyCodeExperimentalShow)
             console.info(
-              `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+              `%c· MMM-OnSpotify %c %c WARN %c ${this.translate(
                 "SPOTIFYCODE_EXPERIMENTAL",
               )}`,
-              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "background-color:#84CC16;color:black;border-radius:0.5em",
               "",
-              "background-color:orange;color:black;",
+              "background-color:#754700;color:white;",
               "",
             );
           if (this.config.theming.experimentalCSSOverridesForMM2)
             console.info(
-              `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+              `%c· MMM-OnSpotify %c %c INFO %c ${this.translate(
                 "CSSOVERRIDE_NOTICE",
               )}`,
-              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "background-color:#84CC16;color:black;border-radius:0.5em",
               "",
-              "background-color:darkcyan;color:black;",
+              "background-color:#02675d;color:white;",
               "",
             );
           this.sendNotification("LIVELYRICS_GET");
@@ -501,12 +501,13 @@ Module.register("MMM-OnSpotify", {
   },
 
   instantUpdate: function () {
-    this.sendSocketNotification("REFRESH_PLAYER");
+    this.sendSocketNotification("REFRESH_PLAYER", this.backendExpectId);
     // To prevent multiple api calls, the call is requested but its only called
     // here, following the interval of the player.
-    if (this.requestUserData) this.sendSocketNotification("REFRESH_USER");
+    if (this.requestUserData)
+      this.sendSocketNotification("REFRESH_USER", this.backendExpectId);
     if (this.requestAffinityData)
-      this.sendSocketNotification("REFRESH_AFFINITY");
+      this.sendSocketNotification("REFRESH_AFFINITY", this.backendExpectId);
   },
 
   smartUpdate: function (type) {
@@ -558,12 +559,12 @@ Module.register("MMM-OnSpotify", {
       this.retries = this.retries > 25 ? this.retries : this.retries + 1;
       if (this.retries === 25) {
         console.error(
-          `%c· MMM-OnSpotify %c %c[ERRO]%c ${this.translate(
+          `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
             "CONNECTION_ERROR",
           )}`,
-          "background-color:#84CC16;color:black;border-radius:0.4em",
+          "background-color:#84CC16;color:black;border-radius:0.5em",
           "",
-          "background-color:darkred;color:black;",
+          "background-color:#781919;color:white;",
           "",
         );
         this.playerData = {
@@ -624,6 +625,23 @@ Module.register("MMM-OnSpotify", {
 
   getImage: (im, prefersLarge) =>
     im ? (prefersLarge ? im.large : im.medium) : null,
+  sendCredentialsBackend() {
+    this.sendSocketNotification("SET_CREDENTIALS_REFRESH", {
+      preferences: {
+        userAffinityUseTracks: this.config.userAffinityUseTracks,
+        deviceFilter: this.config.deviceFilter,
+        deviceFilterExclude: this.config.deviceFilterExclude,
+      },
+      credentials: {
+        clientId: this.config.clientID,
+        clientSecret: this.config.clientSecret,
+        accessToken: this.config.accessToken,
+        refreshToken: this.config.refreshToken,
+      },
+      language: this.config.language,
+      backendExpectId: this.backendExpectId,
+    });
+  },
   logBadge: function () {
     console.log(
       ` ⠖ %c by Fabrizz %c ${this.name}`,

@@ -40,7 +40,7 @@
       $.ajax({
         url: "https://api.spotify.com/v1/me",
         headers: {
-          Authorization: "Bearer " + params.access_token,
+          Authorization: `Bearer ${params.access_token}`,
         },
         success: function (response) {
           step3Placeholder.innerHTML = null;
@@ -201,6 +201,6 @@
   }
 
   function getRedirectURI() {
-    return window.location.protocol + "//" + window.location.host + "/callback";
+    return `${window.location.protocol}//${window.location.host}/callback`;
   }
 })();

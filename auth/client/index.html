@@ -20,13 +20,13 @@
             src="assets/logo-fabrizz-githubgray.svg" height="48"></a>
       </div>
       <h1 class="display-4">MMM-OnSpotify</h1>
-      <p class="lead" style="margin-top: -10px; margin-bottom: 0px;">A MagicMirror<sup>2</sup> that display what you are listening to using the Spotify Connect API</p>
+      <p class="lead" style="margin-top: -10px; margin-bottom: 0px;">A MagicMirror² that display what you are listening to using the Spotify Connect API</p>
     </div>
 
 
     <div class="px-2">
       <h2>Before we start:</h2>
-      <p style="margin-bottom: 6px; margin-top: -6px;">To work correctly this module requieres read access to the
+      <p style="margin-bottom: 6px; margin-top: -6px;">To work correctly this module requires read access to the
         following <a href="https://developer.spotify.com/documentation/general/guides/authorization/scopes/"
           target="_blank">scopes</a> in your Spotify Account:</p>
       <ul class="list-group rounded-4" style="margin-bottom: 0.6em;">
@@ -184,7 +184,7 @@
             maintainer, based on the Spotify Auth Example. As its no longer maintained, <strong
               style="font-weight: 500;">MMM-OnSpotify</strong> was born,
             this version of the authentication Service includes some QOL changes, more functionality, and its easier
-            to follow along. <strong style="font-weight: 100;">(V2.1)</strong>
+            to follow along. <strong style="font-weight: 100;">(V3.0 New Spotify developers dashboard)</strong>
           </p>
           <a href="/terminate" class="btn btn-danger rounded-3">Turn off the service</a>
           <a href="/" class="btn btn-secondary rounded-3">Restart the tool</a>
@@ -195,19 +195,20 @@
 
     <!-- Templates -->
     <script id="step1-template" type="text/x-handlebars-template">
-  <p>First, we need to create a new Spotify App using the <a class="link-info" href="https://developer.spotify.com/dashboard/login" target="_blank">Spotify Developers Portal</a>. After login in, click on the <strong style="border: 1px #1db954 solid;border-radius: 0.5em;padding: 0.04em 0.32em;font-weight: 500;">Create an app</strong> button.</p>
-  <p>Next you need to provide a name and description, what you type doesn’t matter, as it’s just an internal app (Maybe you should use something you’ll recognize in the future), accept the Spotify ToS and click on <strong style="border: 1px #1db954 solid;border-radius: 0.5em;padding: 0.04em 0.32em;font-weight: 500;">Create</strong>.</p>
-  <p>After successfully creating the app you’ll land on the app’s dashboard. There you can see your <span class="badge text-bg-warning">Client ID</span> and your <span class="badge text-bg-warning">Client Secret</span> (after clicking on “SHOW CLIENT SECRET”). Please <strong>copy both fields</strong> for later use.</p>
-  <p>Click on <strong style="border: 1px #1db954 solid;border-radius: 0.5em;padding: 0.04em 0.32em;font-weight: 500;">Users and access</strong>, then click on <strong style="border: 1px #1db954 solid;border-radius: 0.5em;padding: 0.04em 0.32em;font-weight: 500;"> + Add new user</strong>, in the "email" section, enter the email associated to your Spotify Account, in the "Full Name" section you can put whatever name/abreviation that you want.</p>
-  <p style="margin-bottom: 4px;">Click on “Edit Settings” and add <span class="badge text-bg-warning">{{redirectUri}}</span> to the Redirect URIs and save your settings. (You need to click <strong style="border: 1px #1db954 solid;border-radius: 0.5em;padding: 0.04em 0.32em;font-weight: 500;">Add</strong> and then <strong style="border: 1px #1db954 solid;border-radius: 0.5em;padding: 0.04em 0.32em;font-weight: 500;">Save</strong>) </p>
-</script>
+      <p>First, we need to create a new Spotify App using the <a class="link-info" href="https://developer.spotify.com/dashboard/login" target="_blank">Spotify Developers Portal</a>. After login in, click on the <strong style="border: 1px #a181fb solid;background-color: #3d00e642;border-radius: 0.5em;padding: 0.1em 0.32em;font-weight: 500;">Create app</strong> button.</p>
+      <p>Next you need to provide a name and description, what you type doesn’t matter, as it’s just an internal app (Maybe you should use something you’ll recognize in the future). You can left the website blank.</p>
+      <p>Now add <span class="badge text-bg-warning">http://localhost:8100/callback</span> as the redirect URI, so later Spotify knows to redirect here with the credentials.</p>
+      <p>To finish the app configuration, click on the <strong style="border: 1px #cffcea solid;background-color: #00e6db21;border-radius: 0.5em;padding: 0.1em 0.32em;font-weight: 500;">Web API</strong> checkbox, accept the Spotify ToS and click on <strong style="border: 1px #a181fb solid;background-color: #3d00e642;border-radius: 0.5em;padding: 0.1em 0.32em;font-weight: 500;">Create</strong>.</p>
+      <p>After successfully creating the app you’ll land on the app’s dashboard. Click on <strong style="border: 1px #a181fb solid;background-color: #3d00e642;border-radius: 0.5em;padding: 0.1em 0.32em;font-weight: 500;">Settings</strong>, and then click on the <strong style="border: 1px #cffcea solid;background-color: #00e6db21;border-radius: 0.5em;padding: 0.1em 0.32em;font-weight: 500;">User Management</strong> tab.</p>
+      <p>There, enter the email associated to your Spotify Account, in the "Full Name" section you can put whatever name/abreviation that you want. Click on <strong style="border: 1px #a181fb solid;background-color: #3d00e642;border-radius: 0.5em;padding: 0.1em 0.32em;font-weight: 500;">Add user</strong> to actually save your changes.</p>
+      <p style="margin-bottom: 4px;">Once you added yourself as a user, go back to the <strong style="border: 1px #cffcea solid;background-color: #00e6db21;border-radius: 0.5em;padding: 0.1em 0.32em;font-weight: 500;">Basic Information</strong> tab, there you can see your <span class="badge text-bg-warning">Client ID</span> and your <span class="badge text-bg-warning">Client Secret</span> (after clicking on “View client secret”). Check that the redirect URI is correct, then copy and paste both credentials onto the <strong>Step 2 card below.</strong></p>
+    </script>
 
     <script id="user-profile-template" type="text/x-handlebars-template">
   <div class="media ml-5" style="display: flex;flex-direction: row;flex-wrap: nowrap;align-items: center;column-gap: 16px;">
     <span class="rounded-circle mr-3 column" style="height: 80px; width: 80px;background-image: url({{images.0.url}});background-color: #121513; background-size: cover; background-position: center;"> </span>
     <div class="column">
       <h5 class="mt-0 mb-0">{{display_name}}</h5>
-      <p class="mt-0 mb-0"><strong>ID: </strong>{{id}}</p>
       <p class=" mb-0 mt-0" style="color:#1db954"><strong>Your app is now authorized. You can start using it with your MagicMirror.</strong></p>
     </div>
   </div>
@@ -231,17 +232,18 @@
             <div class="card-body">
                 <p style="margin-bottom:0px">Now copy the following snippet into your <span class="badge text-bg-warning">config.js</span> file and your good to go!</p>
                 <pre class="px-2 py-2 mt-2" style="background-color: #022423;border-radius: 0.6em; scrollbar-width: none; overflow: -moz-scrollbars-none; margin-bottom: 0px;" id="pre">
-		{
-			module: "MMM-OnSpotify",
-			position: "bottom_right", /* bottom_left, bottom_center */ 
-			config: {
-				clientID: "{{clientID}}",
-				clientSecret: "{{clientSecret}}",
-				accessToken: "{{accessToken}}",
-				refreshToken: "{{refreshToken}}"
-				/* Add here your theming and behaviour configurations */
-			}
-		},</pre>
+{
+    <span style="color: rgba(255, 141, 141, 0.66);">/* Don't share your credentials! */</span>
+    module: <span style="color: rgb(242, 210, 152);">"MMM-OnSpotify"</span>,
+    position: <span style="color: rgb(242, 210, 152);">"bottom_right"</span>, <span style="color: rgba(255, 255, 255, 0.48);">/* bottom_left, bottom_center */</span>
+        config: {
+        clientID: <span style="color: rgb(242, 210, 152);">"{{clientID}}"</span>,
+        clientSecret: <span style="color: rgb(242, 210, 152);">"{{clientSecret}}"</span>,
+        accessToken: <span style="color: rgb(242, 210, 152);">"{{accessToken}}"</span>,
+        refreshToken: <span style="color: rgb(242, 210, 152);">"{{refreshToken}}"</span>
+        <span style="color: rgba(255, 255, 255, 0.48);">/* Add here your theming and behaviour configurations */</span>
+    }
+},</pre>
 		
 				<div class="alert mt-3 rounded-3 alert-light" role="alert" style="margin-bottom: 0px;">
 					<p style="margin-bottom: 0px;">This is the minimal configuration. Its highly recommended to read the <a class="" href="https://github.com/Fabrizz/MMM-OnSpotify" target="_blank">configuration section</a> in the repository to customize the look and behaviour of the module.</p>

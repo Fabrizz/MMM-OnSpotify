@@ -6,7 +6,6 @@
  * Original implementation: Raywo | https://github.com/raywo/MMM-NowPlayingOnSpotify
  */
 
-const moment = require("moment");
 // Use node fetch as most MM2 installs use older node
 const fetch = require("node-fetch");
 const tokenRefreshBase = "https://accounts.spotify.com";
@@ -17,26 +16,37 @@ module.exports = class SpotifyFetcher {
     this.credentials = payload.credentials;
     this.preferences = payload.preferences;
     this.language = payload.language;
-    this.tokenExpiresAt = moment();
+    this.tokenExpiresAt = Date.now();
+    this.errorCount = 0;
+    this.showErrorEvery = 14;
   }
 
   async getData(type) {
-    if (moment().isBefore(this.tokenExpiresAt)) {
+    const currentTime = Date.now();
+    if (currentTime < this.tokenExpiresAt) {
       return this.requestData(type);
     } else {
       let res = await this.refreshAccessToken();
-      if (res.ok) {
+      if (res) {
         console.log(
-          "\x1b[46m%s\x1b[0m",
-          `[MMM-NPOS] [Node Helper] Access token expired: >> ${this.tokenExpiresAt.format(
-            "HH:mm:ss",
-          )} | Refreshed successfully.`,
+          "[MMM-ONSP] [Node Helper] Access token expired: >> \x1b[46m%s\x1b[0m",
+          `${this.formatTime(this.tokenExpiresAt)}`,
         );
       }
       this.credentials.accessToken = res.access_token;
-      this.tokenExpiresAt = moment().add(res.expires_in, "seconds");
+      this.tokenExpiresAt = currentTime + res.expires_in * 1000;
       return this.requestData(type);
     }
+  }
+
+  formatTime(milliseconds) {
+    const formattedTime = new Date(milliseconds).toLocaleTimeString("en-US", {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return formattedTime === "Invalid date" ? milliseconds : formattedTime;
   }
 
   requestData(type) {
@@ -59,19 +69,22 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get player Data >> ",
+                "[MMM-ONSP] [Node Helper] Get player Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
 
+            this.errorCount = 0;
             if (res.statusText === "No Content") return null;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get player Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-ONSP] [Node Helper] (${this.errorCount}) Get player Data >> `,
+                error,
+              );
             return error;
           });
       case "USER":
@@ -84,17 +97,21 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get User Data >> ",
+                "[MMM-ONSP] [Node Helper] Get User Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get User Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-ONSP] [Node Helper](${this.errorCount}) Get User Data >> `,
+                error,
+              );
             return error;
           });
       case "QUEUE":
@@ -107,17 +124,21 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Queue Data >> ",
+                "[MMM-ONSP] [Node Helper] Get Queue Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Queue Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-ONSP] [Node Helper] (${this.errorCount}) Get Queue Data >> `,
+                error,
+              );
             return error;
           });
       case "AFFINITY":
@@ -132,17 +153,21 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Affinity Data >> ",
+                "[MMM-ONSP] [Node Helper] Get Affinity Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Affinity Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-ONSP] [Node Helper] (${this.errorCount}) Get Affinity Data >> `,
+                error,
+              );
             return error;
           });
       case "RECENT":
@@ -155,17 +180,21 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Recently-Played Data >> ",
+                "[MMM-ONSP] [Node Helper] Get Recently-Played Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Recently-Played Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[41m%s\x1b[0m",
+                `[MMM-ONSP] [Node Helper] (${this.errorCount}) Get Recently-Played Data >> `,
+                error,
+              );
             return error;
           });
     }
@@ -192,7 +221,7 @@ module.exports = class SpotifyFetcher {
         if (!res.ok && res.status === 429)
           console.warn(
             "\x1b[43m%s\x1b[0m",
-            "[MMM-NPOS] [Node Helper] Refresh access token >> ",
+            "[MMM-ONSP] [Node Helper] Refresh access token >> ",
             "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
           );
         return res.json();
@@ -200,7 +229,7 @@ module.exports = class SpotifyFetcher {
       .catch((error) => {
         console.error(
           "\x1b[41m%s\x1b[0m",
-          "[MMM-NPOS] [Node Helper] Refresh access token >> ",
+          "[MMM-ONSP] [Node Helper] Refresh access token >> ",
           error,
         );
         return error;

@@ -44,6 +44,7 @@
     --ONSP-INTERNAL-LOWPOWER-COVER: none;
     --ONSP-INTERNAL-LOWPOWER-TRANSITIONS: none; /* background-color */
 
+    --ONSP-INTERNAL-PLAYER-FONT-BASE: inherit;
     --ONSP-INTERNAL-PLAYER-SIZE-WIDTH: 15em;
     --ONSP-INTERNAL-PLAYER-PADDING-INFO: 0.28em;
     --ONSP-INTERNAL-PLAYER-MEDIA-CORNERS: 0.60em;
@@ -182,6 +183,13 @@
     opacity: 0.4;
 }
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END < */
+
+/* MODULE HL */
+.MMM-OnSpotify.module {
+    display: flex;
+    justify-content: center;
+    font-size: var(--ONSP-INTERNAL-PLAYER-FONT-BASE);
+}
 
 /* PLAYER */
 .ONSP-Base .nowplaying{
