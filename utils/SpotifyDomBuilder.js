@@ -46,10 +46,10 @@ class SpotifyDomBuilder {
       );
     } catch (error) {
       console.warn(
-        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate("USER_CSS_ERROR")}`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
+        `%c·  MMM-OnSpotify  %c %c WARN %c ${this.translate("USER_CSS_ERROR")}`,
+        "background-color:#84CC16;color:black;border-radius:0.5em",
         "",
-        "background-color:orange;color:black",
+        "background-color:#754700;color:white;",
         "",
       );
       this.animationDefaultDelayFromCSS = 600;
@@ -876,12 +876,12 @@ class SpotifyDomBuilder {
     this.lastUrlProcessed = url;
     if (!("Vibrant" in window)) {
       console.error(
-        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+        `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
           "VIBRANT_NOT_LOADED",
         )}`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "background-color:#84CC16;color:black;border-radius:0.5em",
         "",
-        "background-color:orange;color:black",
+        "background-color:#781919;color:white;",
         "",
       );
       return;
@@ -898,11 +898,14 @@ class SpotifyDomBuilder {
         .getPalette((palette) => palette)
         .catch((e) =>
           console.error(
-            "%c· MMM-OnSpotify %c %c[ERRO]",
-            e,
-            "background-color:#84CC16;color:black;border-radius:0.4em",
+            `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
+              "VIBRANT_ERROR",
+            )}`,
+            "background-color:#84CC16;color:black;border-radius:0.5em",
             "",
-            "background-color:darkred;color:black",
+            "background-color:#781919;color:white;",
+            "",
+            e,
           ),
         )
     );
@@ -921,12 +924,12 @@ class SpotifyDomBuilder {
       });
     } catch (e) {
       console.error(
-        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+        `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
           "CSSOVERRIDE_MALFORMED",
         )}`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "background-color:#84CC16;color:black;border-radius:0.5em",
         "",
-        "background-color:orange;color:black",
+        "background-color:#781919;color:white;",
         "",
         e,
       );
@@ -943,12 +946,12 @@ class SpotifyDomBuilder {
       });
     } catch (e) {
       console.error(
-        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+        `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
           "CSSOVERRIDE_MALFORMED",
         )}`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "background-color:#84CC16;color:black;border-radius:0.5em",
         "",
-        "background-color:orange;color:black",
+        "background-color:#781919;color:white;",
         "",
         e,
       );

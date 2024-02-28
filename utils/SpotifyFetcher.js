@@ -29,7 +29,7 @@ module.exports = class SpotifyFetcher {
       let res = await this.refreshAccessToken();
       if (res) {
         console.log(
-          "[MMM-NPOS] [Node Helper] Access token expired: >> \x1b[46m%s\x1b[0m",
+          "[MMM-ONSP] [Node Helper] Access token expired: >> \x1b[46m%s\x1b[0m",
           `${this.formatTime(this.tokenExpiresAt)}`,
         );
       }
@@ -69,7 +69,7 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get player Data >> ",
+                "[MMM-ONSP] [Node Helper] Get player Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
 
@@ -82,7 +82,7 @@ module.exports = class SpotifyFetcher {
             if (this.errorCount % this.showErrorEvery === 0)
               console.error(
                 "\x1b[41m%s\x1b[0m",
-                `[MMM-NPOS] [Node Helper] (${this.errorCount}) Get player Data >> `,
+                `[MMM-ONSP] [Node Helper] (${this.errorCount}) Get player Data >> `,
                 error,
               );
             return error;
@@ -97,7 +97,7 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get User Data >> ",
+                "[MMM-ONSP] [Node Helper] Get User Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
 
@@ -109,7 +109,7 @@ module.exports = class SpotifyFetcher {
             if (this.errorCount % this.showErrorEvery === 0)
               console.error(
                 "\x1b[41m%s\x1b[0m",
-                `[MMM-NPOS] [Node Helper](${this.errorCount}) Get User Data >> `,
+                `[MMM-ONSP] [Node Helper](${this.errorCount}) Get User Data >> `,
                 error,
               );
             return error;
@@ -124,7 +124,7 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Queue Data >> ",
+                "[MMM-ONSP] [Node Helper] Get Queue Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
 
@@ -136,7 +136,7 @@ module.exports = class SpotifyFetcher {
             if (this.errorCount % this.showErrorEvery === 0)
               console.error(
                 "\x1b[41m%s\x1b[0m",
-                `[MMM-NPOS] [Node Helper] (${this.errorCount}) Get Queue Data >> `,
+                `[MMM-ONSP] [Node Helper] (${this.errorCount}) Get Queue Data >> `,
                 error,
               );
             return error;
@@ -153,7 +153,7 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Affinity Data >> ",
+                "[MMM-ONSP] [Node Helper] Get Affinity Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
 
@@ -165,7 +165,7 @@ module.exports = class SpotifyFetcher {
             if (this.errorCount % this.showErrorEvery === 0)
               console.error(
                 "\x1b[41m%s\x1b[0m",
-                `[MMM-NPOS] [Node Helper] (${this.errorCount}) Get Affinity Data >> `,
+                `[MMM-ONSP] [Node Helper] (${this.errorCount}) Get Affinity Data >> `,
                 error,
               );
             return error;
@@ -180,7 +180,7 @@ module.exports = class SpotifyFetcher {
             if (!res.ok && res.status === 429)
               console.warn(
                 "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Recently-Played Data >> ",
+                "[MMM-ONSP] [Node Helper] Get Recently-Played Data >> ",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
 
@@ -192,7 +192,7 @@ module.exports = class SpotifyFetcher {
             if (this.errorCount % this.showErrorEvery === 0)
               console.error(
                 "\x1b[41m%s\x1b[0m",
-                `[MMM-NPOS] [Node Helper] (${this.errorCount}) Get Recently-Played Data >> `,
+                `[MMM-ONSP] [Node Helper] (${this.errorCount}) Get Recently-Played Data >> `,
                 error,
               );
             return error;
@@ -221,7 +221,7 @@ module.exports = class SpotifyFetcher {
         if (!res.ok && res.status === 429)
           console.warn(
             "\x1b[43m%s\x1b[0m",
-            "[MMM-NPOS] [Node Helper] Refresh access token >> ",
+            "[MMM-ONSP] [Node Helper] Refresh access token >> ",
             "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
           );
         return res.json();
@@ -229,7 +229,7 @@ module.exports = class SpotifyFetcher {
       .catch((error) => {
         console.error(
           "\x1b[41m%s\x1b[0m",
-          "[MMM-NPOS] [Node Helper] Refresh access token >> ",
+          "[MMM-ONSP] [Node Helper] Refresh access token >> ",
           error,
         );
         return error;

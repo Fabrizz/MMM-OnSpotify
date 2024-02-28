@@ -38,7 +38,7 @@ module.exports = NodeHelper.create({
         this.preferences = payload.preferences;
         this.appendableId = payload.backendExpectId;
         console.log(
-          "[MMM-NPOS] [Node Helper] Session identifier: >> \x1b[46m%s\x1b[0m",
+          "[MMM-ONSP] [Node Helper] Session identifier: >> \x1b[46m%s\x1b[0m",
           `${this.appendableId}`,
         );
         break;
@@ -267,7 +267,7 @@ module.exports = NodeHelper.create({
           break;
       }
     } catch (error) {
-      console.error("\x1b[41m%s\x1b[0m", "[MMM-NPOS] [Node Helper] >> ", error);
+      console.error("\x1b[41m%s\x1b[0m", "[MMM-ONSP] [Node Helper] >> ", error);
     }
   },
 

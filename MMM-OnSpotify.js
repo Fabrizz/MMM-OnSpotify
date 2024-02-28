@@ -140,7 +140,7 @@ Module.register("MMM-OnSpotify", {
     this.nowDisplaying = null;
     this.globalThemeSelected = null;
     this.currentStatus = "";
-    this.backendExpectId = this.matchBackendUUID
+    this.backendExpectId = this.config.matchBackendUUID
       ? Date.now().toString(16)
       : "ABC";
     this.lastServerId = undefined;
@@ -289,19 +289,19 @@ Module.register("MMM-OnSpotify", {
     this.moduleHidden = true;
     this.smartUpdate();
     console.info(
-      `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate("SUSPEND")}`,
-      "background-color:#84CC16;color:black;border-radius:0.4em",
+      `%c· MMM-OnSpotify %c %c INFO %c ${this.translate("SUSPEND")}`,
+      "background-color:#84CC16;color:black;border-radius:0.5em",
       "",
-      "background-color:darkcyan;color:black;",
+      "background-color:#02675d;color:white;",
       "",
     );
   },
   resume: function () {
     console.info(
-      `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate("RESUME")}`,
-      "background-color:#84CC16;color:black;border-radius:0.4em",
+      `%c· MMM-OnSpotify %c %c INFO %c ${this.translate("RESUME")}`,
+      "background-color:#84CC16;color:black;border-radius:0.5em",
       "",
-      "background-color:darkcyan;color:black;",
+      "background-color:#02675d;color:white;",
       "",
     );
     this.moduleHidden = false;
@@ -363,12 +363,12 @@ Module.register("MMM-OnSpotify", {
         this.smartUpdate("USER_DATA");
         if (this.userData.product !== "premium")
           console.warn(
-            `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+            `%c· MMM-OnSpotify %c %c WARN %c ${this.translate(
               "PRODUCT_WARNING",
             )}`,
-            "background-color:#84CC16;color:black;border-radius:0.4em",
+            "background-color:#84CC16;color:black;border-radius:0.5em",
             "",
-            "background-color:orange;color:black;",
+            "background-color:#754700;color:white;",
             "",
           );
         break;
@@ -381,12 +381,12 @@ Module.register("MMM-OnSpotify", {
       case "CONNECTION_ERRONED":
         if (this.isConnectedToSpotify) {
           console.info(
-            `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+            `%c· MMM-OnSpotify %c %c INFO %c ${this.translate(
               "CONNECTION_WARNING",
             )}`,
-            "background-color:#84CC16;color:black;border-radius:0.4em",
+            "background-color:#84CC16;color:black;border-radius:0.5em",
             "",
-            "background-color:orange;color:black;",
+            "background-color:#02675d;color:white;",
             "",
           );
         }
@@ -397,10 +397,10 @@ Module.register("MMM-OnSpotify", {
         if (this.lastServerId === payload) break;
         this.lastServerId = payload;
         console.warn(
-          `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate("BACKEND_REAUTH")}`,
-          "background-color:#84CC16;color:black;border-radius:0.4em",
+          `%c· MMM-OnSpotify %c %c WARN %c ${this.translate("BACKEND_REAUTH")}`,
+          "background-color:#84CC16;color:black;border-radius:0.5em",
           "",
-          "background-color:orange;color:black;",
+          "background-color:#754700;color:white;",
           "",
         );
         this.sendNotification("SERVERSIDE_RESTART");
@@ -443,44 +443,44 @@ Module.register("MMM-OnSpotify", {
           break;
         case "LIVELYRICS_NOTICE":
           console.info(
-            `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+            `%c· MMM-OnSpotify %c %c INFO %c ${this.translate(
               "LIVELYRICS_NOTICE",
             )}`,
-            "background-color:#84CC16;color:black;border-radius:0.4em",
+            "background-color:#84CC16;color:black;border-radius:0.5em",
             "",
-            "background-color:darkcyan;color:black;",
+            "background-color:#02675d;color:white;",
             "",
           );
           break;
         case "ALL_MODULES_STARTED":
           if (this.config.showDebugPalette)
             console.info(
-              `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+              `%c· MMM-OnSpotify %c %c INFO %c ${this.translate(
                 "DEBUG_COLORS",
               )}`,
-              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "background-color:#84CC16;color:black;border-radius:0.5em",
               "",
-              "background-color:darkcyan;color:black;",
+              "background-color:#02675d;color:white;",
               "",
             );
           if (this.config.theming.spotifyCodeExperimentalShow)
             console.info(
-              `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+              `%c· MMM-OnSpotify %c %c WARN %c ${this.translate(
                 "SPOTIFYCODE_EXPERIMENTAL",
               )}`,
-              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "background-color:#84CC16;color:black;border-radius:0.5em",
               "",
-              "background-color:orange;color:black;",
+              "background-color:#754700;color:white;",
               "",
             );
           if (this.config.theming.experimentalCSSOverridesForMM2)
             console.info(
-              `%c· MMM-OnSpotify %c %c[INFO]%c ${this.translate(
+              `%c· MMM-OnSpotify %c %c INFO %c ${this.translate(
                 "CSSOVERRIDE_NOTICE",
               )}`,
-              "background-color:#84CC16;color:black;border-radius:0.4em",
+              "background-color:#84CC16;color:black;border-radius:0.5em",
               "",
-              "background-color:darkcyan;color:black;",
+              "background-color:#02675d;color:white;",
               "",
             );
           this.sendNotification("LIVELYRICS_GET");
@@ -559,12 +559,12 @@ Module.register("MMM-OnSpotify", {
       this.retries = this.retries > 25 ? this.retries : this.retries + 1;
       if (this.retries === 25) {
         console.error(
-          `%c· MMM-OnSpotify %c %c[ERRO]%c ${this.translate(
+          `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
             "CONNECTION_ERROR",
           )}`,
-          "background-color:#84CC16;color:black;border-radius:0.4em",
+          "background-color:#84CC16;color:black;border-radius:0.5em",
           "",
-          "background-color:darkred;color:black;",
+          "background-color:#781919;color:white;",
           "",
         );
         this.playerData = {
