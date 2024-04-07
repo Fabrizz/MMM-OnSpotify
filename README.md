@@ -195,7 +195,7 @@ View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-
 ## MMM-HomeKit
 Control your mirror (and other modules) using Apple Homekit protocol! (Also compatible with HomeAssistant or other automation systems with simulated HK controllers)
 
-#### >>> [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-MMM-HomeKit) <<<
+#### >>> [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-HomeKit) <<<
 - Control your screen on/off, brightness
 - Set the mirror accent color
 - Turn on/off on-screen lyrics
