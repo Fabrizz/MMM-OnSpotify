@@ -204,7 +204,7 @@ Control your mirror (and other modules) using Apple Homekit protocol! (Also comp
 
 <img alt="MMM-Homekit" src=".github/content/readme/banner-homekit.png" width="70%">
 
-> To learn how to use OnSpotify and HomeKit provided accent colors together, read the guide in the [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-MMM-HomeKit).
+> To learn how to use OnSpotify and HomeKit provided accent colors together, read the guide in the [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-HomeKit).
 
 ## Notification API
 | key | Description |
