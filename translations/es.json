@@ -15,5 +15,6 @@
     "SUSPEND": "Suspendiendo modulo...",
     "LIVELYRICS_NOTICE": "MMM-LiveLyrics encontrado! - Mira los logs de MMM-LL para ver más información. (https://github.com/Fabrizz/MMM-LiveLyrics)",
     "CSSOVERRIDE_NOTICE": "Estas sobreescribiendo variables CSS incluidas con MM2. Chequea errores de escritura y de contraste",
-    "CSSOVERRIDE_MALFORMED": "Hubo un error al procesar tu configuración \"experimentalCSSOverridesForMM2\". Elimina esta entrada o chequeala por errores de escritura."
+    "CSSOVERRIDE_MALFORMED": "Hubo un error al procesar tu configuración \"experimentalCSSOverridesForMM2\". Elimina esta entrada o chequeala por errores de escritura.",
+    "BACKEND_REAUTH": "El backend del módulo se recupero de un reinicio/cuelgue. (El backend pidío credenciales con un nuevo UUID)"
 }

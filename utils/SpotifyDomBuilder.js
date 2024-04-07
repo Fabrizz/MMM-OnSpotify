@@ -7,15 +7,6 @@
 
 /* eslint-disable no-undef */
 
-// Try to directly attach the plugin to Moment
-// There are other modules that attach the plugin to Moment
-try {
-  momentDurationFormatSetup(moment);
-  // moment.locale(config.language);
-} catch (error) {
-  null;
-}
-
 class SpotifyDomBuilder {
   constructor(pathPrefix, config, other, translator) {
     this.pathPrefix = pathPrefix;
@@ -55,10 +46,10 @@ class SpotifyDomBuilder {
       );
     } catch (error) {
       console.warn(
-        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate("USER_CSS_ERROR")}`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
+        `%c·  MMM-OnSpotify  %c %c WARN %c ${this.translate("USER_CSS_ERROR")}`,
+        "background-color:#84CC16;color:black;border-radius:0.5em",
         "",
-        "background-color:orange;color:black",
+        "background-color:#754700;color:white;",
         "",
       );
       this.animationDefaultDelayFromCSS = 600;
@@ -80,7 +71,7 @@ class SpotifyDomBuilder {
     );
     this.root.style.setProperty(
       "--ONSP-INTERNAL-PLAYER-PROGRESS-ANIMATION",
-      this.config.hideTrackLenghtAndAnimateProgress
+      this.config.hideTrackLengthAndAnimateProgress
         ? "linear"
         : "cubic-bezier(0.35, 0.11, 0.25, 1)",
     );
@@ -885,12 +876,12 @@ class SpotifyDomBuilder {
     this.lastUrlProcessed = url;
     if (!("Vibrant" in window)) {
       console.error(
-        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+        `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
           "VIBRANT_NOT_LOADED",
         )}`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "background-color:#84CC16;color:black;border-radius:0.5em",
         "",
-        "background-color:orange;color:black",
+        "background-color:#781919;color:white;",
         "",
       );
       return;
@@ -907,11 +898,14 @@ class SpotifyDomBuilder {
         .getPalette((palette) => palette)
         .catch((e) =>
           console.error(
-            "%c· MMM-OnSpotify %c %c[ERRO]",
-            e,
-            "background-color:#84CC16;color:black;border-radius:0.4em",
+            `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
+              "VIBRANT_ERROR",
+            )}`,
+            "background-color:#84CC16;color:black;border-radius:0.5em",
             "",
-            "background-color:darkred;color:black",
+            "background-color:#781919;color:white;",
+            "",
+            e,
           ),
         )
     );
@@ -930,12 +924,12 @@ class SpotifyDomBuilder {
       });
     } catch (e) {
       console.error(
-        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+        `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
           "CSSOVERRIDE_MALFORMED",
         )}`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "background-color:#84CC16;color:black;border-radius:0.5em",
         "",
-        "background-color:orange;color:black",
+        "background-color:#781919;color:white;",
         "",
         e,
       );
@@ -952,12 +946,12 @@ class SpotifyDomBuilder {
       });
     } catch (e) {
       console.error(
-        `%c· MMM-OnSpotify %c %c[WARN]%c ${this.translate(
+        `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate(
           "CSSOVERRIDE_MALFORMED",
         )}`,
-        "background-color:#84CC16;color:black;border-radius:0.4em",
+        "background-color:#84CC16;color:black;border-radius:0.5em",
         "",
-        "background-color:orange;color:black",
+        "background-color:#781919;color:white;",
         "",
         e,
       );
@@ -1198,7 +1192,7 @@ class SpotifyDomBuilder {
       }
     } catch (error) {
       /* This effect is based on the current TS of the song, the module reference is going to always be some ms behind,
-      here we catch, any even if it never happens, the error thown if the player changes state */
+      here we catch, even if it never happens, the error thown if the player changes state */
     }
   }
 
@@ -1209,16 +1203,32 @@ class SpotifyDomBuilder {
   getPercentage(n, t) {
     return ((n / t) * 100).toFixed(3);
   }
-  getSanitizedTime(n, t) {
-    const lg = moment.duration(n).format(); //const lg = n;
-    const fl = moment.duration(t).format(); //const fl = t;
+  getVerboseLenght(n) {
+    if (n < 1000) return "0:00";
+    const seconds = Math.floor(n / 1000);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    const formattedSeconds = remainingSeconds.toString().padStart(2, "0");
 
-    let str = this.config.hideTrackLenghtAndAnimateProgress
+    if (hours > 0) {
+      return `${hours.toString()}:${minutes
+        .toString()
+        .padStart(2, "0")}:${formattedSeconds}`;
+    } else {
+      return `${minutes.toString()}:${formattedSeconds}`;
+    }
+  }
+  getSanitizedTime(n, t) {
+    const lg = this.getVerboseLenght(n);
+    const fl = this.getVerboseLenght(t);
+
+    let str = this.config.hideTrackLengthAndAnimateProgress
       ? fl
       : `${lg} / ${fl}`;
     if (
       str.includes("second") &&
-      !this.config.hideTrackLenghtAndAnimateProgress
+      !this.config.hideTrackLengthAndAnimateProgress
     )
       str = `0:00 / ${fl}`;
     return str;

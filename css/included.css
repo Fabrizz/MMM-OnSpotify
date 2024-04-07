@@ -22,8 +22,8 @@
     --ONSP-VIBRANT-TRANSITION: var(--ONSP-INTERNAL-PLAYER-TRANSITION-TIME);
 
     /* Base colors */
-    --ONSP-INTERNAL-COLOR-BRIGHT: #FFF;
-    --ONSP-INTERNAL-COLOR-MUTED: #b9b9b9;
+    --ONSP-INTERNAL-COLOR-BRIGHT: #FFF; /* var(--color-text-bright); */
+    --ONSP-INTERNAL-COLOR-MUTED: #b9b9b9; /* var(--color-text); */
     --ONSP-BRANDCOLOR-SPOTIFY: #1DB954;
 
     /* User defaults */
@@ -44,6 +44,7 @@
     --ONSP-INTERNAL-LOWPOWER-COVER: none;
     --ONSP-INTERNAL-LOWPOWER-TRANSITIONS: none; /* background-color */
 
+    --ONSP-INTERNAL-PLAYER-FONT-BASE: inherit;
     --ONSP-INTERNAL-PLAYER-SIZE-WIDTH: 15em;
     --ONSP-INTERNAL-PLAYER-PADDING-INFO: 0.28em;
     --ONSP-INTERNAL-PLAYER-MEDIA-CORNERS: 0.60em;
@@ -182,6 +183,13 @@
     opacity: 0.4;
 }
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END < */
+
+/* MODULE HL */
+.MMM-OnSpotify.module {
+    display: flex;
+    justify-content: center;
+    font-size: var(--ONSP-INTERNAL-PLAYER-FONT-BASE);
+}
 
 /* PLAYER */
 .ONSP-Base .nowplaying{
@@ -337,6 +345,9 @@
 .ONSP-Base .player .experimental .code {
     aspect-ratio: 4 / 1;
     width: 60%;
+}
+.ONSP-Base .player .experimental .code svg:not(:first-child) {
+    display: none;
 }
 .ONSP-Base .player .experimental .code svg {
     display: block;

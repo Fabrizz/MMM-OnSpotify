@@ -140,36 +140,12 @@ app.get("/callback", function (req, res) {
     });
   }
 });
-app.get("/terminate", function (req, res) {
-  res.send(
-    "[Authorization Service] Shutting down... You can close this window. (MMM-OnSpotify by Fabrizz)",
-  );
-  console.log(
-    "\x1b[31m",
-    "\x1b[47m",
-    "[Authorization Service] Shutting down... | MMM-OnSpotify by Fabrizz ",
-    "\x1b[0m",
-  );
-  process.exit();
-});
 
 console.log(
-  "\x1b[36m",
-  "\x1b[47m",
-  `[Authorization Service] MMM-OnSpotify by Fabrizz | ${version} `,
-  "\x1b[0m",
+  `[\x1b[35mMMM-OnSpotify\x1b[0m] Authorization Service 🗝  >> By Fabrizz \x1b[90mVersion: ${version}\x1b[0m`,
 );
 console.log(
-  "\x1b[36m",
-  "\x1b[47m",
-  "[Authorization Service] Initializing ",
-  "\x1b[0m",
-);
-console.log(
-  "\x1b[36m",
-  "\x1b[47m",
-  `[Authorization Service] Open http://localhost:${port}/ to configure your mirror. `,
-  "\x1b[0m",
+  `[\x1b[35mMMM-OnSpotify\x1b[0m] Authorization Service 🗝  >> \x1b[32mVisit http://localhost:${port}/ to configure your mirror.\x1b[0m`,
 );
 
 app.listen(port);

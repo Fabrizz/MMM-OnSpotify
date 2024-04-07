@@ -6,7 +6,6 @@
  * Original implementation: Raywo | https://github.com/raywo/MMM-NowPlayingOnSpotify
  */
 
-const moment = require("moment");
 // Use node fetch as most MM2 installs use older node
 const fetch = require("node-fetch");
 const tokenRefreshBase = "https://accounts.spotify.com";
@@ -17,26 +16,37 @@ module.exports = class SpotifyFetcher {
     this.credentials = payload.credentials;
     this.preferences = payload.preferences;
     this.language = payload.language;
-    this.tokenExpiresAt = moment();
+    this.tokenExpiresAt = Date.now();
   }
 
   async getData(type) {
-    if (moment().isBefore(this.tokenExpiresAt)) {
+    const currentTime = Date.now();
+    if (currentTime < this.tokenExpiresAt) {
       return this.requestData(type);
     } else {
       let res = await this.refreshAccessToken();
-      if (res.ok) {
+      if (res.access_token) {
         console.log(
-          "\x1b[46m%s\x1b[0m",
-          `[MMM-NPOS] [Node Helper] Access token expired: >> ${this.tokenExpiresAt.format(
-            "HH:mm:ss",
-          )} | Refreshed successfully.`,
+          "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Access token expiration 🗝  >> \x1b[44m\x1b[37m %s \x1b[0m",
+          `${this.formatTime(this.tokenExpiresAt)}`,
         );
+        this.credentials.accessToken = res.access_token;
+        this.tokenExpiresAt = currentTime + res.expires_in * 1000;
+        return this.requestData(type);
+      } else {
+        return new Error("Error getting access token")
       }
-      this.credentials.accessToken = res.access_token;
-      this.tokenExpiresAt = moment().add(res.expires_in, "seconds");
-      return this.requestData(type);
     }
+  }
+
+  formatTime(milliseconds) {
+    const formattedTime = new Date(milliseconds).toLocaleTimeString("en-US", {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    return formattedTime === "Invalid date" ? milliseconds : formattedTime;
   }
 
   requestData(type) {
@@ -58,20 +68,19 @@ module.exports = class SpotifyFetcher {
           .then((res) => {
             if (!res.ok && res.status === 429)
               console.warn(
-                "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get player Data >> ",
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Player data >> \x1b[41m\x1b[37m CODE 429 \x1b[0m %s",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
 
+            this.errorCount = 0;
             if (res.statusText === "No Content") return null;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get player Data >> ",
-              error,
-            );
+              console.error(
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Player data >> \x1b[41m\x1b[37m Request error \x1b[0m",
+                error,
+              );
             return error;
           });
       case "USER":
@@ -83,18 +92,18 @@ module.exports = class SpotifyFetcher {
           .then((res) => {
             if (!res.ok && res.status === 429)
               console.warn(
-                "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get User Data >> ",
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] User data >> \x1b[41m\x1b[37m CODE 429 \x1b[0m %s",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get User Data >> ",
-              error,
-            );
+              console.error(
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] User data >> \x1b[41m\x1b[37m Request error \x1b[0m",
+                error,
+              );
             return error;
           });
       case "QUEUE":
@@ -106,18 +115,18 @@ module.exports = class SpotifyFetcher {
           .then((res) => {
             if (!res.ok && res.status === 429)
               console.warn(
-                "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Queue Data >> ",
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Queue data >> \x1b[41m\x1b[37m CODE 429 \x1b[0m %s",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Queue Data >> ",
-              error,
-            );
+              console.error(
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Queue data >> \x1b[41m\x1b[37m Request error \x1b[0m",
+                error,
+              );
             return error;
           });
       case "AFFINITY":
@@ -131,18 +140,20 @@ module.exports = class SpotifyFetcher {
           .then((res) => {
             if (!res.ok && res.status === 429)
               console.warn(
-                "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Affinity Data >> ",
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Affinity data >> \x1b[41m\x1b[37m CODE 429 \x1b[0m %s",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Affinity Data >> ",
-              error,
-            );
+            this.errorCount++;
+            if (this.errorCount % this.showErrorEvery === 0)
+              console.error(
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Affinity data >> \x1b[41m\x1b[37m Request error \x1b[0m",
+                error,
+              );
             return error;
           });
       case "RECENT":
@@ -154,18 +165,18 @@ module.exports = class SpotifyFetcher {
           .then((res) => {
             if (!res.ok && res.status === 429)
               console.warn(
-                "\x1b[43m%s\x1b[0m",
-                "[MMM-NPOS] [Node Helper] Get Recently-Played Data >> ",
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Recent data >> \x1b[41m\x1b[37m CODE 429 \x1b[0m %s",
                 "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
               );
+
+            this.errorCount = 0;
             return res.body ? res.json() : null;
           })
           .catch((error) => {
-            console.error(
-              "\x1b[41m%s\x1b[0m",
-              "[MMM-NPOS] [Node Helper] Get Recently-Played Data >> ",
-              error,
-            );
+              console.error(
+                "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Recent data >> \x1b[41m\x1b[37m Request error \x1b[0m",
+                error,
+              );
             return error;
           });
     }
@@ -191,16 +202,14 @@ module.exports = class SpotifyFetcher {
       .then((res) => {
         if (!res.ok && res.status === 429)
           console.warn(
-            "\x1b[43m%s\x1b[0m",
-            "[MMM-NPOS] [Node Helper] Refresh access token >> ",
+            "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Refresh access token >> \x1b[41m\x1b[37m CODE 429 \x1b[0m %s",
             "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
           );
         return res.json();
       })
       .catch((error) => {
         console.error(
-          "\x1b[41m%s\x1b[0m",
-          "[MMM-NPOS] [Node Helper] Refresh access token >> ",
+          "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Refresh access token >> \x1b[41m\x1b[37m Request error \x1b[0m",
           error,
         );
         return error;
