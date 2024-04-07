@@ -194,8 +194,8 @@ View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-
 
 ## MMM-HomeKit
 Control your mirror (and other modules) using Apple Homekit protocol! (Also compatible with HomeAssistant or other automation systems with simulated HK controllers)
-> [!NOTE]
-> **MMM-HomeKit** is not finished yet, the controllers for MM² behaviour are not written. Help/testers welcome! https://github.com/Fabrizz/MMM-MMM-HomeKit
+
+#### >>> [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-MMM-HomeKit) <<<
 - Control your screen on/off, brightness
 - Set the mirror accent color
 - Turn on/off on-screen lyrics
@@ -203,6 +203,8 @@ Control your mirror (and other modules) using Apple Homekit protocol! (Also comp
 - **With native HK accessories**
 
 <img alt="MMM-Homekit" src=".github/content/readme/banner-homekit.png" width="70%">
+
+> To learn how to use OnSpotify and HomeKit provided accent colors together, read the guide in the [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-MMM-HomeKit).
 
 ## Notification API
 | key | Description |
