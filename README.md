@@ -25,7 +25,7 @@ npm install
 ### Step 2: Create a Spotify App and authorize the app
 
 > [!WARNING]
-> You can not use MMM-NowPlayingOnSpotify (or other module) credentials, as the API scopes are different.
+> You cannot use MMM-NowPlayingOnSpotify (or other module) credentials, as the API scopes are different.
 
 To help you creating the Spotify App, we start the **Authentication Service**, that guides you on each step of the process:
 
@@ -37,7 +37,7 @@ npm run auth
 ```
 Once you finish, you are all set with the basic configuration. Scroll down to see all the different theming options for the module.
 
-> When the Authorization Service is running, you can access it from your Raspberry Pi going to `http://localhost:8100/`. You can also access it remotely using `http://<IP>:8100/`. Note that using the device where you have MagicMirror² installed is recommended, as you are going to copy and paste the generated config entry.
+> Once the Authorization Service is running, you can access it from your Raspberry Pi going to `http://localhost:8100/`. You can also access it remotely using `http://<IP>:8100/`. Note that using the device where you have MagicMirror² installed is recommended, as you are going to copy and paste the tokens and module configuration in MM².
 
 # Module Configuration
 #### The configuration section is divided in groups, scroll down or click what to see below:
