@@ -41,7 +41,7 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 
 # Module Configuration
 #### The configuration section is divided in groups, scroll down or click what to see below:
-### [[**NEW**] Theming 3rd Party Modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Lyrics**](#mmm-livelyrics) | [Dynamic Theme](#dynamic-theme)
+### [[**NEW**] Theming 3rd Party Modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Lyrics**](#mmm-livelyrics) | [**Homekit**](#mmm-homekit)
 
 **Extended full configuration object:**
 ```js
@@ -185,24 +185,30 @@ experimentalCSSOverridesForMM2: [
 | alwaysUseDefaultDeviceIcon <br> `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it. |
 | experimentalCSSOverridesForMM2 <br> `false` | An array containing CSS overrides, OnSpotify manages the status depending on what is displayed on the screen and lets you customize other modules. [See above](#theming-3rd-party-modules) |
 
-### MMM-HomeKit
-> [!NOTE]
-> Im still writting **MMM-HomeKit** to control you mirror. I need help as im currently using HomeAssistant to test it, but I need apple products to actually test if everytying works. Help needed! https://github.com/Fabrizz/MMM-MMM-HomeKit
-> - Control your screen on/off, brightness
-> - Set the mirror accent color
-> - Turn on/off on-screen lyrics
-> - Send notifications
-> **Nativeliy in the Home app**
+### Theming:
+> See also: [Disabling **all** color based theming](#other)
 
 ## MMM-LiveLyrics
 View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics). This module uses web scrapping to get the Lyrics from Genius. Not recommended for basic usage.
 
 <img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="70%">
 
+## MMM-HomeKit
+Control your mirror (and other modules) using Apple Homekit protocol! (Also compatible with HomeAssistant or other automation systems with simulated HK controllers)
+> [!NOTE]
+> **MMM-HomeKit** is not finished yet, the controllers for MM² behaviour are not written yet. Help/testers welcome! https://github.com/Fabrizz/MMM-MMM-HomeKit
+- Control your screen on/off, brightness
+- Set the mirror accent color
+- Turn on/off on-screen lyrics
+- Send notifications
+- **With native HK accessories**
+
+<img alt="MMM-Homekit" src=".github/content/readme/banner-homekit.png" width="70%">
+
 ## Notification API
 | key | Description |
 | :-- | :-- |
-| `THEME_PREFERENCE` | ↑ **DEPRECATED**, from [Dynamic Theme](#dynamic-theme). |
+| `THEME_PREFERENCE` | ↑ Sent to signal other modules that color data is available. |
 | `NOW_PLAYING` | ↑ When the player state changes, the module sends a notification so other modules can, for example, [show lyrics](#lyrics). |
 | `DEVICE_CHANGE` | ↑ Everytime the Spotify Connect target changes, this notification is fired. |
 | `ONSPOTIFY_NOTICE` | ↑ This notification signals other modules that OnSpotify is available. |
