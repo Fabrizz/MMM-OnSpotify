@@ -11,7 +11,9 @@ const SpotifyFetcher = require("./utils/SpotifyFetcher");
 
 module.exports = NodeHelper.create({
   start: function () {
-    console.log("\x1b[46m%s\x1b[0m", `[Node Helper] Init >> ${this.name}`);
+    console.log(
+      "[\x1b[35mMMM-OnSpotify\x1b[0m] by Fabrizz >> Node helper loaded.",
+    );
     this.fetcher = undefined;
     // Helps keping track of when the player becomes empty
     this.lastPlayerStatus = undefined;
@@ -37,10 +39,11 @@ module.exports = NodeHelper.create({
         this.fetchSpotifyData("PLAYER");
         this.preferences = payload.preferences;
         this.appendableId = payload.backendExpectId;
-        console.log(
-          "[MMM-ONSP] [Node Helper] Session identifier: >> \x1b[46m%s\x1b[0m",
-          `${this.appendableId}`,
-        );
+        if (this.appendableId !== "ABC")
+          console.log(
+            "[\x1b[35mMMM-OnSpotify\x1b[0m] Session identifier: >> \x1b[44m\x1b[37m %s \x1b[0m",
+            `${this.appendableId}`,
+          );
         break;
       case "REFRESH_PLAYER":
         if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("PLAYER");
@@ -267,7 +270,11 @@ module.exports = NodeHelper.create({
           break;
       }
     } catch (error) {
-      console.error("\x1b[41m%s\x1b[0m", "[MMM-ONSP] [Node Helper] >> ", error);
+      console.warn(
+        "[\x1b[35mMMM-OnSpotify\x1b[0m] >> \x1b[41m\x1b[37m %s \x1b[0m ",
+        "Error fetching data",
+        error,
+      );
     }
   },
 

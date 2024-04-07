@@ -38,6 +38,8 @@ Module.register("MMM-OnSpotify", {
     filterNoticeSubtitle: true,
     // Changes the language sent to Spotify
     language: config.language,
+    // Shows the recieved data from the node_helper
+    debugSpotifyData: false,
 
     updateInterval: {
       isPlaying: 1,
@@ -127,7 +129,7 @@ Module.register("MMM-OnSpotify", {
 
     // In special use cases where a frontend needs to take over other you can disabl
     // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
-    matchBackendUUID: true,
+    matchBackendUUID: false,
   },
 
   start: function () {
@@ -205,6 +207,14 @@ Module.register("MMM-OnSpotify", {
 
     this.sendCredentialsBackend();
     this.updateFetchingLoop(this.config.updateInterval[this.lastStatus]);
+    if (this.config.debugSpotifyData) console.debug(
+      `%c· MMM-OnSpotify %c %c DBUG %c`,
+      "background-color:#84CC16;color:black;border-radius:0.5em",
+      "",
+      "background-color:#293f45;color:white;",
+      "",
+      this.config,
+    );
   },
 
   getDom: function () {
@@ -311,6 +321,15 @@ Module.register("MMM-OnSpotify", {
   socketNotificationReceived: function (notification, payload) {
     switch (notification) {
       case "PLAYER_DATA":
+        if (this.config.debugSpotifyData) console.debug(
+          `%c· MMM-OnSpotify %c %c DBUG %c`,
+          "background-color:#84CC16;color:black;border-radius:0.5em",
+          "",
+          "background-color:#293f45;color:white;",
+          "",
+          "PLAYER_DATA",
+          payload,
+        );
         this.isConnectedToSpotify = true;
         this.connectionRetries = 0;
         if (!payload.statusPlayerUpdating) this.playerData = payload;
@@ -351,6 +370,15 @@ Module.register("MMM-OnSpotify", {
           });
         break;
       case "USER_DATA":
+        if (this.config.debugSpotifyData) console.debug(
+          `%c· MMM-OnSpotify %c %c DBUG %c`,
+          "background-color:#84CC16;color:black;border-radius:0.5em",
+          "",
+          "background-color:#293f45;color:white;",
+          "",
+          "USER_DATA",
+          payload,
+        );
         this.userData = {
           ...payload,
           subtitleOverride:
@@ -373,6 +401,15 @@ Module.register("MMM-OnSpotify", {
           );
         break;
       case "AFFINITY_DATA":
+        if (this.config.debugSpotifyData) console.debug(
+          `%c· MMM-OnSpotify %c %c DBUG %c`,
+          "background-color:#84CC16;color:black;border-radius:0.5em",
+          "",
+          "background-color:#293f45;color:white;",
+          "",
+          "AFFINITY_DATA",
+          payload,
+        );
         this.affinityData = payload;
         this.affinityData.age = Date.now();
         this.requestAffinityData = false;
