@@ -185,7 +185,6 @@ experimentalCSSOverridesForMM2: [
 | alwaysUseDefaultDeviceIcon <br> `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it. |
 | experimentalCSSOverridesForMM2 <br> `false` | An array containing CSS overrides, OnSpotify manages the status depending on what is displayed on the screen and lets you customize other modules. [See above](#theming-3rd-party-modules) |
 
-### Theming:
 > See also: [Disabling **all** color based theming](#other)
 
 ## MMM-LiveLyrics
@@ -196,7 +195,7 @@ View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-
 ## MMM-HomeKit
 Control your mirror (and other modules) using Apple Homekit protocol! (Also compatible with HomeAssistant or other automation systems with simulated HK controllers)
 > [!NOTE]
-> **MMM-HomeKit** is not finished yet, the controllers for MM² behaviour are not written yet. Help/testers welcome! https://github.com/Fabrizz/MMM-MMM-HomeKit
+> **MMM-HomeKit** is not finished yet, the controllers for MM² behaviour are not written. Help/testers welcome! https://github.com/Fabrizz/MMM-MMM-HomeKit
 - Control your screen on/off, brightness
 - Set the mirror accent color
 - Turn on/off on-screen lyrics
