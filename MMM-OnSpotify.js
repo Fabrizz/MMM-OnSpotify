@@ -200,6 +200,7 @@ Module.register("MMM-OnSpotify", {
     this.userData = null;
     this.playerData = null;
     this.affinityData = null;
+    this.canvasData = null;
     // this.queueData = null;
     // this.recentData = null;
 
@@ -443,6 +444,10 @@ Module.register("MMM-OnSpotify", {
         this.sendNotification("SERVERSIDE_RESTART");
         this.sendCredentialsBackend();
         break;
+      case "CANVAS":
+        this.canvasData = payload;
+        this.smartUpdate("CANVAS");
+        break
     }
   },
   notificationReceived: function (notification, payload) {
@@ -658,6 +663,9 @@ Module.register("MMM-OnSpotify", {
     if (type === "USER_DATA") this.builder.updateUserData(this.userData);
     if (type === "AFFINITY_DATA")
       this.builder.updateAffinityData(this.affinityData);
+    if (type === "CANVAS") {
+      this.builder.updateCanvasData(this.canvasData);
+    }
   },
 
   getImage: (im, prefersLarge) =>

@@ -8,8 +8,12 @@
 
 // Use node fetch as most MM2 installs use older node
 const fetch = require("node-fetch");
+const axios = require('axios');
 const tokenRefreshBase = "https://accounts.spotify.com";
 const userBase = "https://api.spotify.com";
+const openSpotify = "https://open.spotify.com/";
+const canvasesUrl = 'https://spclient.wg.spotify.com/canvaz-cache/v0/canvases';
+const canvas = require('./canvas_pb.js');
 
 module.exports = class SpotifyFetcher {
   constructor(payload) {
@@ -37,6 +41,41 @@ module.exports = class SpotifyFetcher {
         return new Error("Error getting access token")
       }
     }
+  }
+
+  async getCanvas(trackUri) {
+    let canvasRequest = new canvas.CanvasRequest();
+    const canvasToken = await this.getCanvasToken();
+
+    let spotifyTrack = new canvas.CanvasRequest.Track();
+    spotifyTrack.setTrackUri(trackUri);
+    canvasRequest.addTracks(spotifyTrack);    
+    let requestBytes = canvasRequest.serializeBinary();
+
+    const options = {
+      responseType: 'arraybuffer',
+      headers: {
+        'accept': 'application/protobuf',
+        'content-type': 'application/x-www-form-urlencoded',
+        'accept-language': 'en',
+        'user-agent': 'Spotify/8.5.49 iOS/Version 13.3.1 (Build 17D50)',
+        'accept-encoding': 'gzip, deflate, br',
+        'authorization': `Bearer ${canvasToken.accessToken}`,
+      }
+    }
+    return axios.post(canvasesUrl, requestBytes, options)
+      .then(response => {
+        if (response.statusText !== 'OK') {
+          console.log(`ERROR ${canvasesUrl}: ${response.status} ${response.statusText}`);
+          if (response.data.error) {
+            console.log(response.data.error);
+          }
+        } else {
+          return canvas.CanvasResponse.deserializeBinary(response.data).toObject();
+        }
+      })
+      .catch(error => console.log(`ERROR ${canvasesUrl}: ${error}`));    
+   
   }
 
   formatTime(milliseconds) {
@@ -180,6 +219,26 @@ module.exports = class SpotifyFetcher {
             return error;
           });
     }
+  }
+
+  getCanvasToken() {
+
+    return fetch(new URL("get_access_token?reason=transport&productType=web_player", openSpotify))
+      .then(res => {
+        if (!res.ok && res.status === 429)
+        console.warn(
+          "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Refresh access token >> \x1b[41m\x1b[37m CODE 429 \x1b[0m %s",
+          "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
+        );
+        return res.json();
+      })
+      .catch((error) => {
+        console.error(
+          "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] getCanvasToken >> \x1b[41m\x1b[37m Request error \x1b[0m",
+          error,
+        );
+        return error;
+      });
   }
 
   refreshAccessToken() {

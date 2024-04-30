@@ -435,6 +435,21 @@ class SpotifyDomBuilder {
     if (this.config.theming.spotifyCodeExperimentalShow) {
       player.appendChild(this.getSpotifyCodeDom(data.itemUri));
     }
+    const mycanvas = document.createElement("div");
+    mycanvas.classList.add("mycanvas");
+    
+    const video = document.createElement('video');
+    video.id = "VSNO-TARGET-VIDEO";
+    video.type = 'video/mp4'
+    video.muted = true;
+    video.controls = false;
+    video.autobuffer = true;
+    video.autoplay = true;
+    video.loop = true;
+    mycanvas.appendChild(video);
+
+    player.appendChild(mycanvas);
+
     player.appendChild(footer);
     return player;
   }
@@ -465,6 +480,12 @@ class SpotifyDomBuilder {
     this.setSpotifyCode(u, "VSNO-TARGET-CODE", true);
     return experimental;
   }
+
+  updateCanvasData(data) {
+    const vid = document.getElementById("VSNO-TARGET-VIDEO");
+    vid.src = data != null ? data : '';
+  }
+
   updatePlayerData(data) {
     if (!document.getElementById("ONSP-WRAPPER")) return;
     if (

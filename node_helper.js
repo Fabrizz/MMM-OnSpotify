@@ -28,6 +28,7 @@ module.exports = NodeHelper.create({
     // Use a identifier to filter socket-io retries.
     this.appendableId = undefined;
     this.serversideId = Date.now().toString(16);
+    this.currentTrack = null;
   },
 
   socketNotificationReceived: function (notification, payload) {
@@ -132,6 +133,19 @@ module.exports = NodeHelper.create({
             // CASE 1 The data is OK and there is an ITEM in the player
             let isTrack =
               data.currently_playing_type === "track" ? true : false;
+
+              if (this.currentTrack != data.item.id) {
+                this.currentTrack = data.item.id;
+
+                let canvas = await this.fetcher.getCanvas(data.item.uri);
+                let mp4 = null;
+                if (canvas.canvasesList.length == 1) {                  
+                  console.log(canvas.canvasesList[0].canvasUrl);
+                  mp4 = canvas.canvasesList[0].canvasUrl.endsWith('.mp4') ? canvas.canvasesList[0].canvasUrl : null;
+                }
+                this.sendSocketNotification("CANVAS", mp4);
+              }
+
             let payload = {
               /* Player data */
               playerIsPlaying: data.is_playing,
