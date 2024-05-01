@@ -635,7 +635,7 @@ Module.register("MMM-OnSpotify", {
       return;
     } else {
       this.retries = 0;
-    }         
+    }
 
     if (
       this.playerData &&
@@ -674,7 +674,7 @@ Module.register("MMM-OnSpotify", {
     }
     if (type === "USER_DATA") this.builder.updateUserData(this.userData);
     if (type === "AFFINITY_DATA")
-      this.builder.updateAffinityData(this.affinityData);    
+      this.builder.updateAffinityData(this.affinityData);
   },
 
   getImage: (im, prefersLarge) =>
