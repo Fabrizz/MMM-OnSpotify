@@ -444,9 +444,9 @@ Module.register("MMM-OnSpotify", {
         this.sendNotification("SERVERSIDE_RESTART");
         this.sendCredentialsBackend();
         break;
-      case "CANVAS":
+      case "UPDATE_COVER":
         this.canvasData = payload;
-        this.smartUpdate("CANVAS");
+        this.smartUpdate("UPDATE_COVER");
         break
     }
   },
@@ -598,8 +598,8 @@ Module.register("MMM-OnSpotify", {
       this.lastStatus = this.currentStatus;
     }
 
-    if (type === "CANVAS") {
-      this.builder.updateCanvasData(this.canvasData);
+    if (type === "UPDATE_COVER") {
+      this.builder.updateCover(this.canvasData);
     }     
 
     if (this.currentStatus === "onReconnecting") {

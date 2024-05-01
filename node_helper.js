@@ -140,10 +140,17 @@ module.exports = NodeHelper.create({
                 let canvas = await this.fetcher.getCanvas(data.item.uri);
                 let mp4 = null;
                 if (canvas.canvasesList.length == 1) {                  
-                  console.log(canvas.canvasesList[0].canvasUrl);
                   mp4 = canvas.canvasesList[0].canvasUrl.endsWith('.mp4') ? canvas.canvasesList[0].canvasUrl : null;
                 }
-                this.sendSocketNotification("CANVAS", mp4);
+
+                this.sendSocketNotification("UPDATE_COVER", {
+                  itemId: data.item.id,
+                  video: mp4,
+                  itemImages: this.processImages(
+                    (isTrack ? data.item.album.images : data.item.show.images) ||
+                      [],
+                  ),
+                });
               }
 
             let payload = {
@@ -154,6 +161,7 @@ module.exports = NodeHelper.create({
               playerShuffleState: data.shuffle_state,
               playerRepeatState: data.repeat_state,
               /* Item generics */
+              itemId: data.item.id,
               itemUri: data.item.uri,
               itemName: data.item.name,
               itemDuration: data.item.duration_ms,
