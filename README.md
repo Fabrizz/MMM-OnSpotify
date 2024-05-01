@@ -85,6 +85,9 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         spotifyCodeExperimentalShow: true,
         spotifyCodeExperimentalUseColor: true,
         spotifyCodeExperimentalSeparateItem: true,
+        // Canvas
+        showCanvas: true,
+        canvasEffect: 'cover',
         // Theming General
         roundMediaCorners: true,
         roundProgressBar: true,
@@ -169,6 +172,12 @@ experimentalCSSOverridesForMM2: [
 | spotifyCodeExperimentalShow <br> `true` | Shows the Spotify Code (SpotifyScannable) for the current Song/Podcast/Audiobook. This is an experimental feature, as the API is not documented. SVG elements from the Spotify CDN are sanitized and parsed to allow animations (`spotifyVectorAnimations`). <br /><br /><img alt="Spotify code" src=".github/content/readme/image-spotifycode.png" aling="left" height="40"> |
 | spotifyCodeExperimentalUseColor <br> `true` | As shown on the image above, color the Spotify Code bar using cover art colors. |
 | spotifyCodeExperimentalSeparateItem <br> `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor`. <br /><br /><img alt="Spotify code bar separation" src=".github/content/readme/banner-codeseparation.png" aling="left" height="100">  |
+
+#### Canvas
+| Key |  Description |
+| :-- | :-- |
+| showCanvas <br> `true` | Shows the canvas instead the cover image |
+| canvasEffect <br> `cover` | Control how is the canvas gonna appear in the cover placeholder. Options are: <br />- `contain`: place the canvas in the cover placeholder leaving vertical stripes <br />- `cover`: place the canvas in the cover placeholder maintaining its aspect ratio while filling the element's entire content box and clipping to fit <br />- `scale`: Scale up/down the cover placeholder to fit the canvas without clipped <br /> |
 
 #### General Theming options
 | Key |  Description |
