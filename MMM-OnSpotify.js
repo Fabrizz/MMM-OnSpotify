@@ -554,7 +554,8 @@ Module.register("MMM-OnSpotify", {
 
   smartUpdate: function (type) {
     // Request data to display when the player is empty
-    // Update only if there is no data or the player is changing state
+    // Update only if there is no data or the player is changing state 
+
     this.requestUserData =
       this.displayUser &&
       this.isConnectedToSpotify &&
@@ -597,6 +598,10 @@ Module.register("MMM-OnSpotify", {
       this.lastStatus = this.currentStatus;
     }
 
+    if (type === "CANVAS") {
+      this.builder.updateCanvasData(this.canvasData);
+    }     
+
     if (this.currentStatus === "onReconnecting") {
       this.retries = this.retries > 25 ? this.retries : this.retries + 1;
       if (this.retries === 25) {
@@ -623,7 +628,7 @@ Module.register("MMM-OnSpotify", {
       return;
     } else {
       this.retries = 0;
-    }
+    }         
 
     if (
       this.playerData &&
@@ -662,10 +667,7 @@ Module.register("MMM-OnSpotify", {
     }
     if (type === "USER_DATA") this.builder.updateUserData(this.userData);
     if (type === "AFFINITY_DATA")
-      this.builder.updateAffinityData(this.affinityData);
-    if (type === "CANVAS") {
-      this.builder.updateCanvasData(this.canvasData);
-    }
+      this.builder.updateAffinityData(this.affinityData);    
   },
 
   getImage: (im, prefersLarge) =>

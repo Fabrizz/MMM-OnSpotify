@@ -168,6 +168,7 @@ class SpotifyDomBuilder {
       spotifyLogoGreen: "assets/spotifyLogoGreen.png",
       spotifyLogoWide: "assets/spotifyLogoWide.png",
     };
+    this.tmpCanva = null;
   }
 
   /* All cases */
@@ -446,6 +447,10 @@ class SpotifyDomBuilder {
     video.autobuffer = true;
     video.autoplay = true;
     video.loop = true;
+    if (this.tmpCanva != null) {
+      video.src = this.tmpCanva;
+      this.tmpCanva = null;
+    }
     mycanvas.appendChild(video);
 
     player.appendChild(mycanvas);
@@ -483,7 +488,11 @@ class SpotifyDomBuilder {
 
   updateCanvasData(data) {
     const vid = document.getElementById("VSNO-TARGET-VIDEO");
-    vid.src = data != null ? data : '';
+    if (vid == null) {
+      this.tmpCanva = data;
+    } else {
+      vid.src = data != null ? data : '';
+    }
   }
 
   updatePlayerData(data) {
