@@ -7,12 +7,11 @@
  */
 
 // Use node fetch as most MM2 installs use older node
+
 const fetch = require("node-fetch");
-const axios = require('axios');
 const tokenRefreshBase = "https://accounts.spotify.com";
 const userBase = "https://api.spotify.com";
 const openSpotify = "https://open.spotify.com/";
-const canvasesUrl = 'https://spclient.wg.spotify.com/canvaz-cache/v0/canvases';
 const canvas = require('./canvas_pb.js');
 
 module.exports = class SpotifyFetcher {
@@ -44,16 +43,17 @@ module.exports = class SpotifyFetcher {
   }
 
   async getCanvas(trackUri) {
-    let canvasRequest = new canvas.CanvasRequest();
+    const canvasesUrl = 'https://spclient.wg.spotify.com/canvaz-cache/v0/canvases';
     const canvasToken = await this.getCanvasToken();
-
+    let canvasRequest = new canvas.CanvasRequest();
     let spotifyTrack = new canvas.CanvasRequest.Track();
+    
     spotifyTrack.setTrackUri(trackUri);
     canvasRequest.addTracks(spotifyTrack);    
     let requestBytes = canvasRequest.serializeBinary();
-
+  
     const options = {
-      responseType: 'arraybuffer',
+      method: 'POST',
       headers: {
         'accept': 'application/protobuf',
         'content-type': 'application/x-www-form-urlencoded',
@@ -61,21 +61,26 @@ module.exports = class SpotifyFetcher {
         'user-agent': 'Spotify/8.5.49 iOS/Version 13.3.1 (Build 17D50)',
         'accept-encoding': 'gzip, deflate, br',
         'authorization': `Bearer ${canvasToken.accessToken}`,
-      }
-    }
-    return axios.post(canvasesUrl, requestBytes, options)
-      .then(response => {
-        if (response.statusText !== 'OK') {
-          console.log(`ERROR ${canvasesUrl}: ${response.status} ${response.statusText}`);
-          if (response.data.error) {
-            console.log(response.data.error);
-          }
-        } else {
-          return canvas.CanvasResponse.deserializeBinary(response.data).toObject();
+      },
+      body: requestBytes
+    };
+  
+    try {
+      const response = await fetch(canvasesUrl, options);
+      if (!response.ok) {
+        console.log(`ERROR ${canvasesUrl}: ${response.status} ${response.statusText}`);
+        const errorData = await response.json();
+        if (errorData.error) {
+          console.log(errorData.error);
         }
-      })
-      .catch(error => console.log(`ERROR ${canvasesUrl}: ${error}`));    
-   
+        return null; // or handle error according to your needs
+      }
+      const responseData = await response.arrayBuffer();
+      return canvas.CanvasResponse.deserializeBinary(new Uint8Array(responseData)).toObject();
+    } catch (error) {
+      console.log(`ERROR ${canvasesUrl}: ${error}`);
+      return null; // or handle error according to your needs
+    }
   }
 
   formatTime(milliseconds) {
