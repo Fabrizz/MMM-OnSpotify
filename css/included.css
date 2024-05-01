@@ -44,6 +44,9 @@
     --ONSP-INTERNAL-LOWPOWER-COVER: none;
     --ONSP-INTERNAL-LOWPOWER-TRANSITIONS: none; /* background-color */
 
+    --ONSP-INTERNAL-COVER-FADE-TIME: 2500ms;
+    --ONSP-INTERNAL-COVER-FADE-EASING: cubic-bezier(.23,1.12,.95,.9);
+
     --ONSP-INTERNAL-PLAYER-FONT-BASE: inherit;
     --ONSP-INTERNAL-PLAYER-SIZE-WIDTH: 15em;
     --ONSP-INTERNAL-PLAYER-PADDING-INFO: 0.28em;
@@ -270,7 +273,7 @@
     width: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
     overflow: hidden;
     border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
-    transition: height 5s ease-in-out;
+    transition: height var(--ONSP-INTERNAL-COVER-FADE-TIME) var(--ONSP-INTERNAL-COVER-FADE-EASING);
 }
 
 .ONSP-Base .player .swappable .media {
@@ -279,7 +282,7 @@
     top: 50%;
     transform: translateY(-50%);
     opacity: 0;
-    transition: opacity 5s ease-in-out;
+    transition: opacity var(--ONSP-INTERNAL-COVER-FADE-TIME) var(--ONSP-INTERNAL-COVER-FADE-EASING);
     height: auto;
     z-index: 0;
 }
