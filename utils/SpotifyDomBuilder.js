@@ -320,6 +320,7 @@ class SpotifyDomBuilder {
     const event = this.coverData.video == null ? 'load' : 'loadedmetadata';
     cover.classList.add('media');
     cover.id = this.coverData.itemId;
+    const _self = this;
 
     if (this.coverData.video == null) {
       cover.src = this.selectImage(this.coverData.itemImages);
@@ -348,7 +349,9 @@ class SpotifyDomBuilder {
       }      
 
       if (e.target.tagName === 'VIDEO') {
-        parent.style.height = e.target.offsetHeight + 'px';
+        if (_self.config.canvasEffect == 'scale') {
+          parent.style.height = e.target.offsetHeight + 'px';
+        }
       } else {
         parent.style.removeProperty('height');
       }
@@ -394,6 +397,7 @@ class SpotifyDomBuilder {
     const swappable = document.createElement("div");
     swappable.id = "VSNO-TARGET-SWAPPABLE";
     swappable.classList.add("swappable");
+    swappable.classList.add("canvas-" + this.config.canvasEffect);
     
     const cover = this.getCoverContainer();    
     swappable.appendChild(cover);

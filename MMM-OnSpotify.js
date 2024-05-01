@@ -127,6 +127,13 @@ Module.register("MMM-OnSpotify", {
     alwaysUseDefaultDeviceIcon: false,
     showVerticalPipe: true,
 
+    // Canvas
+    showCanvas: true,
+    //contain: place the canvas in the frame leaving vertical stripes
+    //scale: scale the container to fit the canvas
+    //cover: fill the container to fit the canvas
+    canvasEffect: 'cover', 
+
     // In special use cases where a frontend needs to take over other you can disabl
     // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
     matchBackendUUID: false,
@@ -678,6 +685,7 @@ Module.register("MMM-OnSpotify", {
         userAffinityUseTracks: this.config.userAffinityUseTracks,
         deviceFilter: this.config.deviceFilter,
         deviceFilterExclude: this.config.deviceFilterExclude,
+        useCanvas: this.config.showCanvas
       },
       credentials: {
         clientId: this.config.clientID,

@@ -273,18 +273,37 @@
     width: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
     overflow: hidden;
     border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
+}
+
+.ONSP-Base .player .swappable.canvas-scale {
     transition: height var(--ONSP-INTERNAL-COVER-FADE-TIME) var(--ONSP-INTERNAL-COVER-FADE-EASING);
+}
+.ONSP-Base .player .swappable.canvas-scale .media {
+    top: 50%;
+    transform: translateY(-50%);
+    height: auto;
+}
+
+.ONSP-Base .player .swappable.canvas-contain .media {
+    height: 100%;
+    width: auto;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+
+.ONSP-Base .player .swappable.canvas-cover .media {
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .ONSP-Base .player .swappable .media {
     width: 100%;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
     opacity: 0;
-    transition: opacity var(--ONSP-INTERNAL-COVER-FADE-TIME) var(--ONSP-INTERNAL-COVER-FADE-EASING);
-    height: auto;
     z-index: 0;
+    transition: opacity var(--ONSP-INTERNAL-COVER-FADE-TIME) var(--ONSP-INTERNAL-COVER-FADE-EASING);
+    position: absolute;
 }
 
 .ONSP-Base .player .swappable .top {

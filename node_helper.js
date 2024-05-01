@@ -137,10 +137,13 @@ module.exports = NodeHelper.create({
               if (this.currentTrack != data.item.id) {
                 this.currentTrack = data.item.id;
 
-                let canvas = await this.fetcher.getCanvas(data.item.uri);
                 let mp4 = null;
-                if (canvas.canvasesList.length == 1) {                  
-                  mp4 = canvas.canvasesList[0].canvasUrl.endsWith('.mp4') ? canvas.canvasesList[0].canvasUrl : null;
+
+                if (this.preferences.showCanvas == true) {
+                  let canvas = await this.fetcher.getCanvas(data.item.uri);
+                  if (canvas.canvasesList.length == 1) {                  
+                    mp4 = canvas.canvasesList[0].canvasUrl.endsWith('.mp4') ? canvas.canvasesList[0].canvasUrl : null;
+                  }  
                 }
 
                 this.sendSocketNotification("UPDATE_COVER", {
