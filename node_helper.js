@@ -25,10 +25,13 @@ module.exports = NodeHelper.create({
     this.isPlayerInTransit = 0;
     // Configuration sent to the helper
     this.preferences = undefined;
-    // Use a identifier to filter socket-io retries.
+    // Use a identifier to filter socket-io retries
     this.appendableId = undefined;
     this.serversideId = Date.now().toString(16);
-    this.currentTrack = null;
+
+    // Canvas url and to which item it corresponds to
+    this.savedCanvasUrl = false;
+    this.savedCanvasUri = "";
   },
 
   socketNotificationReceived: function (notification, payload) {
@@ -131,31 +134,17 @@ module.exports = NodeHelper.create({
 
           if (data && data.item) {
             // CASE 1 The data is OK and there is an ITEM in the player
-            let isTrack =
+            const isTrack =
               data.currently_playing_type === "track" ? true : false;
 
-              if (this.currentTrack != data.item.id) {
-                this.currentTrack = data.item.id;
+            const itemImages =
+              this.processImages(
+                (isTrack ? data.item.album.images : data.item.show.images) || []);
 
-                let mp4 = null;
-
-                if (this.preferences.showCanvas == true) {
-                  let canvas = await this.fetcher.getCanvas(data.item.uri);
-                  if (canvas.canvasesList.length == 1) {                  
-                    mp4 = canvas.canvasesList[0].canvasUrl.endsWith('.mp4') ? canvas.canvasesList[0].canvasUrl : null;
-                  }  
-                }
-
-                this.sendSocketNotification("UPDATE_COVER", {
-                  itemId: data.item.id,
-                  video: mp4,
-                  itemImages: this.processImages(
-                    (isTrack ? data.item.album.images : data.item.show.images) ||
-                      [],
-                  ),
-                });
-              }
-
+            // Add a canvas object if enabled
+            if (isTrack && this.preferences.useCanvas && (this.lastMediaUri !== data.item.uri))
+              this.statelessGetCanvas(data.item.uri, itemImages)
+            
             let payload = {
               /* Player data */
               playerIsPlaying: data.is_playing,
@@ -168,10 +157,7 @@ module.exports = NodeHelper.create({
               itemUri: data.item.uri,
               itemName: data.item.name,
               itemDuration: data.item.duration_ms,
-              itemImages: this.processImages(
-                (isTrack ? data.item.album.images : data.item.show.images) ||
-                  [],
-              ),
+              itemImages,
               /* Item specifics (Some are not used yet) */
               itemAlbum: isTrack ? data.item.album.name : null,
               itemPublisher: isTrack ? null : data.item.show.publisher,
@@ -187,6 +173,8 @@ module.exports = NodeHelper.create({
               deviceVolume: data.device.volume_percent,
               deviceIsPrivate: data.device.is_private_session,
               deviceId: data.device.id,
+              /* Special canvas sync */
+              canvas: data.item.uri === this.savedCanvasUri ? this.savedCanvasUrl : false,
               /* Special status sync */
               statusIsPlayerEmpty: false,
               statusIsNewSong:
@@ -297,12 +285,38 @@ module.exports = NodeHelper.create({
     } catch (error) {
       console.warn(
         "[\x1b[35mMMM-OnSpotify\x1b[0m] >> \x1b[41m\x1b[37m %s \x1b[0m ",
-        "Error fetching data",
+        "Error fetching data (OOB)",
         error,
       );
     }
   },
 
+  async statelessGetCanvas(uri, itemImages) {
+    try {
+      // use then to prevent context issue
+      this.fetcher.getCanvas(uri).then(canvas => {
+        console.log("[CANVAS DATA]", JSON.stringify(canvas), typeof x)
+
+        if (canvas.canvasesList.length == 1 && canvas.canvasesList[0].canvasUrl.endsWith('.mp4')) {
+          const item = canvas.canvasesList[0];
+          this.savedCanvasUrl = item.canvasUrl;
+          this.savedCanvasUri = item.trackUri;
+
+          this.sendSocketNotification("UPDATE_CANVAS", {
+            itemUri: item.trackUri,
+            url: item.canvasUrl,
+            itemImages: itemImages
+          });
+        }
+      });
+    } catch (error) {
+      console.warn(
+        "[\x1b[35mMMM-OnSpotify\x1b[0m] >> \x1b[41m\x1b[37m %s \x1b[0m ",
+        "Error fetching cover data (OOB)",
+        error,
+      );
+    }
+  },
   isCorrectIdOrRefresh(rcvd) {
     if (rcvd !== this.appendableId) {
       if (typeof this.appendableId === "undefined") {

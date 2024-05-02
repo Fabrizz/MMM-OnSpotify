@@ -315,24 +315,31 @@ class SpotifyDomBuilder {
     return wrapper;
   }
 
-  getCoverContainer() {
-    const cover = this.coverData.video == null ? document.createElement("img") : document.createElement("video");
-    const event = this.coverData.video == null ? 'load' : 'loadedmetadata';
+  getCoverContainer(data, video) {
+    video = data.canvas ? true : video;
+    const cover = !video ? document.createElement("img") : document.createElement("video");
+    const event = !video ? 'load' : 'loadedmetadata';
+
     cover.classList.add('media');
-    cover.id = this.coverData.itemId;
+    cover.id = data.itemUri;
+    const selectedImage = this.selectImage(data.itemImages);
     const _self = this;
 
-    if (this.coverData.video == null) {
-      cover.src = this.selectImage(this.coverData.itemImages);
+    if (!video) {
+      cover.src = selectedImage;
     } else {
+      this.root.style.setProperty(
+        `--ONSP-INTERNAL-CANVAS-ALBUM`,
+        `url('${selectedImage}')`,
+      );
       cover.type = 'video/mp4'
       cover.muted = true;
       cover.controls = false;
       cover.autobuffer = true;
       cover.autoplay = true;
       cover.loop = true;
-      cover.src = this.coverData.video;    
-    }    
+      cover.src = data.canvas ? data.canvas : data.url;    
+    }
     
     cover.addEventListener(event, function(e) {
       const parent = e.target.parentNode;
@@ -349,7 +356,7 @@ class SpotifyDomBuilder {
       }      
 
       if (e.target.tagName === 'VIDEO') {
-        if (_self.config.canvasEffect == 'scale') {
+        if (_self.config.experimentalCanvasEffect == 'scale') {
           parent.style.height = e.target.offsetHeight + 'px';
         }
       } else {
@@ -397,9 +404,10 @@ class SpotifyDomBuilder {
     const swappable = document.createElement("div");
     swappable.id = "VSNO-TARGET-SWAPPABLE";
     swappable.classList.add("swappable");
-    swappable.classList.add("canvas-" + this.config.canvasEffect);
+    swappable.classList.add("canvas-" + this.config.experimentalCanvasEffect);
+    if (this.config.experimentalCanvasAlbumOverlay) swappable.classList.add("canvas-overlays");
     
-    const cover = this.getCoverContainer();    
+    const cover = this.getCoverContainer(data);    
     swappable.appendChild(cover);
 
 
@@ -500,17 +508,6 @@ class SpotifyDomBuilder {
     return experimental;
   }
 
-  updateCover(data) {
-    const container = document.getElementById("VSNO-TARGET-SWAPPABLE");
-    this.coverData = data;
-    if (container == null) {
-      return;
-    }
-
-    const cover = this.getCoverContainer();    
-    container.appendChild(cover);    
-  }
-
   updatePlayerData(data) {
     if (!document.getElementById("ONSP-WRAPPER")) return;
     if (
@@ -569,6 +566,10 @@ class SpotifyDomBuilder {
       playerSubtitle.innerText = data.itemArtists
         ? data.itemArtists
         : `${data.itemShowName} - ${data.itemPublisher}`;
+
+      const container = document.getElementById("VSNO-TARGET-SWAPPABLE");
+      const cover = this.getCoverContainer(data)
+      container.appendChild(cover)
       // document.getElementById("VSNO-TARGET-COVER").src = this.selectImage(data.itemImages); <-- transitions do not affect src
 
       // LATER: Add a couple of miliseconds of artificial delay so Vibrant can prefetch the image and
@@ -607,6 +608,16 @@ class SpotifyDomBuilder {
 
     this.lastItemURI = data.itemUri;
   }
+
+  updateCanvas(data) {
+    console.log("SYNC", data)
+    const container = document.getElementById("VSNO-TARGET-SWAPPABLE");
+    this.coverData = data;
+    if (container == null) return;
+    const cover = this.getCoverContainer(data, true);
+    container.appendChild(cover);
+  }
+
 
   /* AFFINITY */
   getAffinityGrid(data) {

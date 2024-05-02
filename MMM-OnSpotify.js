@@ -127,12 +127,13 @@ Module.register("MMM-OnSpotify", {
     alwaysUseDefaultDeviceIcon: false,
     showVerticalPipe: true,
 
-    // Canvas
-    showCanvas: true,
-    //contain: place the canvas in the frame leaving vertical stripes
-    //scale: scale the container to fit the canvas
-    //cover: fill the container to fit the canvas
-    canvasEffect: 'cover', 
+    // Show Canvas
+    experimentalCanvas: true,
+    // "contain" - Place the canvas in the frame leaving vertical stripes
+    // "scale" - Scale the container to fit the canvas
+    // "cover" -  Fill the container to fit the canvas
+    experimentalCanvasEffect: "scale",
+    experimentalCanvasAlbumOverlay: true,
 
     // In special use cases where a frontend needs to take over other you can disabl
     // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
@@ -451,9 +452,9 @@ Module.register("MMM-OnSpotify", {
         this.sendNotification("SERVERSIDE_RESTART");
         this.sendCredentialsBackend();
         break;
-      case "UPDATE_COVER":
+      case "UPDATE_CANVAS":
         this.canvasData = payload;
-        this.smartUpdate("UPDATE_COVER");
+        this.smartUpdate("CANVAS_DATA");
         break
     }
   },
@@ -605,10 +606,6 @@ Module.register("MMM-OnSpotify", {
       this.lastStatus = this.currentStatus;
     }
 
-    if (type === "UPDATE_COVER") {
-      this.builder.updateCover(this.canvasData);
-    }     
-
     if (this.currentStatus === "onReconnecting") {
       this.retries = this.retries > 25 ? this.retries : this.retries + 1;
       if (this.retries === 25) {
@@ -672,6 +669,8 @@ Module.register("MMM-OnSpotify", {
       )
         return this.builder.updatePlayerData(this.playerData);
     }
+
+    if (type === "CANVAS_DATA") this.builder.updateCanvas(this.canvasData);
     if (type === "USER_DATA") this.builder.updateUserData(this.userData);
     if (type === "AFFINITY_DATA")
       this.builder.updateAffinityData(this.affinityData);
@@ -685,7 +684,7 @@ Module.register("MMM-OnSpotify", {
         userAffinityUseTracks: this.config.userAffinityUseTracks,
         deviceFilter: this.config.deviceFilter,
         deviceFilterExclude: this.config.deviceFilterExclude,
-        useCanvas: this.config.showCanvas
+        useCanvas: this.config.experimentalCanvas
       },
       credentials: {
         clientId: this.config.clientID,

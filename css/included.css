@@ -53,6 +53,8 @@
     --ONSP-INTERNAL-PLAYER-MEDIA-CORNERS: 0.60em;
     --ONSP-INTERNAL-PLAYER-PROGRESS-CORNERS: 1em;
     --ONSP-INTERNAL-PLAYER-GAP: 0.5em;
+
+    --ONSP-INTERNAL-COVER-SCALABLE-MAX-HEIGHT: 550px;
     
     --ONSP-INTERNAL-PLAYER-COLOR-PROGRESS: #FFF;
     --ONSP-INTERNAL-PLAYER-COLOR-PROGRESS-BG: #ffffff26;
@@ -265,6 +267,7 @@
     0%, 10%, 20% { transform: translateX(0px); }
     80%, 90%, 100% { transform: translateX(calc(0px - var(--ONSP-INTERNAL-SCROLLER-SIZE-SUBTITLE))); }
 }
+
 .ONSP-Base .player .swappable {
     min-height: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
     height: var(--ONSP-INTERNAL-PLAYER-SIZE-WIDTH);
@@ -274,16 +277,15 @@
     overflow: hidden;
     border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
 }
-
 .ONSP-Base .player .swappable.canvas-scale {
     transition: height var(--ONSP-INTERNAL-COVER-FADE-TIME) var(--ONSP-INTERNAL-COVER-FADE-EASING);
+    max-height: var(--ONSP-INTERNAL-COVER-SCALABLE-MAX-HEIGHT);
 }
 .ONSP-Base .player .swappable.canvas-scale .media {
     top: 50%;
     transform: translateY(-50%);
     height: auto;
 }
-
 .ONSP-Base .player .swappable.canvas-contain .media {
     height: 100%;
     width: auto;
@@ -291,25 +293,43 @@
     right: 0;
     margin: 0 auto;
 }
-
 .ONSP-Base .player .swappable.canvas-cover .media {
     width: 100%;
     top: 50%;
     transform: translateY(-50%);
 }
-
 .ONSP-Base .player .swappable .media {
     width: 100%;
     opacity: 0;
     z-index: 0;
     transition: opacity var(--ONSP-INTERNAL-COVER-FADE-TIME) var(--ONSP-INTERNAL-COVER-FADE-EASING);
     position: absolute;
+    border-radius: var(--ONSP-INTERNAL-PLAYER-MEDIA-CORNERS);
+    overflow: hidden;
 }
-
+.ONSP-Base .player .swappable.canvas-overlays::before {
+    content: "";
+    width: 3em;
+    height: 3em;
+    bottom: 0.6em;
+    left: 0.6em;
+    position: absolute;
+    opacity: 0;
+    border-radius: 0.32em;
+    z-index: 12;
+    transition: opacity var(--ONSP-INTERNAL-COVER-FADE-TIME) var(--ONSP-INTERNAL-COVER-FADE-EASING);
+    background-image: var(--ONSP-INTERNAL-CANVAS-ALBUM);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.ONSP-Base .player .swappable.canvas-overlays:has(video.top)::before {
+    opacity: 0.8;
+}
 .ONSP-Base .player .swappable .top {
     opacity: 1;
     z-index: 10;
 }
+
 
 .ONSP-Base .player .footer {
     display: flex;
