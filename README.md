@@ -88,8 +88,9 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         spotifyCodeExperimentalUseColor: true,
         spotifyCodeExperimentalSeparateItem: true,
         // Canvas
-        showCanvas: true,
-        canvasEffect: 'cover',
+        experimentalCanvas: false,
+        experimentalCanvasEffect: 'cover',
+        experimentalCanvasAlbumOverlay: false,
         // Theming General
         roundMediaCorners: true,
         roundProgressBar: true,
@@ -179,7 +180,7 @@ experimentalCSSOverridesForMM2: [
 | Key |  Description |
 | :-- | :-- |
 | experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
-| canvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
+| experimentalCanvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position. <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
 | experimentalCanvasAlbumOverlay <br> `true` | Show the cover art inside the Spotify Canvas. |
 
 #### General Theming options
