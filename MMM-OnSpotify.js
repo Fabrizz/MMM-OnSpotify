@@ -128,11 +128,12 @@ Module.register("MMM-OnSpotify", {
     showVerticalPipe: true,
 
     // Show Canvas
-    experimentalCanvas: true,
+    experimentalCanvas: false,
     // "contain" - Place the canvas in the frame leaving vertical stripes
     // "scale" - Scale the container to fit the canvas
     // "cover" -  Fill the container to fit the canvas
-    experimentalCanvasEffect: "scale",
+    experimentalCanvasEffect: "cover",
+    // Add the album cover inside the canvas
     experimentalCanvasAlbumOverlay: true,
 
     // In special use cases where a frontend needs to take over other you can disabl
