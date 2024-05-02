@@ -12,6 +12,8 @@ The module includes an Authentication Service that guide you through the configu
 
 https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/5d78672e-8feb-45de-92f4-ed44f0771432
 
+https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/f7c0928f-3806-48ba-a813-87962dd9ea8b
+
 
 # Installation
 ### Step 1: Clone the module and install dependencies
@@ -41,7 +43,7 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 
 # Module Configuration
 #### The configuration section is divided in groups, scroll down or click what to see below:
-### [[**NEW**] Theming 3rd Party Modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Lyrics**](#mmm-livelyrics) | [**Homekit**](#mmm-homekit)
+### [[**NEW**] CANVAS](#canvas) | [Theming other modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Homekit**](#mmm-homekit) | [**Lyrics**](#mmm-livelyrics)
 
 **Extended full configuration object:**
 ```js
@@ -176,8 +178,9 @@ experimentalCSSOverridesForMM2: [
 #### Canvas
 | Key |  Description |
 | :-- | :-- |
-| showCanvas <br> `true` | Shows the canvas instead the cover image |
-| canvasEffect <br> `cover` | Control how is the canvas gonna appear in the cover placeholder. Options are: <br />- `contain`: place the canvas in the cover placeholder leaving vertical stripes <br />- `cover`: place the canvas in the cover placeholder maintaining its aspect ratio while filling the element's entire content box and clipping to fit <br />- `scale`: Scale up/down the cover placeholder to fit the canvas without clipped <br /> |
+| experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
+| canvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
+| experimentalCanvasAlbumOverlay <br> `true` | Show the cover art inside the Spotify Canvas. |
 
 #### General Theming options
 | Key |  Description |
