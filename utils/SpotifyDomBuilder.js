@@ -168,6 +168,7 @@ class SpotifyDomBuilder {
       spotifyLogoGreen: "assets/spotifyLogoGreen.png",
       spotifyLogoWide: "assets/spotifyLogoWide.png",
     };
+    this.tmpCanva = null;
   }
 
   /* All cases */
@@ -314,6 +315,58 @@ class SpotifyDomBuilder {
     return wrapper;
   }
 
+  getCoverContainer(data, video) {
+    video = data.canvas ? true : video;
+    const cover = !video ? document.createElement("img") : document.createElement("video");
+    const event = !video ? 'load' : 'loadedmetadata';
+
+    cover.classList.add('media');
+    cover.id = data.itemUri;
+    const selectedImage = this.selectImage(data.itemImages);
+    const _self = this;
+
+    if (!video) {
+      cover.src = selectedImage;
+    } else {
+      this.root.style.setProperty(
+        `--ONSP-INTERNAL-CANVAS-ALBUM`,
+        `url('${selectedImage}')`,
+      );
+      cover.type = 'video/mp4'
+      cover.muted = true;
+      cover.controls = false;
+      cover.autobuffer = true;
+      cover.autoplay = true;
+      cover.loop = true;
+      cover.src = data.canvas ? data.canvas : data.url;    
+    }
+    
+    cover.addEventListener(event, function(e) {
+      const parent = e.target.parentNode;
+      const children = parent.children;
+            
+      e.target.classList.add('top');
+      if (e.target.previousSibling != null) {
+        e.target.previousSibling.classList.remove('top');
+      }   
+
+      // Remove all children except the last two
+      for (let i = children.length - 3; i >= 0; i--) {
+          parent.removeChild(children[i]);
+      }      
+
+      if (e.target.tagName === 'VIDEO') {
+        if (_self.config.experimentalCanvasEffect == 'scale') {
+          parent.style.height = e.target.offsetHeight + 'px';
+        }
+      } else {
+        parent.style.removeProperty('height');
+      }
+    });
+
+    return cover;
+  } 
+
   /* PLAYER */
   getPlayerData(data) {
     const player = document.createElement("div");
@@ -348,27 +401,15 @@ class SpotifyDomBuilder {
     header.appendChild(names);
 
     /* Cover */
-    // Use 2 images at the same time to stop flickering from image loading times
     const swappable = document.createElement("div");
+    swappable.id = "VSNO-TARGET-SWAPPABLE";
     swappable.classList.add("swappable");
+    swappable.classList.add("canvas-" + this.config.experimentalCanvasEffect);
+    if (this.config.experimentalCanvasAlbumOverlay) swappable.classList.add("canvas-overlays");
+    
+    const cover = this.getCoverContainer(data);    
+    swappable.appendChild(cover);
 
-    const coverA = document.createElement("img");
-    coverA.id = "VSNO-TARGET-COVER-A";
-    coverA.classList.add("cover");
-    // coverA.style.backgroundImage = `url(${this.selectImage(data.itemImages)})`;
-    coverA.referrerPolicy = "no-referrer";
-    coverA.src = this.selectImage(data.itemImages);
-
-    const coverB = document.createElement("img");
-    coverB.id = "VSNO-TARGET-COVER-B";
-    coverB.classList.add("cover");
-    coverB.classList.add("cover-hidden");
-    coverB.referrerPolicy = "no-referrer";
-
-    this.currentCoverPosition = 0;
-
-    swappable.appendChild(coverA);
-    swappable.appendChild(coverB);
 
     /* Footer -> ProgressBar>Bar | Target>Icon/Device */
     const footer = document.createElement("div");
@@ -435,6 +476,7 @@ class SpotifyDomBuilder {
     if (this.config.theming.spotifyCodeExperimentalShow) {
       player.appendChild(this.getSpotifyCodeDom(data.itemUri));
     }
+
     player.appendChild(footer);
     return player;
   }
@@ -465,6 +507,7 @@ class SpotifyDomBuilder {
     this.setSpotifyCode(u, "VSNO-TARGET-CODE", true);
     return experimental;
   }
+
   updatePlayerData(data) {
     if (!document.getElementById("ONSP-WRAPPER")) return;
     if (
@@ -523,6 +566,10 @@ class SpotifyDomBuilder {
       playerSubtitle.innerText = data.itemArtists
         ? data.itemArtists
         : `${data.itemShowName} - ${data.itemPublisher}`;
+
+      const container = document.getElementById("VSNO-TARGET-SWAPPABLE");
+      const cover = this.getCoverContainer(data)
+      container.appendChild(cover)
       // document.getElementById("VSNO-TARGET-COVER").src = this.selectImage(data.itemImages); <-- transitions do not affect src
 
       // LATER: Add a couple of miliseconds of artificial delay so Vibrant can prefetch the image and
@@ -548,29 +595,6 @@ class SpotifyDomBuilder {
         }, this.animationDefaultDelayFromCSS);
       }
 
-      const cvA = document.getElementById("VSNO-TARGET-COVER-A");
-      const cvB = document.getElementById("VSNO-TARGET-COVER-B");
-
-      if (this.currentCoverPosition === 0) {
-        cvB.addEventListener("load", function () {
-          cvB.classList.remove("cover-hidden");
-          cvA.classList.add("cover-hidden");
-          cvA.classList.remove("cover-swapping");
-        });
-        cvA.classList.add("cover-swapping");
-        cvB.src = this.selectImage(data.itemImages); //`url(${this.selectImage(data.itemImages)})`;
-        this.currentCoverPosition = 1;
-      } else {
-        cvA.addEventListener("load", function () {
-          cvA.classList.remove("cover-hidden");
-          cvB.classList.add("cover-hidden");
-          cvB.classList.remove("cover-swapping");
-        });
-        cvB.classList.add("cover-swapping");
-        cvA.src = this.selectImage(data.itemImages); //`url(${this.selectImage(data.itemImages)})`;
-        this.currentCoverPosition = 0;
-      }
-
       if (this.config.theming.spotifyCodeExperimentalShow)
         this.updateSpotifyCode(data.itemUri, "VSNO-TARGET-CODE", false);
     }
@@ -584,6 +608,16 @@ class SpotifyDomBuilder {
 
     this.lastItemURI = data.itemUri;
   }
+
+  updateCanvas(data) {
+    console.log("SYNC", data)
+    const container = document.getElementById("VSNO-TARGET-SWAPPABLE");
+    this.coverData = data;
+    if (container == null) return;
+    const cover = this.getCoverContainer(data, true);
+    container.appendChild(cover);
+  }
+
 
   /* AFFINITY */
   getAffinityGrid(data) {
