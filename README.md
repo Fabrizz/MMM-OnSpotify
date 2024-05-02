@@ -12,6 +12,8 @@ The module includes an Authentication Service that guide you through the configu
 
 https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/5d78672e-8feb-45de-92f4-ed44f0771432
 
+https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/f7c0928f-3806-48ba-a813-87962dd9ea8b
+
 
 # Installation
 ### Step 1: Clone the module and install dependencies
@@ -41,7 +43,7 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 
 # Module Configuration
 #### The configuration section is divided in groups, scroll down or click what to see below:
-### [[**NEW**] Theming 3rd Party Modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Lyrics**](#mmm-livelyrics) | [**Homekit**](#mmm-homekit)
+### [[**NEW**] CANVAS](#canvas) | [Theming other modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Homekit**](#mmm-homekit) | [**Lyrics**](#mmm-livelyrics)
 
 **Extended full configuration object:**
 ```js
@@ -85,6 +87,10 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         spotifyCodeExperimentalShow: true,
         spotifyCodeExperimentalUseColor: true,
         spotifyCodeExperimentalSeparateItem: true,
+        // Canvas
+        experimentalCanvas: false,
+        experimentalCanvasEffect: 'cover',
+        experimentalCanvasAlbumOverlay: false,
         // Theming General
         roundMediaCorners: true,
         roundProgressBar: true,
@@ -169,6 +175,13 @@ experimentalCSSOverridesForMM2: [
 | spotifyCodeExperimentalShow <br> `true` | Shows the Spotify Code (SpotifyScannable) for the current Song/Podcast/Audiobook. This is an experimental feature, as the API is not documented. SVG elements from the Spotify CDN are sanitized and parsed to allow animations (`spotifyVectorAnimations`). <br /><br /><img alt="Spotify code" src=".github/content/readme/image-spotifycode.png" aling="left" height="40"> |
 | spotifyCodeExperimentalUseColor <br> `true` | As shown on the image above, color the Spotify Code bar using cover art colors. |
 | spotifyCodeExperimentalSeparateItem <br> `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor`. <br /><br /><img alt="Spotify code bar separation" src=".github/content/readme/banner-codeseparation.png" aling="left" height="100">  |
+
+#### Canvas
+| Key |  Description |
+| :-- | :-- |
+| experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
+| experimentalCanvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position. <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
+| experimentalCanvasAlbumOverlay <br> `true` | Show the cover art inside the Spotify Canvas. |
 
 #### General Theming options
 | Key |  Description |

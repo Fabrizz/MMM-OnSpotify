@@ -1,0 +1,28 @@
+// generate javascript interfaces:
+// $ protoc --proto_path=api --js_out=import_style=commonjs,binary:api/ api/_canvas.proto
+
+syntax = "proto3";
+
+message CanvasRequest {
+  message Track {
+    string track_uri = 1;         // spotify:track:5osCClSjGplWagDsJmyivf
+  }
+  repeated Track tracks = 1;
+}
+
+message CanvasResponse {
+  message Canvas {
+    string id = 1;                // ef3bc2ac86ba4a39b2cddff19dca884a
+    string canvas_url = 2;        // https://canvaz.scdn.co/upload/artist/6i1GVNJCyyssRwXmnaeEFH/video/ef3bc2ac86ba4a39b2cddff19dca884a.cnvs.mp4
+    string track_uri = 5;         // spotify:track:5osCClSjGplWagDsJmyivf
+    message Artist {
+      string artist_uri = 1;      // spotify:artist:3E61SnNA9oqKP7hI0K3vZv
+      string artist_name = 2;     // CALVO
+      string artist_img_url = 3;  // https://i.scdn.co/image/2d7b0ebe1e06c74f5c6b9a2384d746673051241d
+    }
+    Artist artist = 6;
+    string other_id = 9;          // 957a9be5e5c1b9ef1ac1c96b7cebf396
+    string canvas_uri = 11;       // spotify:canvas:1OuybAWK7XOQMG725ZtFwG
+  }
+  repeated Canvas canvases = 1;
+}
