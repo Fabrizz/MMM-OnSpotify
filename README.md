@@ -177,6 +177,9 @@ experimentalCSSOverridesForMM2: [
 | spotifyCodeExperimentalSeparateItem <br> `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor`. <br /><br /><img alt="Spotify code bar separation" src=".github/content/readme/banner-codeseparation.png" aling="left" height="100">  |
 
 #### Canvas
+> [!CAUTION]
+> Spotify returns server error 500 after X amount of anonymous usage of the API. We will add an option to use a WebPlayer cookie to get the canvases!
+
 | Key |  Description |
 | :-- | :-- |
 | experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
