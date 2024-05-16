@@ -610,7 +610,6 @@ class SpotifyDomBuilder {
   }
 
   updateCanvas(data) {
-    console.log("SYNC", data)
     const container = document.getElementById("VSNO-TARGET-SWAPPABLE");
     this.coverData = data;
     if (container == null) return;

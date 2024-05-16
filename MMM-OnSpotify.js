@@ -135,6 +135,7 @@ Module.register("MMM-OnSpotify", {
     experimentalCanvasEffect: "cover",
     // Add a mini album cover
     experimentalCanvasAlbumOverlay: true,
+    experimentalCanvasSPDCookie: "",
 
     // In special use cases where a frontend needs to take over other you can disabl
     // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
@@ -685,13 +686,14 @@ Module.register("MMM-OnSpotify", {
         userAffinityUseTracks: this.config.userAffinityUseTracks,
         deviceFilter: this.config.deviceFilter,
         deviceFilterExclude: this.config.deviceFilterExclude,
-        useCanvas: this.config.experimentalCanvas
+        useCanvas: this.config.experimentalCanvas,
       },
       credentials: {
         clientId: this.config.clientID,
         clientSecret: this.config.clientSecret,
         accessToken: this.config.accessToken,
         refreshToken: this.config.refreshToken,
+        experimentalCanvasSPDCookie: this.config.experimentalCanvasSPDCookie,
       },
       language: this.config.language,
       backendExpectId: this.backendExpectId,
