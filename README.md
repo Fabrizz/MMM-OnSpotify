@@ -183,8 +183,8 @@ experimentalCSSOverridesForMM2: [
 | Key |  Description |
 | :-- | :-- |
 | experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
-| canvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
 | experimentalCanvasAlbumOverlay <br> `true` | Show the cover art inside the Spotify Canvas. |
+| experimentalCanvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position. <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
 | experimentalCanvasSPDCookie <br> `""` | Adds the SPD cookie from a web Spotify session to stop Spotify from returning a 500 error. Spotify could decide also to just send a 500 error depending on the user agents and other factors, this just affects the module. Still, this feature is optional and this API is NOT public. |
 
 #### General Theming options

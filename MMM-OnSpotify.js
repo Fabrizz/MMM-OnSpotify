@@ -133,7 +133,7 @@ Module.register("MMM-OnSpotify", {
     // "scale" - Scale the container to fit the canvas
     // "cover" -  Fill the container to fit the canvas
     experimentalCanvasEffect: "cover",
-    // Add a mini album cover
+    // Add the album cover inside the canvas
     experimentalCanvasAlbumOverlay: true,
     experimentalCanvasSPDCookie: "",
 
