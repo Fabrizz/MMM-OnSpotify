@@ -127,6 +127,16 @@ Module.register("MMM-OnSpotify", {
     alwaysUseDefaultDeviceIcon: false,
     showVerticalPipe: true,
 
+    // Show Canvas
+    experimentalCanvas: false,
+    // "contain" - Place the canvas in the frame leaving vertical stripes
+    // "scale" - Scale the container to fit the canvas
+    // "cover" -  Fill the container to fit the canvas
+    experimentalCanvasEffect: "cover",
+    // Add a mini album cover
+    experimentalCanvasAlbumOverlay: true,
+    experimentalCanvasSPDCookie: "",
+
     // In special use cases where a frontend needs to take over other you can disabl
     // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
     matchBackendUUID: false,
@@ -200,6 +210,7 @@ Module.register("MMM-OnSpotify", {
     this.userData = null;
     this.playerData = null;
     this.affinityData = null;
+    this.canvasData = null;
     // this.queueData = null;
     // this.recentData = null;
 
@@ -443,6 +454,10 @@ Module.register("MMM-OnSpotify", {
         this.sendNotification("SERVERSIDE_RESTART");
         this.sendCredentialsBackend();
         break;
+      case "UPDATE_CANVAS":
+        this.canvasData = payload;
+        this.smartUpdate("CANVAS_DATA");
+        break
     }
   },
   notificationReceived: function (notification, payload) {
@@ -549,7 +564,8 @@ Module.register("MMM-OnSpotify", {
 
   smartUpdate: function (type) {
     // Request data to display when the player is empty
-    // Update only if there is no data or the player is changing state
+    // Update only if there is no data or the player is changing state 
+
     this.requestUserData =
       this.displayUser &&
       this.isConnectedToSpotify &&
@@ -655,6 +671,8 @@ Module.register("MMM-OnSpotify", {
       )
         return this.builder.updatePlayerData(this.playerData);
     }
+
+    if (type === "CANVAS_DATA") this.builder.updateCanvas(this.canvasData);
     if (type === "USER_DATA") this.builder.updateUserData(this.userData);
     if (type === "AFFINITY_DATA")
       this.builder.updateAffinityData(this.affinityData);
@@ -668,12 +686,14 @@ Module.register("MMM-OnSpotify", {
         userAffinityUseTracks: this.config.userAffinityUseTracks,
         deviceFilter: this.config.deviceFilter,
         deviceFilterExclude: this.config.deviceFilterExclude,
+        useCanvas: this.config.experimentalCanvas,
       },
       credentials: {
         clientId: this.config.clientID,
         clientSecret: this.config.clientSecret,
         accessToken: this.config.accessToken,
         refreshToken: this.config.refreshToken,
+        experimentalCanvasSPDCookie: this.config.experimentalCanvasSPDCookie,
       },
       language: this.config.language,
       backendExpectId: this.backendExpectId,

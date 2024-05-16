@@ -9,9 +9,11 @@ The module includes an Authentication Service that guide you through the configu
 > [!NOTE]
 > All the data stays in your mirror. If you have multiple mirrors, the Authentication Service guides you on creating a new Spotify App per mirror.
 
-
 https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/5d78672e-8feb-45de-92f4-ed44f0771432
 
+https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/f7c0928f-3806-48ba-a813-87962dd9ea8b
+
+> This module shows what is on your Spotify Connect. if you want to use Spotify in your mirror you should look at [Raspotify](https://github.com/dtcooper/raspotify)
 
 # Installation
 ### Step 1: Clone the module and install dependencies
@@ -41,7 +43,7 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 
 # Module Configuration
 #### The configuration section is divided in groups, scroll down or click what to see below:
-### [[**NEW**] Theming 3rd Party Modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Lyrics**](#mmm-livelyrics) | [**Homekit**](#mmm-homekit)
+### [[**NEW**] CANVAS](#canvas) | [Theming other modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Homekit**](#mmm-homekit) | [**Lyrics**](#mmm-livelyrics)
 
 **Extended full configuration object:**
 ```js
@@ -85,6 +87,11 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         spotifyCodeExperimentalShow: true,
         spotifyCodeExperimentalUseColor: true,
         spotifyCodeExperimentalSeparateItem: true,
+        // Canvas
+        experimentalCanvas: false,
+        experimentalCanvasEffect: 'cover',
+        experimentalCanvasAlbumOverlay: false,
+        experimentalCanvasSPDCookie: "",
         // Theming General
         roundMediaCorners: true,
         roundProgressBar: true,
@@ -170,6 +177,16 @@ experimentalCSSOverridesForMM2: [
 | spotifyCodeExperimentalUseColor <br> `true` | As shown on the image above, color the Spotify Code bar using cover art colors. |
 | spotifyCodeExperimentalSeparateItem <br> `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor`. <br /><br /><img alt="Spotify code bar separation" src=".github/content/readme/banner-codeseparation.png" aling="left" height="100">  |
 
+#### Canvas
+> [!CAUTION]
+> Spotify returns server error 500 after * amount of anonymous usage of the API. You could get rate limited (or not, some people just use it anonymously!). For that you can add a `experimentalCanvasSPDCookie`. This is more advanced as it requieres you to get the cookie from a Spotify Web session. Not recommended for all users.
+| Key |  Description |
+| :-- | :-- |
+| experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
+| canvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
+| experimentalCanvasAlbumOverlay <br> `true` | Show the cover art inside the Spotify Canvas. |
+| experimentalCanvasSPDCookie <br> `""` | Adds the SPD cookie from a web Spotify session to stop Spotify from returning a 500 error. Spotify could decide also to just send a 500 error depending on the user agents and other factors, this just affects the module. Still, this feature is optional and this API is NOT public. |
+
 #### General Theming options
 | Key |  Description |
 | :-- | :-- |
@@ -195,7 +212,7 @@ View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-
 ## MMM-HomeKit
 Control your mirror (and other modules) using Apple Homekit protocol! (Also compatible with HomeAssistant or other automation systems with simulated HK controllers)
 
-#### >>> [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-MMM-HomeKit) <<<
+#### >>> [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-HomeKit) <<<
 - Control your screen on/off, brightness
 - Set the mirror accent color
 - Turn on/off on-screen lyrics
@@ -204,7 +221,7 @@ Control your mirror (and other modules) using Apple Homekit protocol! (Also comp
 
 <img alt="MMM-Homekit" src=".github/content/readme/banner-homekit.png" width="70%">
 
-> To learn how to use OnSpotify and HomeKit provided accent colors together, read the guide in the [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-MMM-HomeKit).
+> To learn how to use OnSpotify and HomeKit provided accent colors together, read the guide in the [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-HomeKit).
 
 ## Notification API
 | key | Description |
