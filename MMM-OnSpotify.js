@@ -204,8 +204,8 @@ Module.register("MMM-OnSpotify", {
         version: this.version,
       },
       (a, b) => this.translate(a, b),
-      (a, b) => this.sendNotification(a, b), // This is not the bes as I would like this logic to be separated,
-                                             // but I dont have time to refractor everything. Solves #81 issue
+      (a, b) => this.sendNotification(a, b), // This is not the best as I would like this logic to be separated from the,
+                                             // DomBuilder but I dont have time to refractor everything. Solves #81 issue
     );
 
     /* Future update:
