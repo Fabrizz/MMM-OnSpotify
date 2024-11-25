@@ -8,10 +8,11 @@
 /* eslint-disable no-undef */
 
 class SpotifyDomBuilder {
-  constructor(pathPrefix, config, other, translator) {
+  constructor(pathPrefix, config, other, translator, externalNotifier) {
     this.pathPrefix = pathPrefix;
     this.config = { ...config, ...other };
     this.translate = translator;
+    this.notifyModules = externalNotifier;
     this.root = document.querySelector(":root");
     this.firstUpdate = true;
     this.lastItemURI = null;
@@ -610,7 +611,6 @@ class SpotifyDomBuilder {
   }
 
   updateCanvas(data) {
-    console.log("SYNC", data)
     const container = document.getElementById("VSNO-TARGET-SWAPPABLE");
     this.coverData = data;
     if (container == null) return;
@@ -767,12 +767,10 @@ class SpotifyDomBuilder {
 
   /* Image color processing */
   async setGlobalColors(url, data) {
-    const ch = url !== this.lastUrlProcessed ? "" : "[PALETTE CACHED] | ";
+    const shouldUpdatePalette = url !== this.lastUrlProcessed;
+
     this.firstUpdate = false;
-    const palette =
-      url !== this.lastUrlProcessed
-        ? await this.getVibrant(url)
-        : this.lastPalette;
+    const palette = shouldUpdatePalette ? await this.getVibrant(url) : this.lastPalette;
 
     if (!palette) return;
     this.lastPalette = palette;
@@ -784,6 +782,16 @@ class SpotifyDomBuilder {
         `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
       );
     }
+
+    // Notify external modules about the color change instantly after the color is set
+    // Added to fix/help #81
+    if (this.config.experimentalColorSignaling)
+      this.notifyModules("INSTANT_COLOR", {
+        vibrantRawOutput: palette,
+        isCacheedPalette: !shouldUpdatePalette,
+        forUrl: url,
+      })
+    
 
     // Fix color data using RGB_Linear_Shade to get more contrast
     // This is used in the SpotifyCode bar, if enabled with useColorInProgressBar
@@ -873,7 +881,7 @@ class SpotifyDomBuilder {
                 (Brightness_By_Color(palette.Vibrant.hex) / 255) * 100,
               )}%`
             : ""
-        } | ${ch}${data.itemName} | ${url}`,
+        } | ${shouldUpdatePalette ? "" : "[PALETTE CACHED] | "}${data.itemName} | ${url}`,
         `padding:0.7em;border-radius:3em;background-color:${palette.Vibrant.hex}`,
         `padding:0.7em;border-radius:3em;margin-left:0.3em;background-color:${palette.LightVibrant.hex};color:${palette.DarkVibrant.hex}`,
         `padding:0.7em;border-radius:3em;margin-left:0.3em;background-color:${palette.DarkVibrant.hex};color:${palette.LightVibrant.hex}`,

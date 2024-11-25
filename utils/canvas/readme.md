@@ -1,7 +1,6 @@
 ## Experimental canvas implementation
 Original:
-* https://github.com/Vibrant-Colors/node-vibrant
-
+* https://github.com/bartleyg/my-spotify-canvas
 Implementation:
 * https://github.com/dientuki
 * https://github.com/Fabrizz/MMM-OnSpotify/issues/66

@@ -99,7 +99,7 @@ Module.register("MMM-OnSpotify", {
       ONSPOTIFY_HIDE: "ONSPOTIFY_HIDE",
     },
 
-    // Allow config with or without
+    // Allow config with or without subdivition
     isPlaying: 1,
     isEmpty: 2,
     isPlayingHidden: 1,
@@ -135,10 +135,15 @@ Module.register("MMM-OnSpotify", {
     experimentalCanvasEffect: "cover",
     // Add the album cover inside the canvas
     experimentalCanvasAlbumOverlay: true,
+    experimentalCanvasSPDCookie: "",
 
     // In special use cases where a frontend needs to take over other you can disabl
     // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
     matchBackendUUID: false,
+
+    // Send a notification with the color data when only when the song changes, this is useful for modules
+    // that are not going to show the color inside the dom.
+    experimentalColorSignaling: false,
   },
 
   start: function () {
@@ -199,6 +204,8 @@ Module.register("MMM-OnSpotify", {
         version: this.version,
       },
       (a, b) => this.translate(a, b),
+      (a, b) => this.sendNotification(a, b), // This is not the best as I would like this logic to be separated from the,
+                                             // DomBuilder but I dont have time to refractor everything. Solves #81 issue
     );
 
     /* Future update:
@@ -685,13 +692,14 @@ Module.register("MMM-OnSpotify", {
         userAffinityUseTracks: this.config.userAffinityUseTracks,
         deviceFilter: this.config.deviceFilter,
         deviceFilterExclude: this.config.deviceFilterExclude,
-        useCanvas: this.config.experimentalCanvas
+        useCanvas: this.config.experimentalCanvas,
       },
       credentials: {
         clientId: this.config.clientID,
         clientSecret: this.config.clientSecret,
         accessToken: this.config.accessToken,
         refreshToken: this.config.refreshToken,
+        experimentalCanvasSPDCookie: this.config.experimentalCanvasSPDCookie,
       },
       language: this.config.language,
       backendExpectId: this.backendExpectId,

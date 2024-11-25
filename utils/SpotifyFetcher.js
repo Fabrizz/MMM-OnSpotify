@@ -201,6 +201,14 @@ module.exports = class SpotifyFetcher {
             "\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Refresh access token >> \x1b[41m\x1b[37m CODE 429 \x1b[0m %s",
             "You are being rate limited by Spotify (429). Use only one SpotifyApp per module/implementation",
           );
+        if (res.status !== 200) {
+          console.warn(
+            `\x1b[0m[\x1b[35mMMM-OnSpotify\x1b[0m] Refresh access token >> \x1b[41m\x1b[37m CODE ${res.status} \x1b[0m %s`,
+            "Error refreshing access token. Check your credentials, account type or status.",
+          );
+          return new Error("Error refreshing access token")
+        }
+
         return res.json();
       })
       .catch((error) => {
@@ -239,7 +247,7 @@ module.exports = class SpotifyFetcher {
         'accept': 'application/protobuf',
         'content-type': 'application/x-www-form-urlencoded',
         'accept-language': 'en',
-        'user-agent': 'Spotify/8.5.49 iOS/Version 13.3.1 (Build 17D50)',
+        'user-agent': 'Spotify/8.6.98 iOS/15.3.1',
         'accept-encoding': 'gzip, deflate, br',
         'authorization': `Bearer ${this.canvasToken}`,
       },
@@ -270,7 +278,23 @@ module.exports = class SpotifyFetcher {
     if (currentTime < this.canvasTokenExpiresAt) {
       return this.canvasToken
     } else {
-      return fetch(new URL("get_access_token?reason=transport&productType=web_player", spotifyBase))
+      let ccc = {
+        headers: {
+          //"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0",
+          //Accept:
+          //  "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+          //"Accept-Language": "en-US,en;q=0.5",
+          //"Alt-Used": "open.spotify.com",
+          //"Upgrade-Insecure-Requests": "1",
+          //"Sec-Fetch-Dest": "document",
+          //"Sec-Fetch-Mode": "navigate",
+          //"Sec-Fetch-Site": "cross-site",
+        }
+      }
+      if (this.credentials.experimentalCanvasSPDCookie.length > 0) {
+        ccc.headers.Cookie = `sp_dc=${this.credentials.experimentalCanvasSPDCookie}`;
+      }
+      return fetch(new URL("get_access_token?reason=transport&productType=web_player", spotifyBase), ccc)
         .then(async res => {
           if (!res.ok && res.status === 429)
             console.warn(

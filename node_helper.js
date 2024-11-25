@@ -295,7 +295,7 @@ module.exports = NodeHelper.create({
     try {
       // use then to prevent context issue
       this.fetcher.getCanvas(uri).then(canvas => {
-        console.log("[CANVAS DATA]", JSON.stringify(canvas), typeof x)
+        // console.log("[CANVAS DATA]", JSON.stringify(canvas))
 
         if (canvas.canvasesList.length == 1 && canvas.canvasesList[0].canvasUrl.endsWith('.mp4')) {
           const item = canvas.canvasesList[0];
