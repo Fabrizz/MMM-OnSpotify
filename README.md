@@ -104,6 +104,7 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         blurCorrectionInAllSides: false,
         alwaysUseDefaultDeviceIcon: false,
         experimentalCSSOverridesForMM2: false, // [SEE BELOW]
+        experimentalColorSignaling: false,
     },
 },
 ```
@@ -178,14 +179,18 @@ experimentalCSSOverridesForMM2: [
 | spotifyCodeExperimentalSeparateItem <br> `true` | Separates or joins the Spotify Code Bar to the cover art. Also respects `roundMediaCorners` and `spotifyCodeExperimentalUseColor`. <br /><br /><img alt="Spotify code bar separation" src=".github/content/readme/banner-codeseparation.png" aling="left" height="100">  |
 
 #### Canvas
+> [!IMPORTANT]
+> EXPERIMENTAL - Using this without auth will get this funtion rate-limited. For that you can add a `experimentalCanvasSPDCookie`. This is more advanced as it requieres you to get the cookie from a Spotify Web session. Not recommended for all users. 
+
 > [!CAUTION]
-> Spotify returns server error 500 after * amount of anonymous usage of the API. You could get rate limited (or not, some people just use it anonymously!). For that you can add a `experimentalCanvasSPDCookie`. This is more advanced as it requieres you to get the cookie from a Spotify Web session. Not recommended for all users.
+> Canvases are an internal implementation by the Spotify team and its not available in the web API. Use at your own discretion, personal usage only.
+
 | Key |  Description |
 | :-- | :-- |
 | experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
 | experimentalCanvasAlbumOverlay <br> `true` | Show the cover art inside the Spotify Canvas. |
 | experimentalCanvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position. <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
-| experimentalCanvasSPDCookie <br> `""` | Adds the SPD cookie from a web Spotify session to stop Spotify from returning a 500 error. Spotify could decide also to just send a 500 error depending on the user agents and other factors, this just affects the module. Still, this feature is optional and this API is NOT public. |
+| experimentalCanvasSPDCookie <br> `""` | Adds the SPD cookie from a web Spotify session to stop Spotify from returning a 500 error. Spotify could decide also to just send a 500 error depending on the user agents and other factors, this just affects the module. Still, this feature is optional and this API is NOT public. You can search "Extract Spotify SPD cookie" in youtube/other to learn how to do this. **DO NOT** share this cookie!. |
 
 #### General Theming options
 | Key |  Description |
@@ -201,6 +206,7 @@ experimentalCSSOverridesForMM2: [
 | blurCorrectionInAllSides <br> `false` | Same as `blurCorrectionInFrameSide`, but applies the correction on all of the borders for a more subtle effect. |
 | alwaysUseDefaultDeviceIcon <br> `false` | The device icon changes depending on the player type. If you don’t like this behaviour you can disable it. |
 | experimentalCSSOverridesForMM2 <br> `false` | An array containing CSS overrides, OnSpotify manages the status depending on what is displayed on the screen and lets you customize other modules. [See above](#theming-3rd-party-modules) |
+| experimentalColorSignaling <br> `false` | Sends a notification with the color data for modules that are not DOM based and need the color when its already processed. |
 
 > See also: [Disabling **all** color based theming](#other)
 
@@ -227,6 +233,7 @@ Control your mirror (and other modules) using Apple Homekit protocol! (Also comp
 | key | Description |
 | :-- | :-- |
 | `THEME_PREFERENCE` | ↑ Sent to signal other modules that color data is available. |
+| `INSTANT_COLOR` | ↑ Sent to signal other modules that color data has been updated instantly, also sends the raw vibrant data, only when `experimentalColorSignaling` is turned on. |
 | `NOW_PLAYING` | ↑ When the player state changes, the module sends a notification so other modules can, for example, [show lyrics](#lyrics). |
 | `DEVICE_CHANGE` | ↑ Everytime the Spotify Connect target changes, this notification is fired. |
 | `ONSPOTIFY_NOTICE` | ↑ This notification signals other modules that OnSpotify is available. |
@@ -270,6 +277,8 @@ You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS 
 - The API for Spotify Codes is not public, as its part of the Spotify CDN (_scannables.scdn.co_). The API could change without notice. Many libraries rely on it and using it does not go againts the ToS.
 
 - Contributions wanted! Add features or your language using `translations/yourLanguage.json`. Currently we have translations for: Spanish, English, German
+
+- You can custom CSS and functions in the "Issues" tab. For example https://github.com/Fabrizz/MMM-OnSpotify/issues/65 for changing the size and hiding other modules using ONSP state.
 
 With <3 by Fabrizio | [fabriz.co](https://fabriz.co/) | Star this repository! 
 [<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriz.co/)
