@@ -201,6 +201,6 @@
   }
 
   function getRedirectURI() {
-    return `${window.location.protocol}//${window.location.host}/callback`;
+    return `http://127.0.0.1:8100/callback`;
   }
 })();
