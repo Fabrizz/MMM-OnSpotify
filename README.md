@@ -2,18 +2,15 @@
 
 <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
-**MMM-OnSpotify** for MagicMirror² is a highly configurable module designed to display your current Spotify listening activity on your MagicMirror display (including podcasts, and when available, audiobooks). This module offers extensive customization options, allowing you to tailor the display to your preferences. It extracs the color data from the cover art and creates custom palettes to theme itself (and other modules!).
+**MMM-OnSpotify** for MagicMirror² is a highly configurable module that displays Spotify activity on your MagicMirror display (including podcasts, and when available, audiobooks).
 
-The module includes an Authentication Service that guide you through the configuration of an Spotify App. MMM-OnSpotify does not use any third party service, its an independent app, just the Spotify Web API.
-
-> [!NOTE]
-> All the data stays in your mirror. If you have multiple mirrors, the Authentication Service guides you on creating a new Spotify App per mirror.
+The module includes a web service that will guide you through the set up and configuration of the Spotify App and module. MMM-OnSpotify does not use any third party service, just the Spotify Web API.
 
 https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/5d78672e-8feb-45de-92f4-ed44f0771432
 
 https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/f7c0928f-3806-48ba-a813-87962dd9ea8b
 
-> This module shows what is on your Spotify Connect. if you want to use Spotify in your mirror you should look at [Raspotify](https://github.com/dtcooper/raspotify)
+> This module displays Spotify activity. If you want to use Spotify in your mirror you should look at [Raspotify](https://github.com/dtcooper/raspotify)
 
 # Installation
 ### Step 1: Clone the module and install dependencies
@@ -27,9 +24,9 @@ npm install
 ### Step 2: Create a Spotify App and authorize the app
 
 > [!WARNING]
-> You cannot use MMM-NowPlayingOnSpotify (or other module) credentials, as the API scopes are different.
+> You cannot use MMM-NowPlayingOnSpotify (or other module) credentials, the API scopes are different.
 
-To help you creating the Spotify App, we start the **Authentication Service**, that guides you on each step of the process:
+The module includes a web service that guides you in the creation fo the Spotify App, to use it (inside your module folder) run:
 
 <img alt="MMM-OnSpotify banner" align="right" height="90" width="160" src=".github/content/readme/banner-authservice.svg">
 
@@ -39,24 +36,31 @@ npm run auth
 ```
 Once you finish, you are all set with the basic configuration. Scroll down to see all the different theming options for the module.
 
-> Once the Authorization Service is running, you can access it from your Raspberry Pi going to `http://localhost:8100/`. You can also access it remotely using `http://<IP>:8100/`. Note that using the device where you have MagicMirror² installed is recommended, as you are going to copy and paste the tokens and module configuration in MM².
+> Once the Authorization Service is running, you can access it from the same device where you ran the command by going to `http://localhost:8100/`. You can clone the module on another device to use the service and copy the resulting config snippet to the desired MM².
+
+# Updating
+```bash
+git pull
+npm install
+```
 
 # Module Configuration
-#### The configuration section is divided in groups, scroll down or click what to see below:
-### [[**NEW**] CANVAS](#canvas) | [Theming other modules](#theming-3rd-party-modules) | [General](#general-options) | [Polling Intervals](#polling-intervals) | [Theming](#theming) | [**Homekit**](#mmm-homekit) | [**Lyrics**](#mmm-livelyrics)
 
 **Extended full configuration object:**
+Do not copy everything! Just what you want to change. Below are the defaults:
+
 ```js
 {
     module: "MMM-OnSpotify",
     position: "bottom_right",
     config: {
-        // Spotify authentication (Authentication Service)
+        // Spotify Auth
         clientID: "key",
         clientSecret: "key",
         accessToken: "key",
         refreshToken: "key",
-        // General module options [SEE BELOW]
+
+        // General Options [SEE BELOW]
         advertisePlayerTheme: true,
         displayWhenEmpty: "both",
         userAffinityUseTracks: false,
@@ -68,14 +72,16 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         deviceFilter: [],
         deviceFilterExclude: false,
         filterNoticeSubtitle: true,
-        language: config.language,
-        // Update intervals [SEE BELOW]
+        // language: config.language, // [SEE BELOW]
+
+        // Update Intervals [SEE BELOW]
         isPlaying: 1,
         isEmpty: 2,
         isPlayingHidden: 2,
         isEmptyHidden: 4,
         onReconnecting: 4,
         onError: 8,
+
         // Animations [SEE BELOW]
         mediaAnimations: false,
         fadeAnimations: false,
@@ -83,16 +89,19 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
         textAnimations: true,
         transitionAnimations: true,
         spotifyVectorAnimations: false,
-        // Spotify Code (EXPERMIENTAL)
+
+        // Spotify Code [SEE BELOW]
         spotifyCodeExperimentalShow: true,
         spotifyCodeExperimentalUseColor: true,
         spotifyCodeExperimentalSeparateItem: true,
-        // Canvas
+
+        // Canvas Videos [SEE BELOW]
         experimentalCanvas: false,
         experimentalCanvasEffect: 'cover',
         experimentalCanvasAlbumOverlay: false,
         experimentalCanvasSPDCookie: "",
-        // Theming General
+
+        // Theming General [SEE BELOW]
         roundMediaCorners: true,
         roundProgressBar: true,
         showVerticalPipe: true, 
@@ -109,7 +118,7 @@ Once you finish, you are all set with the basic configuration. Scroll down to se
 },
 ```
 
-## Theming 3rd Party Modules: 
+### Theming 3rd Party Modules: 
 <img alt="MMM-OnSpotify 3rd Party theming" src=".github/content/readme/ONSP-BANNER-3rd_party_theming.png" width="100%">
 
 ```js
@@ -120,7 +129,7 @@ text background palette_vibrant palette_vibrantlight palette_vibrantdark palette
 /* Example */
 experimentalCSSOverridesForMM2: [
 	["--color-text-dimmed", "palette_vibrantlight"],
-	["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"], /* View custom.css */
+	["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"],
 ],
 ```
 > [!TIP]
@@ -140,7 +149,7 @@ experimentalCSSOverridesForMM2: [
 | deviceFilter <br> `list[]` | List of device names to filter from the module, by default, its an inclusion list, you can change this using `deviceFilterExclude` (making it an exclusion list). When a filtered device plays `displayWhenEmpty` shows. Example: `["Sonos Bedroom", "DESKTOP-ABCD123"]` |
 | deviceFilterExclude <br> `false` | Inverts the `deviceFilter` list, making it exclude devices |
 | filterNoticeSubtitle <br> `true`| Changes the subtitle of `displayWhenEmpty`, to not show a false status if the `deviceFilter` is set |
-| language <br> `config.language`| Changes the language in which titles of songs are shown. When it is not set, it depends on `config.language`. Example: `en-US` (Or `false` if you prefer the default api response) |
+| language <br> `config.language`| Changes the language the API query. When it is not set, it depends on `config.language`. Example: `en-US` (Or `false` if you prefer the default api response) |
 
 ### Polling Intervals:
 | Key | Description |

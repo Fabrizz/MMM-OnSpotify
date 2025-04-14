@@ -278,7 +278,7 @@ Module.register("MMM-OnSpotify", {
     }
   },
   getStyles: function () {
-    let files = [this.file("css/included.css"), this.file("css/custom.css")];
+    let files = [this.file("css/included.css")];
     // Load theming.css only if experimentalCSSOverridesForMM2 is enabled
     if (
       this.config.theming.experimentalCSSOverridesForMM2 ||

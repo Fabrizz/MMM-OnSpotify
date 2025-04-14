@@ -8,6 +8,7 @@
 
 // Use node fetch as most MM2 installs use older node
 const fetch = require("node-fetch");
+const Headers = fetch.Headers;
 const canvas = require('./canvas/canvas_pb.js');
 const tokenRefreshBase = "https://accounts.spotify.com";
 const userBase = "https://api.spotify.com";
