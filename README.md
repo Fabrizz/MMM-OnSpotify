@@ -129,7 +129,7 @@ text background palette_vibrant palette_vibrantlight palette_vibrantdark palette
 /* Example */
 experimentalCSSOverridesForMM2: [
 	["--color-text-dimmed", "palette_vibrantlight"],
-	["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"],
+	["--ONSP-OVERRIDES-ICONS-COLOR", "palette_vibrantlight"], /* View css/theming.css */
 ],
 ```
 > [!TIP]
