@@ -95,12 +95,6 @@ Do not copy everything! Just what you want to change. Below are the defaults:
         spotifyCodeExperimentalUseColor: true,
         spotifyCodeExperimentalSeparateItem: true,
 
-        // Canvas Videos [SEE BELOW]
-        experimentalCanvas: false,
-        experimentalCanvasEffect: 'cover',
-        experimentalCanvasAlbumOverlay: false,
-        experimentalCanvasSPDCookie: "",
-
         // Theming General [SEE BELOW]
         roundMediaCorners: true,
         roundProgressBar: true,
@@ -189,17 +183,18 @@ experimentalCSSOverridesForMM2: [
 
 #### Canvas
 > [!IMPORTANT]
-> EXPERIMENTAL - Using this without auth will get this funtion rate-limited. For that you can add a `experimentalCanvasSPDCookie`. This is more advanced as it requieres you to get the cookie from a Spotify Web session. Not recommended for all users. 
+> Removed direct support for canvases
 
-> [!CAUTION]
-> Canvases are an internal implementation by the Spotify team and its not available in the web API. Use at your own discretion, personal usage only.
+Relevant disscussion about Spotify changes and it affecting lots of OSS projects:
+https://github.com/misiektoja/spotify_monitor/issues/2#issuecomment-2730297484
+https://github.com/librespot-org/librespot/issues/1475#issue-2921162399
 
-| Key |  Description |
-| :-- | :-- |
-| experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
-| experimentalCanvasAlbumOverlay <br> `true` | Show the cover art inside the Spotify Canvas. |
-| experimentalCanvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position. <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
-| experimentalCanvasSPDCookie <br> `""` | Adds the SPD cookie from a web Spotify session to stop Spotify from returning a 500 error. Spotify could decide also to just send a 500 error depending on the user agents and other factors, this just affects the module. Still, this feature is optional and this API is NOT public. You can search "Extract Spotify SPD cookie" in youtube/other to learn how to do this. **DO NOT** share this cookie!. |
+TL;DR: It now uses another request and TOTP auth and it seems that they are currently changing some stuff on their end.
+
+You can check the last version with canvas support here [dev-canvas-support branch](https://github.com/Fabrizz/MMM-OnSpotify/tree/dev-canvas-support). Im open to having PRs that add the OTP or new auth but I will not directly support/fix the feature.
+
+> Thanks to https://github.com/dientuki & https://github.com/bartleyg/my-spotify-canvas for the implementation!
+
 
 #### General Theming options
 | Key |  Description |
