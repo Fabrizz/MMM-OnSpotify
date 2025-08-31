@@ -209,9 +209,20 @@ You can check the last version with canvas support here [dev-canvas-support bran
 > See also: [Disabling **all** color based theming](#other)
 
 ## MMM-LiveLyrics
-View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics). This module uses web scrapping to get the Lyrics from Genius. Not recommended for basic usage.
+View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics).
 
-<img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="70%">
+<img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="80%">
+
+> This module uses web scrapping to get the Lyrics from Genius, could stop working at any time but now its +3 years solid!
+
+## More modules!
+- [**MMM-Matter**](https://github.com/Fabrizz/MMM-LiveLyrics) Adds native Matter to MagicMirror and provides an API to control other modules from ANY smarthome provider (Homekit, Google Home, Amazon Alexa, Home Assistant, etc). 
+
+Old modules:
+- [**MMM-HomeKit**](https://github.com/Fabrizz/MMM-HomeKit) Adds HomeKit support to MagicMirror.
+
+- [**MMM-DolarArgentina**](https://github.com/Fabrizz/MMM-DolarArgentina) Displays the current exchange rate for ARS/USD compra/venta.
+
 
 ## Notification API
 | key | Description |

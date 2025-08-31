@@ -49,30 +49,31 @@ module.exports = NodeHelper.create({
             `${this.appendableId}`,
           );
         break;
+        // TODO: Frontend should ask for which account and balance the refreshes
       case "REFRESH_PLAYER":
-        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("PLAYER");
+        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("PLAYER", payload.accountNum || 0);
         break;
       case "REFRESH_USER":
-        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("USER");
+        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("USER", payload.accountNum || 0);
         break;
       case "REFRESH_AFFINITY":
         if (this.isCorrectIdOrRefresh(payload))
-          this.fetchSpotifyData("AFFINITY");
+          this.fetchSpotifyData("AFFINITY", payload.accountNum || 0);
         break;
 
       /* WIP | Non implemented */
       case "REFRESH_QUEUE":
-        this.fetchSpotifyData("QUEUE");
+        this.fetchSpotifyData("QUEUE", payload.accountNum || 0);
         break;
       case "REFRESH_RECENT":
-        this.fetchSpotifyData("RECENT");
+        this.fetchSpotifyData("RECENT", payload.accountNum || 0);
         break;
     }
   },
 
-  fetchSpotifyData: async function (type) {
+  fetchSpotifyData: async function (type, accountNum = 0) {
     try {
-      let data = await this.fetcher.getData(type);
+      let data = await this.fetcher.getData(type, accountNum);
       if (data instanceof Error)
         return this.sendSocketNotification(
           "CONNECTION_ERRONED",

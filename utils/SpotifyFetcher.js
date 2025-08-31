@@ -18,7 +18,7 @@ const userBase = "https://api.spotify.com";
 
 module.exports = class SpotifyFetcher {
   constructor(payload) {
-    console.log(payload)
+    //console.log(payload)
     this.preferences = payload.preferences;
     this.language = payload.language;
 
