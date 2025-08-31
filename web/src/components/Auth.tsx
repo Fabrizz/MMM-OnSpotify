@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -108,6 +108,28 @@ async function exchangeCode(code: string, cid: string, secret: string) {
   if (json.access_token && json.refresh_token) {
     localStorage.setItem("SPOTIFY_ACCESS_TOKEN", json.access_token);
     localStorage.setItem("SPOTIFY_REFRESH_TOKEN", json.refresh_token);
+
+    try {
+      // try to get the user profile
+      const profileRes = await fetch("https://api.spotify.com/v1/me", {
+        headers: {
+          "Authorization": "Bearer " + json.access_token,
+        },
+      });
+      if (!profileRes.ok) {
+        console.error("Failed to fetch user profile: ", profileRes.statusText);
+        return;
+      }
+      const profileJson = await profileRes.json();
+      console.log("User profile: ", profileJson);
+
+      localStorage.setItem("SPOTIFY_USER_ID", profileJson.id || "");
+      localStorage.setItem("SPOTIFY_USER_NAME", profileJson.display_name || "");
+      localStorage.setItem("SPOTIFY_USER_IMG", profileJson.images?.[0]?.url || "");
+    } catch (error) {
+      console.error("Error fetching user profile: ", error);
+    }
+
     setTimeout(() => {
       if (window.location.search) {
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -138,8 +160,13 @@ export default function Auth() {
   const daccess = localStorage.getItem("SPOTIFY_ACCESS_TOKEN") || "";
   const drefresh = localStorage.getItem("SPOTIFY_REFRESH_TOKEN") || "";
 
+  const duid = localStorage.getItem("SPOTIFY_USER_ID") || "";
+  const duname = localStorage.getItem("SPOTIFY_USER_NAME") || "";
+  const duimg = localStorage.getItem("SPOTIFY_USER_IMG") || "";
+
   console.log("Default credentials: ", [dcid, dsecret]);
   console.log("Existing tokens: ", [daccess, drefresh]);
+  console.log("User info: ", [duid, duname, duimg]);
 
   const realTokens = (
     dcid !== "" &&
@@ -159,6 +186,7 @@ export default function Auth() {
       });
     }
   }, []);
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -181,47 +209,60 @@ export default function Auth() {
   }
 
   return (
-    <div className="">
-
+    <div className="relative">
       {realTokens ? (
-        <div className='relative'>
-          <Card id="ssc" className='scroll-mt-20 border-dashed border-2 border-green-500/60 rounded-xl mb-10 relative overflow-hidden bg-transparent'>
-            <span className='absolute -top-8 -left-8 w-28 h-16 bg-green-500 blur-3xl'></span>
+        <div className="relative mb-5">
+          <div className='relative bg-card rounded-3xl p-2 border-dashed border-2 border-green-500/50'>
+            {(duid !== "" && duname !== "") &&
+              <div className="bg-background rounded-xl mb-2 flex flex-row gap-3 p-2 relative overflow-hidden">
+                <img src={duimg} alt="" className="rounded-md size-30 absolute -top-5 -left-8 z-0 blur-[60px]" />
+                <img src={duimg} alt="" className="rounded-md size-14 z-10 shadow-md" />
+                <div className="flex flex-col justify-center gap-0">
+                  <span className="font-bold text-lg flex items-center gap-1 -mb-1">
+                    {duname}
+                    <Verified className="size-3.5" />
+                  </span>
+                  <span className="opacity-60 text-sm">Id: {duid}</span>
+                </div>
+              </div>
+            }
+            <Card id="ssc" className='scroll-mt-20 rounded-xl relative overflow-hidden bg-background'>
+              <span className='absolute -top-8 -left-8 w-28 h-16 bg-green-500 blur-3xl'></span>
 
-            <CardHeader>
-              <CardTitle>Successfully authorized your Spotify App</CardTitle>
-              <CardDescription>You can now use the following configuration in your MagicMirror's config.js file:</CardDescription>
-            </CardHeader>
+              <CardHeader>
+                <CardTitle>Successfully authorized your Spotify App</CardTitle>
+                <CardDescription>You can now use the following configuration in your MagicMirror's config.js file:</CardDescription>
+              </CardHeader>
 
-            <CardContent className="mb-3 relative">
-              <pre className="px-3 py-3 bg-card/80 rounded-md overflow-x-scroll text-sm nice-scroll shadow-xl shadow-green-500/5">
-                <CopyButton value={getCfg(dcid, dsecret, daccess, drefresh)} className="absolute top-2 right-8 rounded-normal bg-white/10" />
-                {"{"}<br />
-                {"    "}<span className="text-emerald-600">/* Don't share your credentials! */</span><br />
-                {"    "}module: <span className="text-orange-400">"MMM-OnSpotify"</span>,<br />
-                {"    "}position: <span className="text-orange-400">"bottom_right"</span>, <span className="text-emerald-600">/* bottom_left, bottom_center */</span><br />
-                {"    "}config: {"{"}<br />
-                {"    "}{"    "}clientID: <span className="text-orange-400">"{dcid}"</span>,<br />
-                {"    "}{"    "}clientSecret: <span className="text-orange-400">"{dsecret}"</span>,<br />
-                {"    "}{"    "}accessToken: <span className="text-orange-400">"{daccess}"</span>,<br />
-                {"    "}{"    "}refreshToken: <span className="text-orange-400">"{drefresh}"</span>,<br />
-                {"    "}{"    "}<span className="text-emerald-600">/* Add here other configuration options */</span><br />
-                {"    "}{"}"}<br />
-                {"}"},
-                </pre>
-            </CardContent>
-            <CardFooter className="flex-row gap-2 transition-all duration-300">
-              <Button asChild variant={"outline"} size={"sm"}>
-                <a href="https://github.com/Fabrizz/MMM-OnSpotify?tab=readme-ov-file#module-configuration" className="">
-                  <BookIcon className="inline size-4" />
-                  <span>Documentation</span>
-                </a>
-              </Button>
-              <ResetDeleteButton />
-            </CardFooter>
-          </Card>
-          <div className='absolute animate-pulse z-10 -top-3 -right-3 bg-card border border-border rounded-full size-7 flex items-center justify-center'>
-            <Verified className='size-4 text-green-500' />
+              <CardContent className="mb-3">
+                <div className="w-full relative">
+                <pre className="px-3 py-3 bg-card/80 rounded-md overflow-x-scroll text-sm nice-scroll shadow-xl shadow-green-500/5">
+                  <CopyButton value={getCfg(dcid, dsecret, daccess, drefresh)} className="absolute top-2 right-2 rounded-normal bg-white/10" />
+                  {"{"}<br />
+                  {"    "}<span className="text-emerald-600">/* Don't share your credentials! */</span><br />
+                  {"    "}module: <span className="text-orange-400">"MMM-OnSpotify"</span>,<br />
+                  {"    "}position: <span className="text-orange-400">"bottom_right"</span>, <span className="text-emerald-600">/* bottom_left, bottom_center */</span><br />
+                  {"    "}config: {"{"}<br />
+                  {"    "}{"    "}clientID: <span className="text-orange-400">"{dcid}"</span>,<br />
+                  {"    "}{"    "}clientSecret: <span className="text-orange-400">"{dsecret}"</span>,<br />
+                  {"    "}{"    "}accessToken: <span className="text-orange-400">"{daccess}"</span>,<br />
+                  {"    "}{"    "}refreshToken: <span className="text-orange-400">"{drefresh}"</span>,<br />
+                  {"    "}{"    "}<span className="text-emerald-600">/* Add here other configuration options */</span><br />
+                  {"    "}{"}"}<br />
+                  {"}"},
+                  </pre>
+                </div>
+              </CardContent>
+              <CardFooter className="flex-row gap-2 transition-all duration-300">
+                <Button asChild variant={"outline"} size={"sm"}>
+                  <a href="https://github.com/Fabrizz/MMM-OnSpotify?tab=readme-ov-file#module-configuration" className="">
+                    <BookIcon className="inline size-4" />
+                    <span>Documentation</span>
+                  </a>
+                </Button>
+                <ResetDeleteButton>Reset & Delete all data</ResetDeleteButton>
+              </CardFooter>
+            </Card>
           </div>
         </div>
       ) : (
@@ -232,6 +273,11 @@ export default function Auth() {
               <CardHeader>
                 <CardTitle>Get your Access Token</CardTitle>
                 <CardDescription>Enter the Spotify App credentials to authorize it with your Spotify Account</CardDescription>
+                { (dcid !== "" || dsecret !== "") &&
+                  <CardAction className="mt-2">
+                    <ResetDeleteButton></ResetDeleteButton>
+                  </CardAction>
+                }
               </CardHeader>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
@@ -305,6 +351,10 @@ function resetData(r: boolean = false) {
   localStorage.removeItem("SPOTIFY_REFRESH_TOKEN");
   localStorage.removeItem("SPOTIFY_AUTH_CODE");
   localStorage.removeItem("STATE_KEY");
+  localStorage.removeItem("SPOTIFY_USER_ID");
+  localStorage.removeItem("SPOTIFY_USER_NAME");
+  localStorage.removeItem("SPOTIFY_USER_IMG");
+  localStorage.removeItem("SPOTIFY_TOKEN_DATE");
 
   if (r) {
     setTimeout(() => {
@@ -316,7 +366,7 @@ function resetData(r: boolean = false) {
   }
 }
 
-function ResetDeleteButton() {
+function ResetDeleteButton({ children }: {children?: React.ReactNode}) {
   const [reset, setReset] = useState(false)
   return (
   <Button
@@ -327,7 +377,7 @@ function ResetDeleteButton() {
     onClick={() => { setReset(true); resetData();}}
   >
       {reset ? <Check className="inline size-4" /> : <Trash2Icon className="inline size-4" />}
-    <span>Reset tool and delete browser data</span>
+      {children}
   </Button>
   )
 }
