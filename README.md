@@ -2,9 +2,9 @@
 
 <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
-**MMM-OnSpotify** for MagicMirror² is a highly configurable module that displays Spotify activity on your MagicMirror display (including podcasts, and when available, audiobooks).
+**MMM-OnSpotify** for MagicMirror² is a highly configurable module that displays Spotify activity on your MagicMirror display (including podcasts, and when available, audiobooks). https://onsp.fabriz.co/
 
-The module includes a web service that will guide you through the set up and configuration of the Spotify App and module. MMM-OnSpotify does not use any third party service, just the Spotify Web API.
+The module provides a static web service that walks you through setting up and configuring both the Spotify app and the module itself. MMM-OnSpotify relies solely on the official Spotify Web API and does not use any third-party services.
 
 https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/5d78672e-8feb-45de-92f4-ed44f0771432
 
@@ -23,20 +23,14 @@ npm install
 
 ### Step 2: Create a Spotify App and authorize the app
 
-> [!WARNING]
-> You cannot use MMM-NowPlayingOnSpotify (or other module) credentials, the API scopes are different.
 
-The module includes a web service that guides you in the creation fo the Spotify App, to use it (inside your module folder) run:
+The module includes a static web service that guides you in the creation of the Spotify App needed to use this module, you can view the source code inside `/web`.
 
-<img alt="MMM-OnSpotify banner" align="right" height="90" width="160" src=".github/content/readme/banner-authservice.svg">
+> The online tool saves the credentials **ONLY** in your browser and its a static page. If you do not want to use the online tool, you can host it by running the Vite proyect inside `/web`.
 
-```bash
-npm run auth
-> [Authorization Service] Open http://localhost:8100/ to configure your mirror. 
-```
-Once you finish, you are all set with the basic configuration. Scroll down to see all the different theming options for the module.
+Access it by going to https://onsp.fabriz.co/
+[<img alt="Auth banner" src=".github/content/readme/n-auth-logo.png" width="200" align="right">](https://fabriz.co/)
 
-> Once the Authorization Service is running, you can access it from the same device where you ran the command by going to `http://localhost:8100/`. You can clone the module on another device to use the service and copy the resulting config snippet to the desired MM².
 
 # Updating
 ```bash
@@ -47,7 +41,7 @@ npm install
 # Module Configuration
 
 **Extended full configuration object:**
-Do not copy everything! Just what you want to change. Below are the defaults:
+Copy only the parts you want to change to your configuration file. The defaults are shown below:
 
 ```js
 {
@@ -94,12 +88,6 @@ Do not copy everything! Just what you want to change. Below are the defaults:
         spotifyCodeExperimentalShow: true,
         spotifyCodeExperimentalUseColor: true,
         spotifyCodeExperimentalSeparateItem: true,
-
-        // Canvas Videos [SEE BELOW]
-        experimentalCanvas: false,
-        experimentalCanvasEffect: 'cover',
-        experimentalCanvasAlbumOverlay: false,
-        experimentalCanvasSPDCookie: "",
 
         // Theming General [SEE BELOW]
         roundMediaCorners: true,
@@ -189,17 +177,18 @@ experimentalCSSOverridesForMM2: [
 
 #### Canvas
 > [!IMPORTANT]
-> EXPERIMENTAL - Using this without auth will get this funtion rate-limited. For that you can add a `experimentalCanvasSPDCookie`. This is more advanced as it requieres you to get the cookie from a Spotify Web session. Not recommended for all users. 
+> Removed direct support for canvases
 
-> [!CAUTION]
-> Canvases are an internal implementation by the Spotify team and its not available in the web API. Use at your own discretion, personal usage only.
+Relevant disscussion about Spotify changes and it affecting lots of OSS projects:
+https://github.com/misiektoja/spotify_monitor/issues/2#issuecomment-2730297484
+https://github.com/librespot-org/librespot/issues/1475#issue-2921162399
 
-| Key |  Description |
-| :-- | :-- |
-| experimentalCanvas <br> `false` | Shows the Spotify Canvas if available. This is an experimental feature, as this API is not documented and private. |
-| experimentalCanvasAlbumOverlay <br> `true` | Show the cover art inside the Spotify Canvas. |
-| experimentalCanvasEffect <br> `cover` | Control how is the canvas is going to be displayed. Options are: <br />- `cover`: The Canvas is clipped to have the same height as the album cover. Recommended for low-power devices and if the module is not in a `bottom_*` position. <br />- `scale`: Scale up/down the module to fit the entire Canvas without clipping it. <br /> |
-| experimentalCanvasSPDCookie <br> `""` | Adds the SPD cookie from a web Spotify session to stop Spotify from returning a 500 error. Spotify could decide also to just send a 500 error depending on the user agents and other factors, this just affects the module. Still, this feature is optional and this API is NOT public. You can search "Extract Spotify SPD cookie" in youtube/other to learn how to do this. **DO NOT** share this cookie!. |
+TL;DR: It now uses another request and TOTP auth and it seems that they are currently changing some stuff on their end.
+
+You can check the last version with canvas support here [dev-canvas-support branch](https://github.com/Fabrizz/MMM-OnSpotify/tree/dev-canvas-support). Im open to having PRs that add the OTP or new auth but I will not directly support/fix the feature.
+
+> Thanks to https://github.com/dientuki & https://github.com/bartleyg/my-spotify-canvas for the implementation!
+
 
 #### General Theming options
 | Key |  Description |
@@ -220,23 +209,20 @@ experimentalCSSOverridesForMM2: [
 > See also: [Disabling **all** color based theming](#other)
 
 ## MMM-LiveLyrics
-View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics). This module uses web scrapping to get the Lyrics from Genius. Not recommended for basic usage.
+View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics).
 
-<img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="70%">
+<img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="80%">
 
-## MMM-HomeKit
-Control your mirror (and other modules) using Apple Homekit protocol! (Also compatible with HomeAssistant or other automation systems with simulated HK controllers)
+> This module uses web scrapping to get the Lyrics from Genius, could stop working at any time but now its +3 years solid!
 
-#### >>> [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-HomeKit) <<<
-- Control your screen on/off, brightness
-- Set the mirror accent color
-- Turn on/off on-screen lyrics
-- Send notifications
-- **With native HK accessories**
+## More modules!
+- [**MMM-Matter**](https://github.com/Fabrizz/MMM-LiveLyrics) Adds native Matter to MagicMirror and provides an API to control other modules from ANY smarthome provider (Homekit, Google Home, Amazon Alexa, Home Assistant, etc). 
 
-<img alt="MMM-Homekit" src=".github/content/readme/banner-homekit.png" width="70%">
+Old modules:
+- [**MMM-HomeKit**](https://github.com/Fabrizz/MMM-HomeKit) Adds HomeKit support to MagicMirror.
 
-> To learn how to use OnSpotify and HomeKit provided accent colors together, read the guide in the [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-HomeKit).
+- [**MMM-DolarArgentina**](https://github.com/Fabrizz/MMM-DolarArgentina) Displays the current exchange rate for ARS/USD compra/venta.
+
 
 ## Notification API
 | key | Description |

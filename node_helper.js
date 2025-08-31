@@ -49,35 +49,37 @@ module.exports = NodeHelper.create({
             `${this.appendableId}`,
           );
         break;
+        // TODO: Frontend should ask for which account and balance the refreshes
       case "REFRESH_PLAYER":
-        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("PLAYER");
+        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("PLAYER", payload.accountNum || 0);
         break;
       case "REFRESH_USER":
-        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("USER");
+        if (this.isCorrectIdOrRefresh(payload)) this.fetchSpotifyData("USER", payload.accountNum || 0);
         break;
       case "REFRESH_AFFINITY":
         if (this.isCorrectIdOrRefresh(payload))
-          this.fetchSpotifyData("AFFINITY");
+          this.fetchSpotifyData("AFFINITY", payload.accountNum || 0);
         break;
 
       /* WIP | Non implemented */
       case "REFRESH_QUEUE":
-        this.fetchSpotifyData("QUEUE");
+        this.fetchSpotifyData("QUEUE", payload.accountNum || 0);
         break;
       case "REFRESH_RECENT":
-        this.fetchSpotifyData("RECENT");
+        this.fetchSpotifyData("RECENT", payload.accountNum || 0);
         break;
     }
   },
 
-  fetchSpotifyData: async function (type) {
+  fetchSpotifyData: async function (type, accountNum = 0) {
     try {
-      let data = await this.fetcher.getData(type);
+      let data = await this.fetcher.getData(type, accountNum);
       if (data instanceof Error)
         return this.sendSocketNotification(
           "CONNECTION_ERRONED",
           JSON.stringify(data),
         );
+
       switch (type) {
         case "PLAYER":
           // CASE S1 The data is OK and the target is a filtered device
@@ -142,8 +144,7 @@ module.exports = NodeHelper.create({
                 (isTrack ? data.item.album.images : data.item.show.images) || []);
 
             // Add a canvas object if enabled
-            if (isTrack && this.preferences.useCanvas && (this.lastMediaUri !== data.item.uri))
-              this.statelessGetCanvas(data.item.uri, itemImages)
+            // if (isTrack && this.preferences.useCanvas && (this.lastMediaUri !== data.item.uri)) this.statelessGetCanvas(data.item.uri, itemImages)
             
             let payload = {
               /* Player data */
@@ -290,37 +291,10 @@ module.exports = NodeHelper.create({
       );
     }
   },
-
-  async statelessGetCanvas(uri, itemImages) {
-    try {
-      // use then to prevent context issue
-      this.fetcher.getCanvas(uri).then(canvas => {
-        // console.log("[CANVAS DATA]", JSON.stringify(canvas))
-
-        if (canvas.canvasesList.length == 1 && canvas.canvasesList[0].canvasUrl.endsWith('.mp4')) {
-          const item = canvas.canvasesList[0];
-          this.savedCanvasUrl = item.canvasUrl;
-          this.savedCanvasUri = item.trackUri;
-
-          this.sendSocketNotification("UPDATE_CANVAS", {
-            itemUri: item.trackUri,
-            url: item.canvasUrl,
-            itemImages: itemImages
-          });
-        }
-      });
-    } catch (error) {
-      console.warn(
-        "[\x1b[35mMMM-OnSpotify\x1b[0m] >> \x1b[41m\x1b[37m %s \x1b[0m ",
-        "Error fetching cover data (OOB)",
-        error,
-      );
-    }
-  },
   isCorrectIdOrRefresh(rcvd) {
     if (rcvd !== this.appendableId) {
       if (typeof this.appendableId === "undefined") {
-        // Means that the backend was restarted and the frontend was maintained
+        // Means that the backend reloaded and the frontend is in a different state
         this.sendSocketNotification("REQUEST_REAUTH", this.serversideId);
       }
       return false;
@@ -339,16 +313,66 @@ module.exports = NodeHelper.create({
   },
   processArtists: (artists) => artists.map((artist) => artist.name).join(", "),
   processImages: (images) => {
+    if (!images || images.length === 0) {
+      return { large: "", medium: "", thumb: "" };
+    }
+
+    function isVideoLikeAspect(image) {
+      const ratio = image.width / image.height;
+      return ratio > 1.3 || ratio < 0.75; // Wide or tall (non-square)
+    };
+
+    function findClosest(target) {
+      return images.reduce((closest, image) => {
+        const closestDiff = Math.abs(closest.width - target);
+        const currentDiff = Math.abs(image.width - target);
+        return currentDiff < closestDiff ? image : closest;
+      }, images[0]).url;
+    };;
+
     return {
-      large: images.filter(
-        (image) => image.width >= 580 && image.width <= 720,
-      )[0].url,
-      medium: images.filter(
-        (image) => image.width >= 240 && image.width <= 360,
-      )[0].url,
-      thumb: images.filter(
-        (image) => image.width >= 24 && image.width <= 200,
-      )[0].url,
+      large: findClosest(640),
+      medium: findClosest(300),
+      thumb: findClosest(100),
+
+      // Detect if its a video playback as Spotify does not expose this information
+      // Use the aspect ratio to determine if its a video or not
+      isProbablyVideo: (images.reduce((count, image) => {
+        return count + (isVideoLikeAspect(image) ? 1 : 0);
+      }, 0) >= 2)
     };
   },
 });
+
+
+/* Support for canvases, will be removed in later versions */
+// async statelessGetCanvas(uri, itemImages) {
+//   try {
+//     // use then to prevent context issue
+//     this.fetcher.getCanvas(uri).then(canvas => {
+//       // console.log("[CANVAS DATA]", JSON.stringify(canvas))
+
+//       console.log(canvas)
+
+//       if (!canvas || !canvas.canvasesList) return;
+
+//       if (canvas.canvasesList.length == 1 && canvas.canvasesList[0].canvasUrl.endsWith('.mp4')) {
+//         const item = canvas.canvasesList[0];
+//         this.savedCanvasUrl = item.canvasUrl;
+//         this.savedCanvasUri = item.trackUri;
+
+//         this.sendSocketNotification("UPDATE_CANVAS", {
+//           itemUri: item.trackUri,
+//           url: item.canvasUrl,
+//           itemImages: itemImages
+//         });
+//       }
+//     });
+//   } catch (error) {
+//     console.warn(
+//       "[\x1b[35mMMM-OnSpotify\x1b[0m] >> \x1b[41m\x1b[37m %s \x1b[0m ",
+//       "Error fetching cover data (OOB)",
+//       error,
+//     );
+//   }
+// },

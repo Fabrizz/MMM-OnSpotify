@@ -14,6 +14,18 @@ Module.register("MMM-OnSpotify", {
     name: "MMM-OnSpotify",
     /* configDeepMerge: true, deepMerge: true, <-- Does not work */
 
+    // Spotify API credentials
+    clientID: "",
+    clientSecret: "",
+    accessToken: "",
+    refreshToken: "",
+    // Experimental secondary credentials for the backend
+    // Should rewritte the full module but for now it just multiple polls the API
+    secondaryClientID: "",
+    secondaryClientSecret: "",
+    secondaryAccessToken: "",
+    secondaryRefreshToken: "",
+
     // Sends notifications containin them locking. Works with other DynamicTheme modules.
     advertisePlayerTheme: true,
     // What to display when the player is idle
@@ -700,6 +712,12 @@ Module.register("MMM-OnSpotify", {
         accessToken: this.config.accessToken,
         refreshToken: this.config.refreshToken,
         experimentalCanvasSPDCookie: this.config.experimentalCanvasSPDCookie,
+      },
+      secondaryCredentials: {
+        clientId: this.config.secondaryClientID,
+        clientSecret: this.config.secondaryClientSecret,
+        accessToken: this.config.secondaryAccessToken,
+        refreshToken: this.config.secondaryRefreshToken,
       },
       language: this.config.language,
       backendExpectId: this.backendExpectId,
