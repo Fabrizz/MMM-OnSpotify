@@ -23,10 +23,10 @@ npm install
 
 ### Step 2: Create a Spotify App and authorize the app
 
-> [!WARNING]
-> You cannot use MMM-NowPlayingOnSpotify (or other module) credentials, the API scopes are different.
 
-The module includes a static web service that guides you in the creation of the Spotify App needed to use this module, you can view the source code inside `/web`
+The module includes a static web service that guides you in the creation of the Spotify App needed to use this module, you can view the source code inside `/web`.
+
+> The online tool saves the credentials **ONLY** in your browser and its a static page. If you do not want to use the online tool, you can host it by running the Vite proyect inside `/web`.
 
 Access it by going to https://onsp.fabriz.co/
 [<img alt="Auth banner" src=".github/content/readme/n-auth-logo.png" width="200" align="right">](https://fabriz.co/)
