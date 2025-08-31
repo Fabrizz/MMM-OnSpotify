@@ -1,6 +1,6 @@
 {
     "name": "mmm-onspotify",
-    "version": "4.0.0",
+    "version": "6.0.0",
     "description": "A MagicMirror² module that displays what you are listening to using the Spotify Connect API.",
     "repository": {
         "type": "git",
