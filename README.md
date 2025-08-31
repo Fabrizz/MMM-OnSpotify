@@ -1,5 +1,3 @@
-<img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-module.png" width="100%">
-
 <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
 **MMM-OnSpotify** for MagicMirror² is a highly configurable module that displays Spotify activity on your MagicMirror display (including podcasts, and when available, audiobooks). https://onsp.fabriz.co/
