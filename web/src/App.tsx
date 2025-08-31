@@ -183,7 +183,7 @@ function App() {
         </p>
         <img src={ly} className='w-full h-auto object-contain aspect-[29/10]'/>
       </a>
-      <a href='https://github.com/Fabrizz/MMM-LiveLyrics' className='rounded-xl shadow border border-border hover:scale-[1.01] active:scale-[0.99] px-4 py-3 bg-transparent hover:bg-white/10 hover:border-transparent mb-4 transition-all duration-300'>
+      <a href='https://github.com/Fabrizz/MMM-Matter' className='rounded-xl shadow border border-border hover:scale-[1.01] active:scale-[0.99] px-4 py-3 bg-transparent hover:bg-white/10 hover:border-transparent mb-4 transition-all duration-300'>
         <h2 className='font-semibold text-xl'>MMM-Matter</h2>
         <p className='opacity-80 -mt-1 mb-1.5'>Add native Matter support to control your mirror from any smarthome provider</p>
         <p className='flex flex-wrap gap-2 opacity-70 mb-1'>
