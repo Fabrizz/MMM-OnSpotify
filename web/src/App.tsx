@@ -3,11 +3,11 @@ import lg from './assets/icon.png'
 import bn from './assets/banner.png'
 import gh from './assets/ghl.png'
 import ly from './assets/lily.png'
+import AuthTool from '@/components/authtool'
 import { KeyRoundIcon, LayoutGrid, Link, ShieldUser, Star, Stethoscope, Trash2Icon } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/ui/accordion'
 import { Badge } from './components/ui/badge'
 import { Alert, AlertDescription, AlertTitle } from './components/ui/alert'
-import Auth from './components/auth'
 
 function App() {
 
@@ -152,7 +152,7 @@ function App() {
       <p className='opacity-90 mb-5'>
         If you want you can just use the configuration example in the repo and provide the tokens yourself, you can also see the source code of the tool in the repository <span className='inline-block px-[4px] bg-cyan-600/30 rounded-md'>/web</span> folder.
       </p>
-      <Auth />
+      <AuthTool />
       <div className='relative'>
         <div id='ac1' className='absolute top-30'></div>
       </div>

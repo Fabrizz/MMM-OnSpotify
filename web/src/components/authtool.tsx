@@ -154,7 +154,7 @@ function getCfg(cid: string, secret: string, access: string, refresh: string) {
 }`;
 }
 
-export default function Auth() {  
+export default function AuthTool() {  
   const dcid = localStorage.getItem("SPOTIFY_CLIENT_ID") || "";
   const dsecret = localStorage.getItem("SPOTIFY_CLIENT_SECRET") || "";
   const daccess = localStorage.getItem("SPOTIFY_ACCESS_TOKEN") || "";
