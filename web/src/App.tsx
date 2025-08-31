@@ -2,7 +2,7 @@ import fb from './assets/fblogo.png'
 import lg from './assets/icon.png'
 import bn from './assets/banner.png'
 import gh from './assets/ghl.png'
-import { KeyRoundIcon, LayoutGrid, Link, ShieldUser, Stethoscope } from 'lucide-react'
+import { KeyRoundIcon, LayoutGrid, Link, ShieldUser, Stethoscope, Trash2Icon } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/ui/accordion'
 import { Badge } from './components/ui/badge'
 import { Alert, AlertDescription, AlertTitle } from './components/ui/alert'
@@ -37,21 +37,19 @@ function App() {
         </a>
       </div >
 
-
-
-      <h1 className='leading-11 font-sans text-3xl font-normal mb-7'>
+      <h1 className='leading-11 font-sans text-3xl font-normal mb-6'>
         Configuring the module
       </h1>
 
       <h2 className='leading-11 font-sans text-xl font-normal mb-1'>
-        <span className='flex gap-2 items-center -mb-1'>
-          <span className='bg-white border border-white rounded-full size-3'></span>
-          <span className='bg-transparent border border-white rounded-full size-3'></span>
-          <span className='bg-transparent border border-white rounded-full size-3'></span>
+        <span className='flex gap-1.5 items-center -mb-1'>
+          <span className='bg-white border border-white rounded-full size-2.5'></span>
+          <span className='bg-transparent border border-white rounded-full size-2.5'></span>
+          <span className='bg-transparent border border-white rounded-full size-2.5'></span>
         </span>
         <span>Before we start</span>
       </h2>
-      <p className='opacity-80'>To work <span className='bg-green-500/20 px-[2px]'>MMM-OnSpotify</span> requires the following access to your account:</p>
+      <p className='opacity-90'>To work <span className='bg-green-500/20 px-[2px]'>MMM-OnSpotify</span> requires the following access to your account:</p>
       <Accordion
         type="single"
         collapsible
@@ -98,12 +96,12 @@ function App() {
         <AlertDescription>
           <ul className="list-inside list-disc text-sm">
             <li className='mt-1'>Everything <b>stays in your mirror</b>, the only third party service used is Spotify Connect.</li>
-            <li className='mt-1.5'>You can find the <b>source code of this tool</b> in the module repo. This is a static page and only saves your token for 60 minutes <b>inside your browser.</b></li>
+            <li className='mt-1.5'>You can find the <b>source code of this tool</b> in the module repo. This is a static page and only saves your tokens <b>inside your browser.</b></li>
             <li className='mt-1.5'>If you have multiple MM2 instances, its adviced to create different Spotify Apps or adjust polling rates.</li>
           </ul>
         </AlertDescription>
       </Alert>
-      <Alert variant="destructive" className='mb-8'>
+      <Alert variant="destructive" className='mb-10'>
         <KeyRoundIcon />
         <AlertTitle>You cannot use MMM-NowPlayingOnSpotify credentials! <span className='opacity-60'>(or from other module)</span></AlertTitle>
         <AlertDescription>
@@ -112,23 +110,23 @@ function App() {
       </Alert>
 
       <h2 className='leading-11 font-sans text-xl font-normal mb-1'>
-        <span className='flex gap-2 items-center -mb-1'>
-          <span className='bg-white border border-white rounded-full size-3'></span>
-          <span className='bg-white border border-white rounded-full size-3'></span>
-          <span className='bg-transparent border border-white rounded-full size-3'></span>
+        <span className='flex gap-1.5 items-center -mb-1'>
+          <span className='bg-white border border-white rounded-full size-2.5'></span>
+          <span className='bg-white border border-white rounded-full size-2.5'></span>
+          <span className='bg-transparent border border-white rounded-full size-2.5'></span>
         </span>
         <span>Creating a Spotify App</span>
       </h2>
-      <div className='opacity-80 p-3 px-4 border border-border rounded-xl mb-3 relative'>
+      <div className='opacity-90 p-3 px-4 border border-border rounded-xl mb-3 relative'>
         <div className='absolute -top-3 -right-3 bg-card border border-border rounded-full size-7 flex items-center justify-center'>
           <LayoutGrid className='size-4 text-green-500' />
         </div>
         <p className=''>First, we need to create a new Spotify App using the <a className='underline-offset-2 underline decoration-green-500' href='https://developer.spotify.com/dashboard/login'>Spotify Developer Portal</a>. After login in, click on the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Create app</span> button.</p>
         <p className='mt-2'>Next give it a name like "OnSpotify" or something that you can regonize, also write a small description. You can left the website blank.</p>
-        <p className='mt-2'>Now add <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>https://npos.fabriz.co/callback</span> as the redirect URI, so Spotify knows to redirect you here with the credentials.</p>
+        <p className='mt-2'>Now add <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>https://npos.fabriz.co/callback/</span> as the redirect URI (include the trailing <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>/</span>), so Spotify knows to redirect you here with the credentials.</p>
         <p className='mt-2'>To finish the app creation, click on the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Web API</span> checkbox, then click the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Spotify ToS</span> checkbox to accept it and click on <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Save</span>.</p>
       </div>
-      <div className='opacity-80 p-3 px-4 border border-border rounded-xl mb-8 relative'>
+      <div className='opacity-90 p-3 px-4 border border-border rounded-xl mb-10 relative'>
         <div className='absolute -top-3 -right-3 bg-card border border-border rounded-full size-7 flex items-center justify-center'>
           <ShieldUser className='size-4 text-green-500' />
         </div>
@@ -138,17 +136,39 @@ function App() {
       </div>
 
 
-      <h2 className='leading-11 font-sans text-xl font-normal mb-1'>
-        <span className='flex gap-2 items-center -mb-1'>
-          <span className='bg-white border border-white rounded-full size-3'></span>
-          <span className='bg-white border border-white rounded-full size-3'></span>
-          <span className='bg-white border border-white rounded-full size-3'></span>
+      <h2 className='leading-11 font-sans text-xl font-normal mb-1' id='aut'>
+        <span className='flex gap-1.5 items-center -mb-1'>
+          <span className='bg-white border border-white rounded-full size-2.5'></span>
+          <span className='bg-white border border-white rounded-full size-2.5'></span>
+          <span className='bg-white border border-white rounded-full size-2.5'></span>
         </span>
         <span>Authorizing your app</span>
       </h2>
-
+      <p className='opacity-90 mb-3'>
+        Now that you have the credentials you can use the too to get your access token and refresh token.
+      </p>
+      <p className='opacity-90 mb-5'>
+        If you want you can just use the configuration example in the repo and provide the tokens yourself, you can also see the source code of the tool in the repository <span className='inline-block px-[4px] bg-cyan-600/30 rounded-md'>/web</span> folder.
+      </p>
       <Auth />
+      <div className='relative'>
+        <div id='ac1' className='absolute top-30'></div>
+      </div>
+      <p className='opacity-90 mb-3'>
+        Now you can copy the generated tokens to your mirror <span className='inline-block px-[4px] bg-cyan-600/30 rounded-md'>config.js</span> file. Make sure to also add any style configuration that you want to use, you can find the full configuration options by clicking the documentation button. I recommend enabling <span className='inline-block px-[4px] bg-cyan-600/30 rounded-md'>Third party module theming</span> as it looks great!
+      </p>
+      <p className='opacity-90 mb-4'>
+        After adding the configuration, restart your mirror and enjoy!
+      </p>
+      <Alert variant="destructive" className='mb-10'>
+        <Trash2Icon />
+        <AlertTitle>The tokens are stored in your browser</AlertTitle>
+        <AlertDescription>
+          <p>If you want, you can clean the data using the reset button on the tool after you entered any information.</p>
+        </AlertDescription>
+      </Alert>
 
+    <div className='h-80'></div>
     </main>
   )
 }

@@ -118,3 +118,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .nice-scroll {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #4b4b55 #0c0c10;
+  }
+  .nice-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+  .nice-scroll::-webkit-scrollbar-track { background: #0c0c10; }
+  .nice-scroll::-webkit-scrollbar-thumb { background: #4b4b55; border-radius: 9999px; }
+  .nice-scroll::-webkit-scrollbar-thumb:hover { background: #6a6a77; }
+}
