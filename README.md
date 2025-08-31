@@ -2,9 +2,9 @@
 
 <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
-**MMM-OnSpotify** for MagicMirror² is a highly configurable module that displays Spotify activity on your MagicMirror display (including podcasts, and when available, audiobooks).
+**MMM-OnSpotify** for MagicMirror² is a highly configurable module that displays Spotify activity on your MagicMirror display (including podcasts, and when available, audiobooks). https://onsp.fabriz.co/
 
-The module includes a web service that will guide you through the set up and configuration of the Spotify App and module. MMM-OnSpotify does not use any third party service, just the Spotify Web API.
+The module provides a static web service that walks you through setting up and configuring both the Spotify app and the module itself. MMM-OnSpotify relies solely on the official Spotify Web API and does not use any third-party services.
 
 https://github.com/Fabrizz/MMM-OnSpotify/assets/65259076/5d78672e-8feb-45de-92f4-ed44f0771432
 
@@ -26,17 +26,11 @@ npm install
 > [!WARNING]
 > You cannot use MMM-NowPlayingOnSpotify (or other module) credentials, the API scopes are different.
 
-The module includes a web service that guides you in the creation fo the Spotify App, to use it (inside your module folder) run:
+The module includes a static web service that guides you in the creation of the Spotify App needed to use this module, you can view the source code inside `/web`
 
-<img alt="MMM-OnSpotify banner" align="right" height="90" width="160" src=".github/content/readme/banner-authservice.svg">
+Access it by going to https://onsp.fabriz.co/
+[<img alt="Auth banner" src=".github/content/readme/n-auth-logo.png" width="200" align="right">](https://fabriz.co/)
 
-```bash
-npm run auth
-> [Authorization Service] Open http://localhost:8100/ to configure your mirror. 
-```
-Once you finish, you are all set with the basic configuration. Scroll down to see all the different theming options for the module.
-
-> Once the Authorization Service is running, you can access it from the same device where you ran the command by going to `http://localhost:8100/`. You can clone the module on another device to use the service and copy the resulting config snippet to the desired MM².
 
 # Updating
 ```bash
@@ -47,7 +41,7 @@ npm install
 # Module Configuration
 
 **Extended full configuration object:**
-Do not copy everything! Just what you want to change. Below are the defaults:
+Copy only the parts you want to change to your configuration file. The defaults are shown below:
 
 ```js
 {
@@ -218,20 +212,6 @@ You can check the last version with canvas support here [dev-canvas-support bran
 View more on the [**MMM-LiveLyrics** repository](https://github.com/Fabrizz/MMM-LiveLyrics). This module uses web scrapping to get the Lyrics from Genius. Not recommended for basic usage.
 
 <img alt="MMM-Livelyrics" src=".github/content/readme/banner-livelyrics.png" width="70%">
-
-## MMM-HomeKit
-Control your mirror (and other modules) using Apple Homekit protocol! (Also compatible with HomeAssistant or other automation systems with simulated HK controllers)
-
-#### >>> [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-HomeKit) <<<
-- Control your screen on/off, brightness
-- Set the mirror accent color
-- Turn on/off on-screen lyrics
-- Send notifications
-- **With native HK accessories**
-
-<img alt="MMM-Homekit" src=".github/content/readme/banner-homekit.png" width="70%">
-
-> To learn how to use OnSpotify and HomeKit provided accent colors together, read the guide in the [MMM-HomeKit repository](https://github.com/Fabrizz/MMM-HomeKit).
 
 ## Notification API
 | key | Description |
