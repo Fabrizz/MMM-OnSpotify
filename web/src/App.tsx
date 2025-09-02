@@ -125,7 +125,7 @@ function App() {
         </div>
         <p className=''>First, we need to create a new Spotify App using the <a className='underline-offset-2 underline decoration-green-500' href='https://developer.spotify.com/dashboard/login'>Spotify Developer Portal</a>. After login in, click on the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Create app</span> button.</p>
         <p className='mt-2'>Next give it a name like "OnSpotify" or something that you can regonize, also write a small description. You can left the website blank.</p>
-        <p className='mt-2'>Now add <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>https://npos.fabriz.co/callback/</span> as the redirect URI (include the trailing <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>/</span>), so Spotify knows to redirect you here with the credentials.</p>
+        <p className='mt-2'>Now add <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>https://npos.fabriz.co/</span> as the redirect URI (include the trailing <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>/</span>), so Spotify knows to redirect you here with the credentials.</p>
         <p className='mt-2'>To finish the app creation, click on the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Web API</span> checkbox, then click the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Spotify ToS</span> checkbox to accept it and click on <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Save</span>.</p>
       </div>
       <div className='opacity-90 p-3 px-4 border border-border rounded-xl mb-10 relative'>
