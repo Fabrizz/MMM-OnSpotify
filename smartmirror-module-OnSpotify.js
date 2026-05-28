@@ -9,7 +9,7 @@
 
 /* FUTURE: Add a "guessTrackTime" option that still changes the timer even when the update interval window is higher */
 
-Module.register("MMM-OnSpotify", {
+Module.register("smartmirror-module-OnSpotify", {
   defaults: {
     name: "MMM-OnSpotify",
     /* configDeepMerge: true, deepMerge: true, <-- Does not work */

@@ -190,7 +190,7 @@
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> END < */
 
 /* MODULE HL */
-.MMM-OnSpotify.module {
+.smartmirror-module-OnSpotify.module {
     display: flex;
     justify-content: center;
     font-size: var(--ONSP-INTERNAL-PLAYER-FONT-BASE);
