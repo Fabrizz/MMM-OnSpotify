@@ -6,9 +6,11 @@
  * Original implementation: Raywo | https://github.com/raywo/MMM-NowPlayingOnSpotify
  */
 
-// Use node fetch as most MM2 installs use older node
-const fetch = require("node-fetch");
-const Headers = fetch.Headers;
+// Prefer native fetch when available (Node 18+). node-fetch v2 fails on newer
+// Node versions with "Premature close" while reading the token response.
+// Fall back to node-fetch for older MM2 installs.
+const fetch = globalThis.fetch ?? require("node-fetch");
+const Headers = globalThis.Headers ?? fetch.Headers;
 const tokenRefreshBase = "https://accounts.spotify.com";
 const userBase = "https://api.spotify.com";
 
