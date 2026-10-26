@@ -22,7 +22,7 @@ module.exports = NodeHelper.create({
     // Helps keping track of when the current device target is changed
     this.lastDeviceName = undefined;
     // The times that an available (but empty) player has been returned by the api
-    this.isPlayerInTransit = 0;
+    this.lastPlayerStatusCount = 0;
     // Configuration sent to the helper
     this.preferences = undefined;
     // Use a identifier to filter socket-io retries
@@ -246,35 +246,27 @@ module.exports = NodeHelper.create({
               country: data.country,
               name: data.display_name,
               id: data.id,
-              image: data.images
-                ? data.images[0]
-                  ? data.images[0].url
-                  : null
-                : null,
+              image: data.images && data.images[0] ? data.images[0].url : null,
               product: data.product,
-              filterEnabled: data.explicit_content.filter_enabled,
-              filterLocked: data.explicit_content.filter_locked,
+              filterEnabled: data.explicit_content?.filter_enabled,
+              filterLocked: data.explicit_content?.filter_locked,
               type: data.type,
             };
             this.sendSocketNotification("USER_DATA", payload);
           }
           break;
         case "AFFINITY":
-          if (data) {
-            let payload = [];
-            data.items.forEach((item) =>
-              payload.push({
-                name: item.name,
-                image: (item.type === "track" ? item.album.images : item.images)
-                  // Here we use medium sized images || Maybe later even the icon ones, as its just a background
-                  .filter((image) =>
-                    image.width >= 240 && image.width <= 360
-                      ? image.width >= 240 && image.width <= 360
-                      : // Fallback to any of the available image sizes.
-                        image,
-                  )[0].url,
-              }),
-            );
+          if (data && Array.isArray(data.items)) {
+            const payload = data.items.map((item) => {
+              const images =
+                (item.type === "track" ? item.album?.images : item.images) || [];
+              // Here we use medium sized images || Maybe later even the icon ones, as its just a background
+              // Fallback to any of the available image sizes.
+              const image =
+                images.find((image) => image.width >= 240 && image.width <= 360) ||
+                images[0];
+              return { name: item.name, image: image ? image.url : "" };
+            });
             this.sendSocketNotification("AFFINITY_DATA", payload);
           }
           break;

@@ -69,8 +69,8 @@ Copy only the parts you want to change to your configuration file. The defaults 
         // Update Intervals [SEE BELOW]
         isPlaying: 1,
         isEmpty: 2,
-        isPlayingHidden: 2,
-        isEmptyHidden: 4,
+        isPlayingHidden: 1,
+        isEmptyHidden: 3,
         onReconnecting: 4,
         onError: 8,
 
@@ -79,7 +79,7 @@ Copy only the parts you want to change to your configuration file. The defaults 
         fadeAnimations: false,
         scrollAnimations: false,
         textAnimations: true,
-        transitionAnimations: true,
+        transitionAnimations: false,
         spotifyVectorAnimations: false,
 
         // Spotify Code [SEE BELOW]
@@ -142,7 +142,7 @@ experimentalCSSOverridesForMM2: [
 | :-- | :-- |
 | isPlaying <br> `1` | Default interval when something is playing in Spotify. |
 | isEmpty <br> `2` | Interval when the player is idle. | 
-| isPlayingHidden <br> `2` | Interval when the module is hidden from another module and there is something playing in Spotify. |
+| isPlayingHidden <br> `1` | Interval when the module is hidden from another module and there is something playing in Spotify. |
 | isEmptyHidden <br> `3` | Interval when the module is hidden and the player is idle. |
 | onReconnecting <br> `4` | Interval when there is an error fetching from the Spotify API. |
 | onError <br> `8` | After trying to reconnect for a long time, the module enters an error state where the polling is rate is longer than "onReconnecting". |
@@ -163,7 +163,7 @@ experimentalCSSOverridesForMM2: [
 | fadeAnimations <br> `false` | Controls the fade effects between module status changes. Not too GPU intensive. (See the warning for RPIs above) |
 | scrollAnimations <br> `false` | Controls text scrolling for long music/podcast names/artist/show. (See the warning for RPIs above) |
 | textAnimations <br> `true` | Control the animation of text on music/podcast change, also affects the "current device" text. (See the warning for RPIs above) |
-| transitionAnimations <br> `true` | Controls the transition between color changes, GPU intensive, but looks really good. (See the warning for RPIs above) (It also affects other modules if you are using `experimentalCSSOverridesForMM2` default CSS config.) |
+| transitionAnimations <br> `false` | Controls the transition between color changes, GPU intensive, but looks really good. (See the warning for RPIs above) (It also affects other modules if you are using `experimentalCSSOverridesForMM2` default CSS config.) |
 | spotifyVectorAnimations <br> `false` | Control the animation of the Spotify code, It look really good, as it transitions seamless. (See the warning for RPIs above) |
 
 #### Spotify Code

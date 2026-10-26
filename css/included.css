@@ -231,6 +231,7 @@
     max-width: 100%;
     flex: 1;
     align-items: flex-start;
+    translate: 0px -1px;
 }
 .ONSP-Base .player .header .names .title {
     display: flex;
@@ -492,7 +493,7 @@
     height: var(--ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT);
     background-size: cover;
     transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) 2s;
-    border-radius: 0.9em;
+    border-radius: 0.55em;
     background-image: var(--ONSP-INTERNAL-USER-IMAGE);
 }
 .ONSP-Base .user .profile .image .letter {
