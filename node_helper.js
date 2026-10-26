@@ -8,6 +8,54 @@
 "use strict";
 const path = require("path");
 const crypto = require("crypto");
+const os = require("os");
+const dgram = require("dgram");
+const qrcode = require("qrcode-generator");
+
+/**
+ * QR code of a text as a small SVG: one path for every dark module, black on transparent
+ * (the notice draws it on a white tile, css/included.css).
+ *
+ * @param {String} text - The content, here the module page URL.
+ * @returns {String} The SVG markup.
+ */
+function qrSvg(text) {
+  const qr = qrcode(0, "M");
+  qr.addData(text);
+  qr.make();
+  const size = qr.getModuleCount();
+  let path = "";
+  for (let row = 0; row < size; row++)
+    for (let col = 0; col < size; col++)
+      if (qr.isDark(row, col)) path += `M${col} ${row}h1v1h-1z`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges"><path fill="#000" d="${path}"/></svg>`;
+}
+
+/**
+ * IPv4 of the interface the system uses to reach the internet, the one phones on the same
+ * network can reach. Virtual adapters (VirtualBox, WSL, Docker) often come first in
+ * os.networkInterfaces(). A UDP "connect" picks the route without sending any packet.
+ *
+ * @returns {Promise<String|null>} The address, or null without a route.
+ */
+function defaultRouteAddress() {
+  return new Promise((resolve) => {
+    const socket = dgram.createSocket("udp4");
+    const done = (address) => {
+      try {
+        socket.close();
+      } catch {
+        // Already closed
+      }
+      resolve(address);
+    };
+    socket.on("error", () => done(null));
+    socket.connect(53, "1.1.1.1", () => {
+      const { address } = socket.address();
+      done(address && address !== "0.0.0.0" ? address : null);
+    });
+  });
+}
 // MagicMirror's own express (MM2 always ships it, no extra dependency)
 const express = require("express");
 const NodeHelper = require("node_helper");
@@ -81,6 +129,8 @@ module.exports = NodeHelper.create({
       case "SET_CREDENTIALS_REFRESH":
         // Before the re-request check, a reloaded frontend also needs it
         this.sendSocketNotification("MODULE_VERSION", version);
+        // A reloaded frontend lost the "login expired" notice, send it again on its next poll
+        this.reauthNotified = false;
         // Blocks re-requests caused by socket.io implementation
         if (payload.backendExpectId === this.appendableId) break;
         this.configCredentials = payload.credentials;
@@ -138,7 +188,7 @@ module.exports = NodeHelper.create({
         this.lastError = data.message;
         if (data.reauth && !this.reauthNotified) {
           this.reauthNotified = true;
-          this.sendSocketNotification("REAUTH_REQUIRED");
+          this.modulePageInfo().then((info) => this.sendSocketNotification("REAUTH_REQUIRED", info));
         }
         this.broadcastStatus();
         return this.sendSocketNotification(
@@ -490,6 +540,41 @@ module.exports = NodeHelper.create({
       this.afterTokenChange();
       this.redirectToPage(res, { reauth: "ok" });
     });
+  },
+
+  /**
+   * Where a phone can open the module page, for the notice on the mirror.
+   * MM2 only listens on loopback when `address` is localhost (its default), then only the mirror can open it.
+   *
+   * @returns {Promise<{url: String, reachable: Boolean, qr: String|null}>} The page URL, if other devices can reach it, and a QR (SVG).
+   */
+  modulePageInfo: async function () {
+    const config = global.config || {};
+    const port = Number(process.env.MM_PORT || config.port || 8080);
+    const protocol = config.useHttps ? "https" : "http";
+    const address = (config.address || "localhost").trim();
+    const loopback = ["localhost", "127.0.0.1", "::1"].includes(address);
+
+    let host = address;
+    if (loopback) host = "localhost";
+    // Listening on every interface: the address of the network the phone is likely on
+    else if (address === "0.0.0.0" || address === "::") {
+      const lan = Object.values(os.networkInterfaces())
+        .flat()
+        .find((i) => i && i.family === "IPv4" && !i.internal);
+      host = (await defaultRouteAddress()) || (lan && lan.address) || "localhost";
+    }
+    const url = `${protocol}://${host.includes(":") ? `[${host}]` : host}:${port}${pageBase}/`;
+    const reachable = host !== "localhost";
+    let qr = null;
+    if (reachable) {
+      try {
+        qr = qrSvg(url);
+      } catch (error) {
+        console.error(`${logPrefix} Could not create the module page QR`, error);
+      }
+    }
+    return { url, reachable, qr };
   },
 
   redirectToPage: function (res, params) {

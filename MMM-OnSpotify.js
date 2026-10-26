@@ -188,6 +188,8 @@ Module.register("MMM-OnSpotify", {
     this.version = null;
     // ONSPOTIFY_GET arrived before the version, answer when it does
     this.pendingNotice = false;
+    // Spotify login expired: { url, reachable, qr } of the module page, shown instead of the player
+    this.reauthNotice = null;
 
     this.displayUser =
       this.config.displayWhenEmpty.toLowerCase() === "user" ||
@@ -252,6 +254,15 @@ Module.register("MMM-OnSpotify", {
   },
 
   getDom: function () {
+    if (this.reauthNotice) {
+      this.nowDisplaying = "reauth";
+      // Nothing is playing for us anymore, release the theme like the empty view does
+      if (this.globalThemeSelected) {
+        this.sendNotification("THEME_PREFERENCE", { provider: "MMM-OnSpotify", set: "unlock" });
+        this.globalThemeSelected = false;
+      }
+      return this.builder.reauthNotice(this.reauthNotice);
+    }
     if (this.playerData && this.playerData.deviceIsPrivate) {
       this.nowDisplaying = "private";
       return this.builder.privateSession(this.playerData);
@@ -366,6 +377,11 @@ Module.register("MMM-OnSpotify", {
         );
         this.isConnectedToSpotify = true;
         this.connectionRetries = 0;
+        // A new token works again, back to the normal view
+        if (this.reauthNotice) {
+          this.reauthNotice = null;
+          this.updateDom();
+        }
         if (!payload.statusPlayerUpdating) this.playerData = payload;
         this.smartUpdate("PLAYER_DATA");
         if (payload.statusIsNewSong || this.firstSongOnLoad) {
@@ -486,6 +502,8 @@ Module.register("MMM-OnSpotify", {
         }
         break;
       case "REAUTH_REQUIRED":
+        this.reauthNotice = payload || { url: "/onspotify/", reachable: false, qr: null };
+        this.updateDom();
         console.error(
           `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate("REAUTH_REQUIRED")}`,
           "background-color:#84CC16;color:black;border-radius:0.5em",

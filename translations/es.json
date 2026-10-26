@@ -17,5 +17,8 @@
     "CSSOVERRIDE_NOTICE": "Estas sobreescribiendo variables CSS incluidas con MM2. Chequea errores de escritura y de contraste",
     "CSSOVERRIDE_MALFORMED": "Hubo un error al procesar tu configuración \"experimentalCSSOverridesForMM2\". Elimina esta entrada o chequeala por errores de escritura.",
     "BACKEND_REAUTH": "El backend del módulo se recupero de un reinicio/cuelgue. (El backend pidío credenciales con un nuevo UUID)",
-    "REAUTH_REQUIRED": "El inicio de sesión de Spotify expiró (los refresh tokens duran 6 meses). Abrí la página del módulo en /onspotify/ o https://onsp.fabriziob.com/ para obtener un token nuevo."
+    "REAUTH_REQUIRED": "El inicio de sesión de Spotify expiró (los refresh tokens duran 6 meses). Abrí la página del módulo en /onspotify/ o https://onsp.fabriziob.com/ para obtener un token nuevo.",
+    "REAUTH_TITLE": "El inicio de sesión de Spotify expiró",
+    "REAUTH_SCAN": "Escaneá el código o abrí esta página para volver a conectar:",
+    "REAUTH_LOCAL": "Abrí esta página en un navegador del espejo para volver a conectar:"
 }

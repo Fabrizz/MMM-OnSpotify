@@ -17,5 +17,8 @@
     "CSSOVERRIDE_NOTICE": "Du überschreibst die Standard-MM2-CSS-Variablen. Überprüfe sie auf Rechtschreibfehler und Kontrastprobleme.",
     "CSSOVERRIDE_MALFORMED": "Es gab einen Fehler beim Parsen \"experimentalCSSOverridesForMM2\" Arrays. Entferne deinen Eintrag oder überprüfe ihn auf Fehler.",
     "BACKEND_REAUTH": "Module backend recovered from restart/stale state. (Backend requested credentials with different uuid)",
-    "REAUTH_REQUIRED": "Die Spotify-Anmeldung ist abgelaufen (Refresh-Tokens gelten 6 Monate). Öffne die Modulseite unter /onspotify/ oder https://onsp.fabriziob.com/, um ein neues Token zu erhalten."
+    "REAUTH_REQUIRED": "Die Spotify-Anmeldung ist abgelaufen (Refresh-Tokens gelten 6 Monate). Öffne die Modulseite unter /onspotify/ oder https://onsp.fabriziob.com/, um ein neues Token zu erhalten.",
+    "REAUTH_TITLE": "Spotify-Anmeldung abgelaufen",
+    "REAUTH_SCAN": "Scanne den Code oder öffne diese Seite, um dich neu zu verbinden:",
+    "REAUTH_LOCAL": "Öffne diese Seite in einem Browser auf dem Spiegel, um dich neu zu verbinden:"
 }

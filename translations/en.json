@@ -17,5 +17,8 @@
     "CSSOVERRIDE_NOTICE": "You are overriding default MM2 CSS variables. Check spelling errors (and contrast issues)",
     "CSSOVERRIDE_MALFORMED": "There was an error parsing your \"experimentalCSSOverridesForMM2\" array. This entry should be an array, check the docs for more information.",
     "BACKEND_REAUTH": "Module backend recovered from restart/stale state. (Backend requested credentials with different UUID)",
-    "REAUTH_REQUIRED": "Spotify login expired (refresh tokens last 6 months). Open the module page at /onspotify/ or https://onsp.fabriziob.com/ to get a new token."
+    "REAUTH_REQUIRED": "Spotify login expired (refresh tokens last 6 months). Open the module page at /onspotify/ or https://onsp.fabriziob.com/ to get a new token.",
+    "REAUTH_TITLE": "Spotify login expired",
+    "REAUTH_SCAN": "Scan the code or open this page to connect again:",
+    "REAUTH_LOCAL": "Open this page in a browser on the mirror to connect again:"
 }

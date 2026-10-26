@@ -27,7 +27,8 @@
     "license": "MIT",
     "dependencies": {
         "dompurify": "^3.2.6",
-        "node-fetch": "^2.6.9"
+        "node-fetch": "^2.6.9",
+        "qrcode-generator": "^2.0.4"
     },
     "scripts": {
         "auth": "cd auth && node authorization.js"
