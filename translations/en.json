@@ -16,5 +16,6 @@
     "LIVELYRICS_NOTICE": "MMM-LiveLyrics found! - LiveLyrics should log the connection to this module. (https://github.com/Fabrizz/MMM-LiveLyrics)",
     "CSSOVERRIDE_NOTICE": "You are overriding default MM2 CSS variables. Check spelling errors (and contrast issues)",
     "CSSOVERRIDE_MALFORMED": "There was an error parsing your \"experimentalCSSOverridesForMM2\" array. This entry should be an array, check the docs for more information.",
-    "BACKEND_REAUTH": "Module backend recovered from restart/stale state. (Backend requested credentials with different UUID)"
+    "BACKEND_REAUTH": "Module backend recovered from restart/stale state. (Backend requested credentials with different UUID)",
+    "REAUTH_REQUIRED": "Spotify login expired (refresh tokens last 6 months). Open the module page at /onspotify/ or https://onsp.fabriziob.com/ to get a new token."
 }

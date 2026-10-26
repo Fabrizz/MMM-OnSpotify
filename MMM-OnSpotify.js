@@ -153,6 +153,10 @@ Module.register("MMM-OnSpotify", {
     // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
     matchBackendUUID: false,
 
+    // Redirect URI registered in your Spotify App, used by the "onsp handoff" in the module page
+    // (/onspotify/). Use "https://onsp.fabriz.co/" if your app only has the old address.
+    authRedirectUri: "https://onsp.fabriziob.com/",
+
     // Send a notification with the color data when only when the song changes, this is useful for modules
     // that are not going to show the color inside the dom.
     experimentalColorSignaling: false,
@@ -472,6 +476,15 @@ Module.register("MMM-OnSpotify", {
         this.sendNotification("SERVERSIDE_RESTART");
         this.sendCredentialsBackend();
         break;
+      case "REAUTH_REQUIRED":
+        console.error(
+          `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate("REAUTH_REQUIRED")}`,
+          "background-color:#84CC16;color:black;border-radius:0.5em",
+          "",
+          "background-color:#781919;color:white;",
+          "",
+        );
+        break;
       case "UPDATE_CANVAS":
         this.canvasData = payload;
         this.smartUpdate("CANVAS_DATA");
@@ -729,6 +742,7 @@ Module.register("MMM-OnSpotify", {
         refreshToken: this.config.secondaryRefreshToken,
       },
       language: this.config.language,
+      authRedirectUri: this.config.authRedirectUri,
       backendExpectId: this.backendExpectId,
     });
   },

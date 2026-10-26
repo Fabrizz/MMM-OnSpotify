@@ -1,6 +1,6 @@
 <img alt="MMM-OnSpotify banner" src=".github/content/readme/ONSP-BANNER-hero.png" width="100%">
 
-**MMM-OnSpotify** for MagicMirror² is a highly configurable module that displays Spotify activity on your MagicMirror display (including podcasts, and when available, audiobooks). https://onsp.fabriz.co/
+**MMM-OnSpotify** for MagicMirror² is a highly configurable module that displays Spotify activity on your MagicMirror display (including podcasts, and when available, audiobooks). https://onsp.fabriziob.com/
 
 The module provides a static web service that walks you through setting up and configuring both the Spotify app and the module itself. MMM-OnSpotify relies solely on the official Spotify Web API and does not use any third-party services.
 
@@ -26,8 +26,42 @@ The module includes a static web service that guides you in the creation of the 
 
 > The online tool saves the credentials **ONLY** in your browser and its a static page. If you do not want to use the online tool, you can host it by running the Vite proyect inside `/web`.
 
-Access it by going to https://onsp.fabriz.co/
-[<img alt="Auth banner" src=".github/content/readme/n-auth-logo.png" width="200" align="right">](https://fabriz.co/)
+Access it by going to https://onsp.fabriziob.com/
+[<img alt="Auth banner" src=".github/content/readme/n-auth-logo.png" width="200" align="right">](https://fabriziob.com/)
+
+> [!IMPORTANT]
+> **The tool moved from onsp.fabriz.co to onsp.fabriziob.com.** If you created your Spotify App with the old address, open your app in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard), and add `https://onsp.fabriziob.com/` (with the trailing `/`) to its **Redirect URIs** before getting a new token. Otherwise Spotify shows "Invalid redirect URI".
+
+# Spotify login expires every 6 months
+Spotify refresh tokens stop working 6 months after you authorize the app, and refreshing does not extend that time. When it happens the module logs `LOGIN EXPIRED` and stops calling Spotify until it gets a new token.
+
+### The module page
+The module serves a page at `http://<mirror address>:<port>/onspotify/` (for example http://localhost:8080/onspotify/). It shows:
+- If the module is connected, and the Spotify account in use.
+- What is playing right now.
+- When the token expires. For tokens from `config.js` the module does not know when they were created, so it shows the latest possible date.
+- A box to paste a new refresh token. The module tests it with Spotify before using it, no restart needed.
+
+> [!NOTE]
+> MagicMirror² only accepts connections from the mirror itself by default. To open the page from your phone, set `address: "0.0.0.0"` and add your network to `ipWhitelist` (for example `["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.1.0/24"]` for 192.168.1.x) in your MagicMirror `config.js`.
+
+### Getting a new token
+In the module page, click **Get a new token at onsp.fabriziob.com**. You can choose:
+
+**onsp.fabriziob.com handoff (automatic)**
+1. The first time, onsp.fabriziob.com asks to save your mirror's address in your browser (you can see them in [My mirrors](https://onsp.fabriziob.com/my)).
+2. Your mirror opens the Spotify login.
+3. Spotify sends you back to onsp.fabriziob.com, which sends the login to your mirror. The mirror finishes it with its Client Secret, saves the new token, and shows you the module page again.
+
+Your Client Secret never leaves the mirror, onsp.fabriziob.com only sees the mirror address and the one-time login code. The Spotify App needs the redirect URI from the `authRedirectUri` option (`https://onsp.fabriziob.com/` by default, see the note above).
+
+**I will copy the token (manual)**
+1. Go to https://onsp.fabriziob.com/, enter your Client ID and Client Secret, and authorize the app again.
+2. Copy the new refresh token.
+3. Paste it in the module page, **or** replace `refreshToken` in your `config.js` and restart MagicMirror.
+
+### .credentials.json
+Tokens from the module page (pasted or from the handoff) and tokens that Spotify rotates are saved in `MMM-OnSpotify/.credentials.json`, your `config.js` is never changed. The saved token is only used while `config.js` still has the same `refreshToken` as when it was saved, so editing `config.js` always wins. Delete the file (or use "Use the config.js token again" in the page) to go back to the token in `config.js`. The file never contains your Client Secret.
 
 
 # Updating
@@ -100,6 +134,9 @@ Copy only the parts you want to change to your configuration file. The defaults 
         alwaysUseDefaultDeviceIcon: false,
         experimentalCSSOverridesForMM2: false, // [SEE BELOW]
         experimentalColorSignaling: false,
+
+        // Module page [SEE BELOW]
+        authRedirectUri: "https://onsp.fabriziob.com/",
     },
 },
 ```
@@ -135,6 +172,7 @@ experimentalCSSOverridesForMM2: [
 | deviceFilter <br> `list[]` | List of device names to filter from the module, by default, its an inclusion list, you can change this using `deviceFilterExclude` (making it an exclusion list). When a filtered device plays `displayWhenEmpty` shows. Example: `["Sonos Bedroom", "DESKTOP-ABCD123"]` |
 | deviceFilterExclude <br> `false` | Inverts the `deviceFilter` list, making it exclude devices |
 | filterNoticeSubtitle <br> `true`| Changes the subtitle of `displayWhenEmpty`, to not show a false status if the `deviceFilter` is set |
+| authRedirectUri <br> `"https://onsp.fabriziob.com/"` | Redirect URI registered in your Spotify App, used by the onsp handoff in the [module page](#spotify-login-expires-every-6-months). Set `"https://onsp.fabriz.co/"` if your app only has the old address. |
 | language <br> `config.language`| The language used in the API query. When it is not set, it depends on `config.language`. Example: `en-US` (Or `false` if you prefer the default api response) |
 
 ### Polling Intervals:
@@ -273,5 +311,5 @@ You cannot migrate from NowPlayingInSpotify, as the scopes included in the NPOS 
 
 - You can custom CSS and functions in the "Issues" tab. For example https://github.com/Fabrizz/MMM-OnSpotify/issues/65 for changing the size and hiding other modules using ONSP state.
 
-With <3 by Fabrizio | [fabriz.co](https://fabriz.co/) | Star this repository! 
-[<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriz.co/)
+With <3 by Fabrizio | [fabriziob.com](https://fabriziob.com/) | Star this repository! 
+[<img alt="Fabrizz logo" src=".github/content/readme/logo-fabrizz-fill.png" width="200" align="right">](https://fabriziob.com/)

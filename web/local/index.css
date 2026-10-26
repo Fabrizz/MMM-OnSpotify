@@ -1,0 +1,4 @@
+/* Same theme as the onsp site, plus the sources Tailwind has to scan for this entry */
+@import "../src/index.css";
+@source "../src";
+@source ".";

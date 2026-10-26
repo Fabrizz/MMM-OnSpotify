@@ -37,6 +37,8 @@ settings.json
 
 # Package Lock File
 package-lock.json
+# The web app lockfile is kept, so CI rebuilds page/ with the same versions
+!web/package-lock.json
 
 # Example responeses
 ex.json
@@ -48,3 +50,7 @@ svgs.html
 lyrics.js
 vizualizer.html
 stats.html
+
+# Tokens saved by the module (local page / rotation)
+.credentials.json
+.credentials.json.tmp
