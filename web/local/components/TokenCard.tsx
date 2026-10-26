@@ -128,9 +128,15 @@ export function TokenCard({ status, onStatus }: Props) {
     <Card className={expired ? "border-destructive/60" : expiresSoon ? "border-yellow-500/50" : undefined}>
       <CardHeader>
         <CardTitle>{expired ? "Spotify login expired" : "Spotify login"}</CardTitle>
-        <CardDescription>
-          Spotify refresh tokens stop working 6 months after you authorize the app. Get a new one and paste it here,
-          the module tests it with Spotify and saves it in <code>.credentials.json</code> (your config.js is not changed).
+        <CardDescription className="flex flex-col gap-2">
+          <span>
+            Since Spotify changed how its logins work (2026), refresh tokens stop working 6 months after you authorize
+            the app, and using them does not extend that time. Every 6 months you need to authorize again to get a new one.
+          </span>
+          <span>
+            Get a new token with the onsp.fabriziob.com handoff, or paste one here. The module tests it with Spotify and
+            saves it in <code>.credentials.json</code>, inside the module folder. Your <code>config.js</code> is not changed.
+          </span>
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-5">

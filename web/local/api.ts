@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 export const ONSP_URL = "https://onsp.fabriziob.com/"
 export const GUIDE_URL =
-  "https://github.com/Fabrizz/MMM-OnSpotify#spotify-login-expires-every-6-months"
+  "https://github.com/Fabrizz/MMM-OnSpotify#step-2-create-a-spotify-app-and-authorize-the-app"
 
 /*
  * onsp handoff. The first time (in this browser) the user goes through onsp /connect to save
@@ -59,6 +59,8 @@ export type Status = {
   } | null
   // Redirect URI the Spotify App needs for the onsp handoff (module option authRedirectUri)
   redirectUri?: string
+  // Module version, from its package.json
+  version?: string
 }
 
 export type NowPlaying = {

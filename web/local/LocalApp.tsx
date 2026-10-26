@@ -18,7 +18,7 @@ export default function LocalApp() {
       <div className="w-full max-w-xl flex flex-col gap-5">
         <header className="flex items-center gap-3">
           <img src={icon} alt="" className="h-9 w-18 rounded-lg" />
-          <div>
+          <div className="flex-1 min-w-0">
             <h1 className="font-semibold leading-tight">Authentication Settings</h1>
             <span className="text-sm text-muted-foreground">
               <a href="https://github.com/Fabrizz/MMM-OnSpotify" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
@@ -31,6 +31,17 @@ export default function LocalApp() {
             </span>
 
           </div>
+          {status?.version && (
+            <a
+              href={`https://github.com/Fabrizz/MMM-OnSpotify/releases/tag/v${status.version}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 rounded-md border px-2 py-0.5 text-xs text-muted-foreground tabular-nums hover:text-foreground transition-colors"
+              title="Module version"
+            >
+              v{status.version}
+            </a>
+          )}
         </header>
 
         {reauthResult &&

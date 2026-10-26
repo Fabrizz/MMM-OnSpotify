@@ -13,6 +13,8 @@ const express = require("express");
 const NodeHelper = require("node_helper");
 const SpotifyFetcher = require("./utils/SpotifyFetcher");
 const CredentialStore = require("./utils/CredentialStore");
+// package.json is the only place the version is written
+const { version } = require("./package.json");
 
 // The module page (web/local, built into page/) and its API
 const pageBase = "/onspotify";
@@ -77,6 +79,8 @@ module.exports = NodeHelper.create({
   socketNotificationReceived: function (notification, payload) {
     switch (notification) {
       case "SET_CREDENTIALS_REFRESH":
+        // Before the re-request check, a reloaded frontend also needs it
+        this.sendSocketNotification("MODULE_VERSION", version);
         // Blocks re-requests caused by socket.io implementation
         if (payload.backendExpectId === this.appendableId) break;
         this.configCredentials = payload.credentials;
@@ -601,6 +605,7 @@ module.exports = NodeHelper.create({
         : null,
       // The redirect URI the user's Spotify App needs for the onsp handoff
       redirectUri: this.authRedirectUri,
+      version,
     };
   },
 

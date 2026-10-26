@@ -184,9 +184,10 @@ Module.register("MMM-OnSpotify", {
     this.usesCssOverrides =
       typeof this.config.theming.experimentalCSSOverridesForMM2 === "object";
 
-    ////////////////////////////////////////////////////////////////////////////////////////////
-    this.version = "6.0.0";
-    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Sent by the node_helper (MODULE_VERSION) from package.json, the only place it is written
+    this.version = null;
+    // ONSPOTIFY_GET arrived before the version, answer when it does
+    this.pendingNotice = false;
 
     this.displayUser =
       this.config.displayWhenEmpty.toLowerCase() === "user" ||
@@ -476,6 +477,14 @@ Module.register("MMM-OnSpotify", {
         this.sendNotification("SERVERSIDE_RESTART");
         this.sendCredentialsBackend();
         break;
+      case "MODULE_VERSION":
+        this.version = payload;
+        this.builder.config.version = payload;
+        if (this.pendingNotice) {
+          this.pendingNotice = false;
+          this.sendOnSpotifyNotice();
+        }
+        break;
       case "REAUTH_REQUIRED":
         console.error(
           `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate("REAUTH_REQUIRED")}`,
@@ -520,12 +529,8 @@ Module.register("MMM-OnSpotify", {
           });
           break;
         case "ONSPOTIFY_GET":
-          this.sendNotification("ONSPOTIFY_NOTICE", {
-            version: this.version,
-            directColorData:
-              this.loadVibrantPalette && this.config.advertisePlayerTheme,
-            loadsSpotifyCode: this.config.theming.spotifyCodeExperimentalShow,
-          });
+          if (this.version) this.sendOnSpotifyNotice();
+          else this.pendingNotice = true;
           break;
         case "ONSPOTIFY_HIDE":
           this.hide();
@@ -718,6 +723,14 @@ Module.register("MMM-OnSpotify", {
       this.builder.updateAffinityData(this.affinityData);
   },
 
+  // Lets other modules (MMM-LiveLyrics) know OnSpotify is here and what it supports
+  sendOnSpotifyNotice: function () {
+    this.sendNotification("ONSPOTIFY_NOTICE", {
+      version: this.version,
+      directColorData: this.loadVibrantPalette && this.config.advertisePlayerTheme,
+      loadsSpotifyCode: this.config.theming.spotifyCodeExperimentalShow,
+    });
+  },
   getImage: (im, prefersLarge) =>
     im ? (prefersLarge ? im.large : im.medium) : null,
   sendCredentialsBackend() {
