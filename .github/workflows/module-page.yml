@@ -13,12 +13,14 @@ on:
     branches: [dev]
   pull_request:
     branches: [dev, master]
+    # edited: the release check reads the PR title
+    types: [opened, synchronize, reopened, edited]
   workflow_dispatch:
 
 jobs:
   # PRs (forks included): only check that the page builds, the push to dev rebuilds it after merging
   build:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.action != 'edited'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -79,3 +81,50 @@ jobs:
         run: |
           gh api "repos/${{ github.repository }}/statuses/$SHA" \
             -f state=success -f context="Module page" -f description="page/ built from web/local"
+
+  # PRs into master (master requires it): releases go dev -> master, with the new version in the title
+  release-check:
+    name: Release check
+    if: github.event_name == 'pull_request' && github.base_ref == 'master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check the source branch
+        if: github.event.pull_request.head.repo.full_name != github.repository || github.head_ref != 'dev'
+        run: |
+          echo "::error::Releases are PRs from dev into master. Other branches and forks go into dev."
+          exit 1
+
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Check the version
+        env:
+          # Through env, never inlined in the script (the title is user input)
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          git fetch --depth=1 origin master
+          git show origin/master:package.json > master-package.json
+          node <<'JS'
+          const version = require("./package.json").version
+          const released = require("./master-package.json").version
+          const parts = (v) => v.split("-")[0].split(".").map(Number)
+          const newer = (a, b) => {
+            const [x, y] = [parts(a), parts(b)]
+            for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i]
+            return false
+          }
+          const fail = (message) => {
+            console.log(`::error::${message}`)
+            process.exitCode = 1
+          }
+          if (!newer(version, released))
+            fail(`package.json is ${version}, master is ${released}. Bump the version on dev.`)
+          // "v7.0.0" or "7.0.0", not part of a longer version like 7.0.0.1 or 17.0.0
+          const escaped = version.replace(/[.+]/g, "\\$&")
+          if (!new RegExp(`(^|[^\\w.])v?${escaped}(?![\\w.-])`).test(process.env.TITLE))
+            fail(`The PR title has to include the version from package.json, e.g. "v${version}"`)
+          if (!process.exitCode) console.log(`Release ${released} -> ${version}`)
+          JS
