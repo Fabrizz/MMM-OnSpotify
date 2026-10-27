@@ -54,3 +54,6 @@ stats.html
 # Tokens saved by the module (local page / rotation)
 .credentials.json
 .credentials.json.tmp
+
+# Module page build (web/local). Only master has it, built by .github/workflows/module-page.yml
+page/

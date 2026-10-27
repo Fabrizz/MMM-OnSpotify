@@ -420,6 +420,13 @@ module.exports = NodeHelper.create({
     const base = apiBase;
     // Not in public/, MM2 would also serve it at /MMM-OnSpotify/ where the API paths break
     this.expressApp.use(pageBase, express.static(path.join(this.path, "page")));
+    // Only reached without a build: page/ is only on master (built by CI), not on dev
+    this.expressApp.get([pageBase, `${pageBase}/`], (req, res) => {
+      res
+        .status(503)
+        .type("text")
+        .send("The module page is not built. Run `npm install --prefix web && npm run build:local --prefix web` in the module folder, or install the module from the master branch.");
+    });
 
     this.expressApp.get(`${base}/status`, (req, res) => {
       res.json(this.pageStatus());
