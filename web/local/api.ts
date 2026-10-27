@@ -7,29 +7,10 @@ export const GUIDE_URL =
   "https://github.com/Fabrizz/MMM-OnSpotify#step-2-create-a-spotify-app-and-authorize-the-app"
 
 /*
- * onsp handoff. The first time (in this browser) the user goes through onsp /connect to save
- * the mirror there. After that the mirror can start the Spotify login directly.
+ * onsp handoff. Always through onsp /connect, where the user picks the mirror (this one preselected,
+ * saved there if new). That mirror then starts the Spotify login.
  */
-const HANDOFF_READY_KEY = "onsp-handoff-ready"
-
-export function isHandoffReady() {
-  try {
-    return localStorage.getItem(HANDOFF_READY_KEY) === "1"
-  } catch {
-    return false
-  }
-}
-
-function markHandoffReady() {
-  try {
-    localStorage.setItem(HANDOFF_READY_KEY, "1")
-  } catch {
-    // Private mode: the next handoff goes through /connect again, which still works
-  }
-}
-
 export function handoffUrl() {
-  if (isHandoffReady()) return "./api/auth/start"
   // This page's address is the one that reached the mirror, onsp sends the login back here
   const page = new URL("./", window.location.href).href
   return `${ONSP_URL}connect?mirror=${encodeURIComponent(page)}`
@@ -41,7 +22,6 @@ export function readReauthResult(): { ok: boolean; reason: string | null } | nul
   const reauth = params.get("reauth")
   if (!reauth) return null
   window.history.replaceState({}, document.title, window.location.pathname)
-  if (reauth === "ok") markHandoffReady()
   return { ok: reauth === "ok", reason: params.get("reason") }
 }
 
