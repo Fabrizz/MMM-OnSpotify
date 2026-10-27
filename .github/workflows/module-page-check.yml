@@ -1,0 +1,23 @@
+# PRs (forks included): only check that the module page builds.
+# The push to dev rebuilds and commits page/ after merging (module-page.yml).
+name: Module page check
+
+on:
+  pull_request:
+    branches: [dev, master]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci --prefix web
+      - run: npm run build:local --prefix web

@@ -5,38 +5,18 @@
 # Nobody has to commit page/ by hand, local builds can be left out of commits.
 #
 # The "Module page" commit status marks a commit whose page/ was built by CI, master requires it.
-# Commits pushed with GITHUB_TOKEN do not start new workflow runs, so it is set by hand.
+# Commits pushed with GITHUB_TOKEN do not start new workflow runs (not even the PR ones), so the
+# statuses of the bot commit, "Module page" and "Release check", are set here.
 name: Module page
 
 on:
   push:
     branches: [dev]
-  pull_request:
-    branches: [dev, master]
-    # edited: the release check reads the PR title
-    types: [opened, synchronize, reopened, edited]
   workflow_dispatch:
 
 jobs:
-  # PRs (forks included): only check that the page builds, the push to dev rebuilds it after merging
-  build:
-    if: github.event_name == 'pull_request' && github.event.action != 'edited'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      - run: npm ci --prefix web
-      - run: npm run build:local --prefix web
-
-  # Pushes to dev: rebuild and commit page/
   rebuild:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     # A newer push makes this build outdated (and its push would be rejected)
     concurrency:
@@ -45,6 +25,8 @@ jobs:
     permissions:
       contents: write
       statuses: write
+      # gh pr list
+      pull-requests: read
     steps:
       - uses: actions/checkout@v5
 
@@ -82,49 +64,34 @@ jobs:
           gh api "repos/${{ github.repository }}/statuses/$SHA" \
             -f state=success -f context="Module page" -f description="page/ built from web/local"
 
-  # PRs into master (master requires it): releases go dev -> master, with the new version in the title
-  release-check:
-    name: Release check
-    if: github.event_name == 'pull_request' && github.base_ref == 'master'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Check the source branch
-        if: github.event.pull_request.head.repo.full_name != github.repository || github.head_ref != 'dev'
-        run: |
-          echo "::error::Releases are PRs from dev into master. Other branches and forks go into dev."
-          exit 1
-
-      - uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Check the version
+      # The open release PR now ends in the bot commit, which release-check.yml never sees
+      - name: Find the release PR
+        id: pr
         env:
-          # Through env, never inlined in the script (the title is user input)
-          TITLE: ${{ github.event.pull_request.title }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          git fetch --depth=1 origin master
-          git show origin/master:package.json > master-package.json
-          node <<'JS'
-          const version = require("./package.json").version
-          const released = require("./master-package.json").version
-          const parts = (v) => v.split("-")[0].split(".").map(Number)
-          const newer = (a, b) => {
-            const [x, y] = [parts(a), parts(b)]
-            for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i]
-            return false
-          }
-          const fail = (message) => {
-            console.log(`::error::${message}`)
-            process.exitCode = 1
-          }
-          if (!newer(version, released))
-            fail(`package.json is ${version}, master is ${released}. Bump the version on dev.`)
-          // "v7.0.0" or "7.0.0", not part of a longer version like 7.0.0.1 or 17.0.0
-          const escaped = version.replace(/[.+]/g, "\\$&")
-          if (!new RegExp(`(^|[^\\w.])v?${escaped}(?![\\w.-])`).test(process.env.TITLE))
-            fail(`The PR title has to include the version from package.json, e.g. "v${version}"`)
-          if (!process.exitCode) console.log(`Release ${released} -> ${version}`)
-          JS
+          TITLE=$(gh pr list --repo "${{ github.repository }}" --head dev --base master --state open --json title --jq '.[0].title // ""')
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          [ -n "$TITLE" ] || echo "No open release PR"
+
+      - name: Check the release PR
+        id: release
+        if: steps.pr.outputs.title != ''
+        # A failed check is reported on the PR, the page build itself worked
+        continue-on-error: true
+        env:
+          TITLE: ${{ steps.pr.outputs.title }}
+          HEAD_REF: dev
+          HEAD_REPO: ${{ github.repository }}
+        run: node .github/scripts/release-check.js
+
+      - name: Set the release status
+        if: steps.pr.outputs.title != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # outcome is the real result, continue-on-error only changes the conclusion
+          STATE: ${{ steps.release.outcome == 'success' && 'success' || 'failure' }}
+          DESCRIPTION: ${{ steps.release.outputs.description }}
+        run: |
+          gh api "repos/${{ github.repository }}/statuses/$SHA" \
+            -f context="Release check" -f state="$STATE" -f description="${DESCRIPTION:-The release check did not run}"

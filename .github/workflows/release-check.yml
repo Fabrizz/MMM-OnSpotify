@@ -1,0 +1,44 @@
+# Release check for PRs into master (.github/scripts/release-check.js). The result is the
+# "Release check" commit status, not this job: a skipped job would count as passed for master.
+# Pushes to dev add a bot commit to the PR, module-page.yml checks that one.
+name: Release check
+
+on:
+  pull_request:
+    branches: [master]
+    # edited: the check reads the PR title
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Check the version
+        id: check
+        env:
+          # Through env, never inlined in the script (the title is user input)
+          TITLE: ${{ github.event.pull_request.title }}
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+        run: node .github/scripts/release-check.js
+
+      # Fork PRs get a read-only token and this fails, the failed check above is enough there
+      - name: Set the status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STATE: ${{ steps.check.outcome == 'success' && 'success' || 'failure' }}
+          DESCRIPTION: ${{ steps.check.outputs.description }}
+        run: |
+          gh api "repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }}" \
+            -f context="Release check" -f state="$STATE" -f description="${DESCRIPTION:-The release check did not run}"
