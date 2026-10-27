@@ -20,7 +20,6 @@ import {
   GUIDE_URL,
   ONSP_URL,
   handoffUrl,
-  isHandoffReady,
   resetToConfigToken,
   setRefreshToken,
   type Status,
@@ -32,7 +31,6 @@ import fb from "@/assets/fblogo.png"
 
 function NewTokenDrawer({ status, ready }: { status: Status | null; ready: boolean }) {
   const { t, rich } = useT()
-  const firstTime = !isHandoffReady()
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -56,9 +54,7 @@ function NewTokenDrawer({ status, ready }: { status: Status | null; ready: boole
               <span className="absolute w-32 h-16 rounded-2xl blur-3xl opacity-85 bg-[#1ed760] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"></span>
             </DrawerTitle>
             <DrawerDescription className="text-center text-balance">
-              {firstTime
-                ? rich("PAGE_DRAWER_FIRST", { onsp: <span className="inline-flex items-baseline gap-1"><img src={fb} alt="icon" className="h-3.5 w-3.5 translate-y-0.5" /> onsp.fabriziob.com</span> })
-                : t("PAGE_DRAWER_AGAIN")}
+              {rich("PAGE_DRAWER_TEXT", { onsp: <span className="inline-flex items-baseline gap-1"><img src={fb} alt="icon" className="h-3.5 w-3.5 translate-y-0.5" /> onsp.fabriziob.com</span> })}
             </DrawerDescription>
           </DrawerHeader>
           {status?.redirectUri && (
