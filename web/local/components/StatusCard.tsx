@@ -83,8 +83,8 @@ export function StatusCard({ status }: { status: Status | null }) {
         {state === "error" && status?.error && <p className="text-destructive break-words">{status.error}</p>}
         {status?.token && (
           <p className="flex items-center gap-4">
-            <span className="relative size-14 items-center justify-center flex shrink-0 bg-green-500/25 rounded-full">
-              <KeyRound className="size-5 shrink-0" />
+            <span className="relative size-14 items-center justify-center flex shrink-0 bg-onsp-hue/20 rounded-full transition-colors duration-500">
+              <KeyRound className="size-5 shrink-0 text-onsp-hue transition-colors duration-500" />
             </span>
             <span className="flex flex-col gap-0">
               <span>{t(status.token.source === "config" ? "PAGE_TOKEN_FROM_CONFIG" : "PAGE_TOKEN_SAVED")}</span>

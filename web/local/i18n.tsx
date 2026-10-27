@@ -51,6 +51,8 @@ type Translator = ReturnType<typeof makeTranslator>
 
 const I18nContext = createContext<Translator>(makeTranslator({}, "en"))
 
+// The hook lives next to its provider, fast refresh just reloads this file
+// eslint-disable-next-line react-refresh/only-export-components
 export const useT = () => useContext(I18nContext)
 
 /** Loads the mirror's language (e.g. "es", or "es" for "es-ar" without its own file). */

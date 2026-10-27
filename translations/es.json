@@ -52,7 +52,7 @@
     "PAGE_LOGIN_TITLE": "Inicio de sesión de Spotify",
     "PAGE_LOGIN_EXPIRED_TITLE": "El inicio de sesión de Spotify expiró",
     "PAGE_TOKEN_INTRO": "Desde que Spotify cambió cómo funcionan sus inicios de sesión (2026), los refresh tokens dejan de funcionar 6 meses después de autorizar la app, y usarlos no extiende ese tiempo. Cada 6 meses tenés que volver a autorizarla para obtener uno nuevo.",
-    "PAGE_TOKEN_STORAGE": "Obtené un token nuevo con el traspaso de onsp.fabriziob.com, o pegalo acá. El módulo lo prueba con Spotify y lo guarda en {file}, dentro de la carpeta del módulo. Tu {config} no se modifica.",
+    "PAGE_TOKEN_STORAGE": "Obtené un token nuevo con el handoff de onsp.fabriziob.com, o pegalo acá. El módulo lo prueba con Spotify y lo guarda en {file}, dentro de la carpeta del módulo. Tu {config} no se modifica.",
     "PAGE_GET_TOKEN": "Obtener un token nuevo en onsp.fabriziob.com",
     "PAGE_MANUAL_GUIDE": "Guía manual",
     "PAGE_REFRESH_TOKEN": "Refresh token",
@@ -67,8 +67,8 @@
     "PAGE_DRAWER_FIRST": "{onsp} guarda este espejo en tu navegador, iniciás sesión en Spotify y volvés acá con el token nuevo. Tu Client Secret se queda en el espejo.",
     "PAGE_DRAWER_AGAIN": "Iniciá sesión en Spotify y volvé acá con el token nuevo. Tu espejo hace las redirecciones, el sitio web no recibe ningún token.",
     "PAGE_REDIRECT_URI_NOTE": "Tu Spotify App necesita {uri} en sus Redirect URIs.",
-    "PAGE_HANDOFF_BUTTON": "Usar el traspaso de onsp.fabriziob.com",
+    "PAGE_HANDOFF_BUTTON": "Usar el handoff de onsp.fabriziob.com",
     "PAGE_MANUAL_BUTTON": "Voy a copiar el token a mano",
-    "PAGE_HANDOFF_UNAVAILABLE": "El traspaso está disponible cuando el espejo esté funcionando.",
+    "PAGE_HANDOFF_UNAVAILABLE": "El handoff está disponible cuando el espejo esté funcionando.",
     "PAGE_CANCEL": "Cancelar"
 }

@@ -2,3 +2,52 @@
 @import "../src/index.css";
 @source "../src";
 @source ".";
+
+/*
+ * Cover colors, set on <html> by vibrant.ts while a cover is shown (same names as on the mirror),
+ * as Tailwind colors: bg-onsp-vibrant, text-onsp-dark-muted-title, from-onsp-dominant-dark, ...
+ * The fallbacks (Spotify green) apply when nothing is playing or a swatch is missing.
+ */
+@theme inline {
+  --color-onsp-vibrant: var(--ONSP-VIBRANT-VIBRANT, rgb(30, 215, 96));
+  --color-onsp-vibrant-title: var(--ONSP-VIBRANT-VIBRANT-TITLE, #000);
+  --color-onsp-vibrant-body: var(--ONSP-VIBRANT-VIBRANT-BODY, #000);
+  --color-onsp-light-vibrant: var(--ONSP-VIBRANT-LIGHTVIBRANT, rgb(158, 240, 188));
+  --color-onsp-light-vibrant-title: var(--ONSP-VIBRANT-LIGHTVIBRANT-TITLE, #000);
+  --color-onsp-light-vibrant-body: var(--ONSP-VIBRANT-LIGHTVIBRANT-BODY, #000);
+  --color-onsp-dark-vibrant: var(--ONSP-VIBRANT-DARKVIBRANT, rgb(11, 90, 42));
+  --color-onsp-dark-vibrant-title: var(--ONSP-VIBRANT-DARKVIBRANT-TITLE, #fff);
+  --color-onsp-dark-vibrant-body: var(--ONSP-VIBRANT-DARKVIBRANT-BODY, #fff);
+  --color-onsp-muted: var(--ONSP-VIBRANT-MUTED, rgb(94, 122, 104));
+  --color-onsp-muted-title: var(--ONSP-VIBRANT-MUTED-TITLE, #fff);
+  --color-onsp-muted-body: var(--ONSP-VIBRANT-MUTED-BODY, #fff);
+  --color-onsp-light-muted: var(--ONSP-VIBRANT-LIGHTMUTED, rgb(200, 214, 205));
+  --color-onsp-light-muted-title: var(--ONSP-VIBRANT-LIGHTMUTED-TITLE, #000);
+  --color-onsp-light-muted-body: var(--ONSP-VIBRANT-LIGHTMUTED-BODY, #000);
+  --color-onsp-dark-muted: var(--ONSP-VIBRANT-DARKMUTED, rgb(43, 58, 49));
+  --color-onsp-dark-muted-title: var(--ONSP-VIBRANT-DARKMUTED-TITLE, #fff);
+  --color-onsp-dark-muted-body: var(--ONSP-VIBRANT-DARKMUTED-BODY, #fff);
+  --color-onsp-dominant-dark: var(--ONSP-VIBRANT-DOMINANTDARK, rgb(10, 69, 31));
+  --color-onsp-dominant-bright: var(--ONSP-VIBRANT-DOMINANTBRIGHT, rgb(176, 241, 200));
+  --color-onsp-dominant-emphasis: var(--ONSP-VIBRANT-DOMINANTEMPHASIS, rgb(176, 241, 200));
+}
+
+/*
+ * onsp-hue: the hue of the Vibrant swatch with a fixed lightness per theme, so icons and chips
+ * follow the cover but stay readable (text-onsp-hue, bg-onsp-hue/20, border-onsp-hue/30, ...).
+ * Browsers without relative colors get the Vibrant swatch as is.
+ */
+:root {
+  --onsp-hue: var(--ONSP-VIBRANT-VIBRANT, rgb(30, 215, 96));
+}
+@supports (color: oklch(from red l c h)) {
+  :root {
+    --onsp-hue: oklch(from var(--ONSP-VIBRANT-VIBRANT, rgb(30, 215, 96)) 0.5 min(c, 0.16) h);
+  }
+  .dark {
+    --onsp-hue: oklch(from var(--ONSP-VIBRANT-VIBRANT, rgb(30, 215, 96)) 0.85 min(c, 0.16) h);
+  }
+}
+@theme inline {
+  --color-onsp-hue: var(--onsp-hue);
+}

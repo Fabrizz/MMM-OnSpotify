@@ -57,9 +57,10 @@ function Playing({ item }: { item: NowPlaying }) {
         {duration > 0 && (
           <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground tabular-nums z-10">
             <span>{formatDuration(progress)}</span>
-            <div className="h-1.5 flex-1 rounded-full bg-muted overflow-hidden">
+            {/* Cover colors, Spotify green until Vibrant has the palette */}
+            <div className="h-1.5 flex-1 rounded-full bg-onsp-light-muted/20 overflow-hidden">
               <div
-                className="h-full rounded-full bg-green-500 transition-[width] duration-500 ease-linear"
+                className="h-full rounded-full bg-onsp-vibrant transition-[width,background-color] duration-500 ease-linear"
                 style={{ width: `${(progress / duration) * 100}%` }}
               />
             </div>
