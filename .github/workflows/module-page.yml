@@ -1,26 +1,24 @@
 # Module page (web/local, served by the module at /onspotify/ from page/).
 #
-# page/ is ignored and only exists on master, where users install from. Every PR into master gets
-# the page deleted, rebuilt and pushed to its branch, then the "Module page" commit status is set,
-# which master requires. Commits pushed with GITHUB_TOKEN do not start new workflow runs, so the
-# status is set by hand on the rebuilt commit.
+# page/ is committed, but CI owns it: every push to dev deletes it, rebuilds it and commits it as the
+# bot, so dev (and master, through dev -> master PRs) always has a page built from its sources.
+# Nobody has to commit page/ by hand, local builds can be left out of commits.
 #
-# PRs into master come from a release branch (e.g. version/7.0.0, made from dev), never from dev
-# itself: the built page would end up on dev.
+# The "Module page" commit status marks a commit whose page/ was built by CI, master requires it.
+# Commits pushed with GITHUB_TOKEN do not start new workflow runs, so it is set by hand.
 name: Module page
 
 on:
+  push:
+    branches: [dev]
   pull_request:
-    branches: [master, dev]
-
-concurrency:
-  group: module-page-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+    branches: [dev, master]
+  workflow_dispatch:
 
 jobs:
-  # PRs into dev (forks included): only check that the page builds
+  # PRs (forks included): only check that the page builds, the push to dev rebuilds it after merging
   build:
-    if: github.base_ref == 'dev'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,32 +32,19 @@ jobs:
       - run: npm ci --prefix web
       - run: npm run build:local --prefix web
 
-  # PRs into master: rebuild the page into the release branch
-  release:
-    if: github.base_ref == 'master'
+  # Pushes to dev: rebuild and commit page/
+  rebuild:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
+    # A newer push makes this build outdated (and its push would be rejected)
+    concurrency:
+      group: module-page-dev
+      cancel-in-progress: true
     permissions:
       contents: write
       statuses: write
     steps:
-      - name: Check the source branch
-        if: github.event.pull_request.head.repo.full_name != github.repository || github.head_ref == 'dev'
-        run: |
-          echo "::error::PRs into master come from a release branch of this repo (e.g. version/7.0.0), not from dev or a fork. Contributions go to dev."
-          exit 1
-
       - uses: actions/checkout@v5
-        with:
-          # The branch itself (not the merge commit), so the page can be pushed to it
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
-
-      - name: Merge master
-        # master has the previous build in page/, merging it first avoids add/add conflicts on merge
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git merge --no-edit origin/master
 
       - uses: actions/setup-node@v5
         with:
@@ -74,14 +59,20 @@ jobs:
           rm -rf page
           npm run build:local --prefix web
 
-      - name: Push the page
+      - name: Commit the page
         run: |
-          # page/ is in .gitignore, it is only tracked on master
-          git add -f -A page
-          git diff --cached --quiet || git commit -m "Build module page"
-          git push
+          git add -A page
+          if git diff --cached --quiet; then
+            echo "page/ is already up to date"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Build module page"
+            git push origin HEAD:dev
+          fi
           echo "SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
+      # Also when nothing changed: the dev -> master PR is checked on the head of dev
       - name: Mark the page as built
         env:
           GH_TOKEN: ${{ github.token }}
