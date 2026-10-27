@@ -231,6 +231,7 @@
     max-width: 100%;
     flex: 1;
     align-items: flex-start;
+    translate: 0px -1px;
 }
 .ONSP-Base .player .header .names .title {
     display: flex;
@@ -492,7 +493,7 @@
     height: var(--ONSP-INTERNAL-USER-IMAGE-SYNC-HEIGHT);
     background-size: cover;
     transition: var(--ONSP-INTERNAL-LOWPOWER-TRANSITIONS) 2s;
-    border-radius: 0.9em;
+    border-radius: 0.55em;
     background-image: var(--ONSP-INTERNAL-USER-IMAGE);
 }
 .ONSP-Base .user .profile .image .letter {
@@ -536,6 +537,56 @@
 .ONSP-Base .user .profile .data .subtitle:before {
     content: var(--ONSP-INTERNAL-USER-SUBTITLE);
     color: var(--ONSP-INTERNAL-COLOR-MUTED);
+}
+
+/* REAUTH (Spotify login expired) */
+.ONSP-Base .reauth {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 0.8em;
+}
+.ONSP-Base .ico {
+    height: 1.5em;
+    width: 3em;
+    border-radius: 0.4em;
+    overflow: hidden;
+    margin-bottom: 0.25em;
+}
+.ONSP-Base .reauth .reauth-text {
+    display: flex;
+    flex-flow: column nowrap;
+    min-width: 0;
+    align-items: end;
+}
+.ONSP-Base .reauth .title {
+    font-size: 1.1em;
+    color: var(--color-text-bright, #fff);
+}
+.ONSP-Base .reauth .subtitle {
+    font-size: 0.75em;
+    line-height: 1.3;
+    color: var(--color-text-dimmed, #999);
+}
+.ONSP-Base .reauth .url {
+    font-size: 0.7em;
+    color: #1ed760;
+    word-break: break-all;
+    margin-top: 0.25em;
+}
+.ONSP-Base .reauth .qr {
+    flex-shrink: 0;
+    width: 5.5em;
+    height: 5.5em;
+    padding: 0.35em;
+    border-radius: 0.4em;
+    background: #fff;
+    color: #000;
+}
+.ONSP-Base .reauth .qr svg {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 /* LOGO */

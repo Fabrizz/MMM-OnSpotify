@@ -1,0 +1,97 @@
+# Module page (web/local, served by the module at /onspotify/ from page/).
+#
+# page/ is committed, but CI owns it: every push to dev deletes it, rebuilds it and commits it as the
+# bot, so dev (and master, through dev -> master PRs) always has a page built from its sources.
+# Nobody has to commit page/ by hand, local builds can be left out of commits.
+#
+# The "Module page" commit status marks a commit whose page/ was built by CI, master requires it.
+# Commits pushed with GITHUB_TOKEN do not start new workflow runs (not even the PR ones), so the
+# statuses of the bot commit, "Module page" and "Release check", are set here.
+name: Module page
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    # A newer push makes this build outdated (and its push would be rejected)
+    concurrency:
+      group: module-page-dev
+      cancel-in-progress: true
+    permissions:
+      contents: write
+      statuses: write
+      # gh pr list
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci --prefix web
+
+      - name: Build
+        run: |
+          rm -rf page
+          npm run build:local --prefix web
+
+      - name: Commit the page
+        run: |
+          git add -A page
+          if git diff --cached --quiet; then
+            echo "page/ is already up to date"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Build module page"
+            git push origin HEAD:dev
+          fi
+          echo "SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      # Also when nothing changed: the dev -> master PR is checked on the head of dev
+      - name: Mark the page as built
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/statuses/$SHA" \
+            -f state=success -f context="Module page" -f description="page/ built from web/local"
+
+      # The open release PR now ends in the bot commit, which release-check.yml never sees
+      - name: Find the release PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE=$(gh pr list --repo "${{ github.repository }}" --head dev --base master --state open --json title --jq '.[0].title // ""')
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          [ -n "$TITLE" ] || echo "No open release PR"
+
+      - name: Check the release PR
+        id: release
+        if: steps.pr.outputs.title != ''
+        # A failed check is reported on the PR, the page build itself worked
+        continue-on-error: true
+        env:
+          TITLE: ${{ steps.pr.outputs.title }}
+          HEAD_REF: dev
+          HEAD_REPO: ${{ github.repository }}
+        run: node .github/scripts/release-check.js
+
+      - name: Set the release status
+        if: steps.pr.outputs.title != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # outcome is the real result, continue-on-error only changes the conclusion
+          STATE: ${{ steps.release.outcome == 'success' && 'success' || 'failure' }}
+          DESCRIPTION: ${{ steps.release.outputs.description }}
+        run: |
+          gh api "repos/${{ github.repository }}/statuses/$SHA" \
+            -f context="Release check" -f state="$STATE" -f description="${DESCRIPTION:-The release check did not run}"

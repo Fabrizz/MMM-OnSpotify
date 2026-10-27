@@ -1,9 +1,9 @@
-import fb from './assets/fblogo.png'
-import lg from './assets/icon.png'
 import bn from './assets/banner.png'
 import gh from './assets/ghl.png'
 import ly from './assets/lily.png'
 import AuthTool from '@/components/authtool'
+import { MirrorHandoff } from '@/components/mirror-handoff'
+import { SiteHeader } from '@/components/site-header'
 import { KeyRoundIcon, LayoutGrid, Link, ShieldUser, Star, Stethoscope, Trash2Icon } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './components/ui/accordion'
 import { Badge } from './components/ui/badge'
@@ -13,16 +13,8 @@ function App() {
 
   return (
     <main className="flex flex-col justify-center max-w-3xl mx-auto px-4">
-      <div className='flex justify-between gap-4 mb-5 mt-3 border-b border-border pb-3'>
-        <a href='https://fabriz.co' className='rounded-xl flex flex-row items-center gap-2 pl-2.5 pr-3.5 z-10 hover:bg-white/10 transition-all h-12'>
-          <img src={fb} alt="" className='size-7' />
-          <span className='hidden md:inline'>FABRIZZ</span>
-        </a>
-        <a href='https://github.com/Fabrizz/MMM-OnSpotify' className='rounded-xl flex flex-row items-center gap-2 pl-3 pr-3 z-10 hover:bg-white/10 transition-all h-12'>
-          <img src={gh} alt="" className='h-7 w-7 rounded-md' />
-          <img src={lg} alt="" className='h-7 w-auto object-contain aspect-[2/1] rounded-md' />
-        </a>
-      </div>
+      <SiteHeader />
+      <MirrorHandoff />
 
       <div className='mb-8 text-center'>
         <h1 className='leading-11 font-sans text-3xl font-normal '>MMM-OnSpotify</h1>
@@ -125,7 +117,7 @@ function App() {
         </div>
         <p className=''>First, we need to create a new Spotify App using the <a className='underline-offset-2 underline decoration-green-500' href='https://developer.spotify.com/dashboard/login'>Spotify Developer Portal</a>. After login in, click on the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Create app</span> button.</p>
         <p className='mt-2'>Next give it a name like "OnSpotify" or something that you can regonize, also write a small description. You can left the website blank.</p>
-        <p className='mt-2'>Now add <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>https://onsp.fabriz.co/</span> as the redirect URI (include the trailing <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>/</span>), so Spotify knows to redirect you here with the credentials.</p>
+        <p className='mt-2'>Now add <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>https://onsp.fabriziob.com/</span> as the redirect URI (include the trailing <span className='inline-block px-[4px] bg-yellow-600/30 rounded-md'>/</span>), so Spotify knows to redirect you here with the credentials.</p>
         <p className='mt-2'>To finish the app creation, click on the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Web API</span> checkbox, then click the <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Spotify ToS</span> checkbox to accept it and click on <span className='inline-block px-[4px] bg-violet-600/30 rounded-md'>Save</span>.</p>
       </div>
       <div className='opacity-90 p-3 px-4 border border-border rounded-xl mb-10 relative'>
@@ -197,7 +189,7 @@ function App() {
       <div className='mb-6 pb-2 border-b border-border'></div>
 
       <div className='text-center opacity-90 text-sm w-full mb-6'>
-        <p className=' text-green-500'>Made with 💚 by <a href='https://fabriz.co' className='underline underline-offset-2 decoration-green-500'>Fabrizz</a></p>
+        <p className=' text-green-500'>Made with 💚 by <a href='https://fabriziob.com' className='underline underline-offset-2 decoration-green-500'>Fabrizz</a></p>
         <p className=''>This project is not affiliated with or endorsed by Spotify.</p>
         <span className='absolute size-12 bg-green-500 -ml-6 -mt-6 blur-2xl'></span>
       </div>

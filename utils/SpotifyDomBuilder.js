@@ -168,6 +168,7 @@ class SpotifyDomBuilder {
       spotifyGreen: "assets/spotifyGreen.png",
       spotifyLogoGreen: "assets/spotifyLogoGreen.png",
       spotifyLogoWide: "assets/spotifyLogoWide.png",
+      icon: "assets/icon.png",
     };
     this.tmpCanva = null;
   }
@@ -183,6 +184,44 @@ class SpotifyDomBuilder {
     );
     content.classList.add("empty", isPlaying ? "playing" : "stopped");
     content.appendChild(notice);
+    wrapper.appendChild(content);
+    this.lastItemURI = null;
+    return wrapper;
+  }
+
+  /* Spotify login expired, shown until a new token works */
+  reauthNotice({ url, reachable, qr }) {
+    const wrapper = this.globalWrapper();
+    const content = document.createElement("div");
+    content.classList.add("reauth", "stopped");
+
+    const ico = document.createElement("img");
+    ico.src = `/${this.pathPrefix}${this.images.icon}`;
+    ico.classList.add("ico");
+    content.appendChild(ico);
+
+    const text = document.createElement("div");
+    text.classList.add("reauth-text");
+    const title = document.createElement("span");
+    title.classList.add("title");
+    title.innerText = this.translate("REAUTH_TITLE");
+    const subtitle = document.createElement("span");
+    subtitle.classList.add("subtitle");
+    subtitle.innerText = this.translate(reachable ? "REAUTH_SCAN" : "REAUTH_LOCAL");
+    const link = document.createElement("span");
+    link.classList.add("url");
+    link.innerText = url;
+    text.append(ico, title, subtitle, link);
+    content.appendChild(text);
+
+    if (qr) {
+      // SVG made by the node_helper (qrcode-generator) from the page URL
+      const code = document.createElement("div");
+      code.classList.add("qr");
+      code.innerHTML = qr;
+      content.appendChild(code);
+    }
+
     wrapper.appendChild(content);
     this.lastItemURI = null;
     return wrapper;

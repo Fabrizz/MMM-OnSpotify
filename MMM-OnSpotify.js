@@ -57,7 +57,7 @@ Module.register("MMM-OnSpotify", {
       isPlaying: 1,
       isEmpty: 2,
       isPlayingHidden: 1,
-      isEmptyHidden: 4,
+      isEmptyHidden: 3,
       // When there is a connection error
       onReconnecting: 4,
       // If the errors persist, use a wider window between calls.
@@ -68,7 +68,7 @@ Module.register("MMM-OnSpotify", {
       // As RPIs are not powerful you can disable some of the animations.
       mediaAnimations: false,
       fadeAnimations: false,
-      transitionAnimations: true,
+      transitionAnimations: false,
       textAnimations: true,
       scrollAnimations: false,
       spotifyVectorAnimations: false,
@@ -153,6 +153,10 @@ Module.register("MMM-OnSpotify", {
     // the id matching for the frontend, so "multiple" frontends can talk to the module even if not supported
     matchBackendUUID: false,
 
+    // Redirect URI registered in your Spotify App, used by the "onsp handoff" in the module page
+    // (/onspotify/). Use "https://onsp.fabriz.co/" if your app only has the old address.
+    authRedirectUri: "https://onsp.fabriziob.com/",
+
     // Send a notification with the color data when only when the song changes, this is useful for modules
     // that are not going to show the color inside the dom.
     experimentalColorSignaling: false,
@@ -175,14 +179,17 @@ Module.register("MMM-OnSpotify", {
     this.retries = 0;
     this.lastPrivate = [null, null];
     this.lastStatus = "isPlaying";
-    this.muduleHidden = false;
+    this.moduleHidden = false;
     this.firstSongOnLoad = true;
     this.usesCssOverrides =
       typeof this.config.theming.experimentalCSSOverridesForMM2 === "object";
 
-    ////////////////////////////////////////////////////////////////////////////////////////////
-    this.version = "4.0.0";
-    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Sent by the node_helper (MODULE_VERSION) from package.json, the only place it is written
+    this.version = null;
+    // ONSPOTIFY_GET arrived before the version, answer when it does
+    this.pendingNotice = false;
+    // Spotify login expired: { url, reachable, qr } of the module page, shown instead of the player
+    this.reauthNotice = null;
 
     this.displayUser =
       this.config.displayWhenEmpty.toLowerCase() === "user" ||
@@ -247,6 +254,15 @@ Module.register("MMM-OnSpotify", {
   },
 
   getDom: function () {
+    if (this.reauthNotice) {
+      this.nowDisplaying = "reauth";
+      // Nothing is playing for us anymore, release the theme like the empty view does
+      if (this.globalThemeSelected) {
+        this.sendNotification("THEME_PREFERENCE", { provider: "MMM-OnSpotify", set: "unlock" });
+        this.globalThemeSelected = false;
+      }
+      return this.builder.reauthNotice(this.reauthNotice);
+    }
     if (this.playerData && this.playerData.deviceIsPrivate) {
       this.nowDisplaying = "private";
       return this.builder.privateSession(this.playerData);
@@ -361,6 +377,11 @@ Module.register("MMM-OnSpotify", {
         );
         this.isConnectedToSpotify = true;
         this.connectionRetries = 0;
+        // A new token works again, back to the normal view
+        if (this.reauthNotice) {
+          this.reauthNotice = null;
+          this.updateDom();
+        }
         if (!payload.statusPlayerUpdating) this.playerData = payload;
         this.smartUpdate("PLAYER_DATA");
         if (payload.statusIsNewSong || this.firstSongOnLoad) {
@@ -411,7 +432,7 @@ Module.register("MMM-OnSpotify", {
         this.userData = {
           ...payload,
           subtitleOverride:
-            this.playerData && this.config.filteredDeviceNotice
+            this.playerData && this.config.filterNoticeSubtitle
               ? this.playerData.notAllowedDevice
               : false,
         };
@@ -472,6 +493,25 @@ Module.register("MMM-OnSpotify", {
         this.sendNotification("SERVERSIDE_RESTART");
         this.sendCredentialsBackend();
         break;
+      case "MODULE_VERSION":
+        this.version = payload;
+        this.builder.config.version = payload;
+        if (this.pendingNotice) {
+          this.pendingNotice = false;
+          this.sendOnSpotifyNotice();
+        }
+        break;
+      case "REAUTH_REQUIRED":
+        this.reauthNotice = payload || { url: "/onspotify/", reachable: false, qr: null };
+        this.updateDom();
+        console.error(
+          `%c· MMM-OnSpotify %c %c ERRO %c ${this.translate("REAUTH_REQUIRED")}`,
+          "background-color:#84CC16;color:black;border-radius:0.5em",
+          "",
+          "background-color:#781919;color:white;",
+          "",
+        );
+        break;
       case "UPDATE_CANVAS":
         this.canvasData = payload;
         this.smartUpdate("CANVAS_DATA");
@@ -482,8 +522,17 @@ Module.register("MMM-OnSpotify", {
     this.config.events[notification]?.split(" ").forEach((e) => {
       switch (e) {
         case "GET_PLAYING":
+          // No data yet, empty player or private session (no item to share)
+          if (
+            !this.playerData ||
+            this.playerData.statusIsPlayerEmpty ||
+            !this.playerData.itemName
+          ) {
+            this.sendNotification("NOW_PLAYING", { playerIsEmpty: true });
+            break;
+          }
           this.sendNotification("NOW_PLAYING", {
-            playerIsEmpty: this.playerData.isEmpty,
+            playerIsEmpty: false,
             name: this.playerData.itemName,
             image: this.getImage(
               this.playerData.itemImages,
@@ -498,12 +547,8 @@ Module.register("MMM-OnSpotify", {
           });
           break;
         case "ONSPOTIFY_GET":
-          this.sendNotification("ONSPOTIFY_NOTICE", {
-            version: this.version,
-            directColorData:
-              this.loadVibrantPalette && this.config.advertisePlayerTheme,
-            loadsSpotifyCode: this.config.theming.spotifyCodeExperimentalShow,
-          });
+          if (this.version) this.sendOnSpotifyNotice();
+          else this.pendingNotice = true;
           break;
         case "ONSPOTIFY_HIDE":
           this.hide();
@@ -696,6 +741,14 @@ Module.register("MMM-OnSpotify", {
       this.builder.updateAffinityData(this.affinityData);
   },
 
+  // Lets other modules (MMM-LiveLyrics) know OnSpotify is here and what it supports
+  sendOnSpotifyNotice: function () {
+    this.sendNotification("ONSPOTIFY_NOTICE", {
+      version: this.version,
+      directColorData: this.loadVibrantPalette && this.config.advertisePlayerTheme,
+      loadsSpotifyCode: this.config.theming.spotifyCodeExperimentalShow,
+    });
+  },
   getImage: (im, prefersLarge) =>
     im ? (prefersLarge ? im.large : im.medium) : null,
   sendCredentialsBackend() {
@@ -720,6 +773,7 @@ Module.register("MMM-OnSpotify", {
         refreshToken: this.config.secondaryRefreshToken,
       },
       language: this.config.language,
+      authRedirectUri: this.config.authRedirectUri,
       backendExpectId: this.backendExpectId,
     });
   },
@@ -731,105 +785,53 @@ Module.register("MMM-OnSpotify", {
     );
   },
   /* Fix for older version that have object based cfg */
-  /* Its not pretty, but the default does not work */
+  /* Flat options (as in the README) win over the updateInterval / theming objects, but only
+   * when the user set them, so object based configs keep working. MM2 merges the config
+   * shallowly, so a partial object from the user would also lose the rest of its defaults. */
   configFix: function () {
-    typeof this.config.isPlaying === "number"
-      ? (this.config.updateInterval.isPlaying = this.config.isPlaying)
-      : null;
-    typeof this.config.isEmpty === "number"
-      ? (this.config.updateInterval.isEmpty = this.config.isEmpty)
-      : null;
-    typeof this.config.isPlayingHidden === "number"
-      ? (this.config.updateInterval.isPlayingHidden =
-          this.config.isPlayingHidden)
-      : null;
-    typeof this.config.isEmptyHidden === "number"
-      ? (this.config.updateInterval.isEmptyHidden = this.config.isEmptyHidden)
-      : null;
-    typeof this.config.onReconnecting === "number"
-      ? (this.config.updateInterval.onReconnecting = this.config.onReconnecting)
-      : null;
-    typeof this.config.onError === "number"
-      ? (this.config.updateInterval.onError = this.config.onError)
-      : null;
+    const userConfig = this.data.config || {};
+    const groups = {
+      updateInterval: [
+        "isPlaying",
+        "isEmpty",
+        "isPlayingHidden",
+        "isEmptyHidden",
+        "onReconnecting",
+        "onError",
+      ],
+      theming: [
+        "mediaAnimations",
+        "fadeAnimations",
+        "transitionAnimations",
+        "textAnimations",
+        "scrollAnimations",
+        "spotifyVectorAnimations",
+        "spotifyCodeExperimentalShow",
+        "spotifyCodeExperimentalUseColor",
+        "spotifyCodeExperimentalSeparateItem",
+        "experimentalCSSOverridesForMM2",
+        "roundMediaCorners",
+        "roundProgressBar",
+        "showVerticalPipe",
+        "useColorInProgressBar",
+        "useColorInTitle",
+        "useColorInUserData",
+        "showBlurBackground",
+        "blurCorrectionInFrameSide",
+        "blurCorrectionInAllSides",
+        "alwaysUseDefaultDeviceIcon",
+      ],
+    };
 
-    typeof this.config.mediaAnimations === "boolean"
-      ? (this.config.theming.mediaAnimations = this.config.mediaAnimations)
-      : null;
-    typeof this.config.fadeAnimations === "boolean"
-      ? (this.config.theming.fadeAnimations = this.config.fadeAnimations)
-      : null;
-    typeof this.config.transitionAnimations === "boolean"
-      ? (this.config.theming.transitionAnimations =
-          this.config.transitionAnimations)
-      : null;
-    typeof this.config.textAnimations === "boolean"
-      ? (this.config.theming.textAnimations = this.config.textAnimations)
-      : null;
-    typeof this.config.scrollAnimations === "boolean"
-      ? (this.config.theming.scrollAnimations = this.config.scrollAnimations)
-      : null;
-    typeof this.config.spotifyVectorAnimations === "boolean"
-      ? (this.config.theming.spotifyVectorAnimations =
-          this.config.spotifyVectorAnimations)
-      : null;
-
-    typeof this.config.spotifyCodeExperimentalShow === "boolean"
-      ? (this.config.theming.spotifyCodeExperimentalShow =
-          this.config.spotifyCodeExperimentalShow)
-      : null;
-    typeof this.config.spotifyCodeExperimentalUseColor === "boolean"
-      ? (this.config.theming.spotifyCodeExperimentalUseColor =
-          this.config.spotifyCodeExperimentalUseColor)
-      : null;
-    typeof this.config.spotifyCodeExperimentalSeparateItem === "boolean"
-      ? (this.config.theming.spotifyCodeExperimentalSeparateItem =
-          this.config.spotifyCodeExperimentalSeparateItem)
-      : null;
-
-    typeof this.config.experimentalCSSOverridesForMM2 === "object"
-      ? (this.config.theming.experimentalCSSOverridesForMM2 =
-          this.config.experimentalCSSOverridesForMM2)
-      : null;
-
-    typeof this.config.roundMediaCorners === "boolean"
-      ? (this.config.theming.roundMediaCorners = this.config.roundMediaCorners)
-      : null;
-    typeof this.config.roundProgressBar === "boolean"
-      ? (this.config.theming.roundProgressBar = this.config.roundProgressBar)
-      : null;
-    typeof this.config.showVerticalPipe === "boolean"
-      ? (this.config.theming.showVerticalPipe = this.config.showVerticalPipe)
-      : null;
-
-    typeof this.config.useColorInProgressBar === "boolean"
-      ? (this.config.theming.useColorInProgressBar =
-          this.config.useColorInProgressBar)
-      : null;
-    typeof this.config.useColorInTitle === "boolean"
-      ? (this.config.theming.useColorInTitle = this.config.useColorInTitle)
-      : null;
-    typeof this.config.useColorInUserData === "boolean"
-      ? (this.config.theming.useColorInUserData =
-          this.config.useColorInUserData)
-      : null;
-
-    typeof this.config.showBlurBackground === "boolean"
-      ? (this.config.theming.showBlurBackground =
-          this.config.showBlurBackground)
-      : null;
-    typeof this.config.blurCorrectionInFrameSide === "boolean"
-      ? (this.config.theming.blurCorrectionInFrameSide =
-          this.config.blurCorrectionInFrameSide)
-      : null;
-    typeof this.config.blurCorrectionInAllSides === "boolean"
-      ? (this.config.theming.blurCorrectionInAllSides =
-          this.config.blurCorrectionInAllSides)
-      : null;
-
-    typeof this.config.alwaysUseDefaultDeviceIcon === "boolean"
-      ? (this.config.theming.alwaysUseDefaultDeviceIcon =
-          this.config.alwaysUseDefaultDeviceIcon)
-      : null;
+    Object.entries(groups).forEach(([group, keys]) => {
+      const userGroup = userConfig[group] || {};
+      this.config[group] = { ...this.defaults[group], ...userGroup };
+      keys.forEach((key) => {
+        // Priority: user flat option > user object option > flat default
+        if (key in userConfig) this.config[group][key] = userConfig[key];
+        else if (!(key in userGroup) && key in this.defaults)
+          this.config[group][key] = this.defaults[key];
+      });
+    });
   },
 });

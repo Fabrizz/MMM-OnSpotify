@@ -6,8 +6,78 @@
  */
 
 "use strict";
+const path = require("path");
+const crypto = require("crypto");
+const os = require("os");
+const dgram = require("dgram");
+const qrcode = require("qrcode-generator");
+
+/**
+ * QR code of a text as a small SVG: one path for every dark module, black on transparent
+ * (the notice draws it on a white tile, css/included.css).
+ *
+ * @param {String} text - The content, here the module page URL.
+ * @returns {String} The SVG markup.
+ */
+function qrSvg(text) {
+  const qr = qrcode(0, "M");
+  qr.addData(text);
+  qr.make();
+  const size = qr.getModuleCount();
+  let path = "";
+  for (let row = 0; row < size; row++)
+    for (let col = 0; col < size; col++)
+      if (qr.isDark(row, col)) path += `M${col} ${row}h1v1h-1z`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges"><path fill="#000" d="${path}"/></svg>`;
+}
+
+/**
+ * IPv4 of the interface the system uses to reach the internet, the one phones on the same
+ * network can reach. Virtual adapters (VirtualBox, WSL, Docker) often come first in
+ * os.networkInterfaces(). A UDP "connect" picks the route without sending any packet.
+ *
+ * @returns {Promise<String|null>} The address, or null without a route.
+ */
+function defaultRouteAddress() {
+  return new Promise((resolve) => {
+    const socket = dgram.createSocket("udp4");
+    const done = (address) => {
+      try {
+        socket.close();
+      } catch {
+        // Already closed
+      }
+      resolve(address);
+    };
+    socket.on("error", () => done(null));
+    socket.connect(53, "1.1.1.1", () => {
+      const { address } = socket.address();
+      done(address && address !== "0.0.0.0" ? address : null);
+    });
+  });
+}
+// MagicMirror's own express (MM2 always ships it, no extra dependency)
+const express = require("express");
 const NodeHelper = require("node_helper");
 const SpotifyFetcher = require("./utils/SpotifyFetcher");
+const CredentialStore = require("./utils/CredentialStore");
+// package.json is the only place the version is written
+const { version } = require("./package.json");
+
+// The module page (web/local, built into page/) and its API
+const pageBase = "/onspotify";
+const apiBase = `${pageBase}/api`;
+// Same scopes as the onsp auth tool (web/src/components/authtool.tsx)
+const authScopes =
+  "user-read-playback-state user-read-currently-playing user-top-read user-read-private";
+// onsp knows a login belongs to a mirror (and not to its own tool) by this prefix
+const mirrorStatePrefix = "onsp-mirror";
+// Time to finish the Spotify login started from the module page
+const authAttemptLifetime = 15 * 60 * 1000;
+
+const logPrefix = "[\x1b[35mMMM-OnSpotify\x1b[0m]";
+// Max size of a JSON body sent by the local page
+const maxBodySize = 4 * 1024;
 
 module.exports = NodeHelper.create({
   start: function () {
@@ -22,7 +92,7 @@ module.exports = NodeHelper.create({
     // Helps keping track of when the current device target is changed
     this.lastDeviceName = undefined;
     // The times that an available (but empty) player has been returned by the api
-    this.isPlayerInTransit = 0;
+    this.lastPlayerStatusCount = 0;
     // Configuration sent to the helper
     this.preferences = undefined;
     // Use a identifier to filter socket-io retries
@@ -32,14 +102,64 @@ module.exports = NodeHelper.create({
     // Canvas url and to which item it corresponds to
     this.savedCanvasUrl = false;
     this.savedCanvasUri = "";
+
+    /* Module page (page/, served at /onspotify/) */
+    this.store = new CredentialStore(CredentialStore.defaultPath());
+    // Credentials from config.js, as sent by the frontend
+    this.configCredentials = null;
+    // Redirect URI registered in the user's Spotify App (onsp handoff)
+    this.authRedirectUri = "https://onsp.fabriziob.com/";
+    // Spotify logins started from the page: nonce => { redirectUri, createdAt }
+    this.authAttempts = new Map();
+    // Language of the module page: the module's `language` option, or MM2's.
+    // Known before the frontend connects, the page can be opened first.
+    const moduleConfig = ((global.config && global.config.modules) || []).find(
+      (m) => m.module === this.name,
+    );
+    this.language =
+      (moduleConfig && moduleConfig.config && moduleConfig.config.language) ||
+      (global.config && global.config.language) ||
+      "en";
+    // Which refresh token is in use: { source, authorizedAt, expiresBy }
+    this.tokenInfo = null;
+    this.pageUser = null;
+    this.nowPlaying = { empty: true };
+    this.lastError = null;
+    this.lastSuccess = false;
+    this.reauthNotified = false;
+    this.lastStatusJson = "";
+    // SSE senders for the open pages
+    this.pageClients = new Set();
+    this.registerRoutes();
   },
 
   socketNotificationReceived: function (notification, payload) {
     switch (notification) {
       case "SET_CREDENTIALS_REFRESH":
+        // Before the re-request check, a reloaded frontend also needs it
+        this.sendSocketNotification("MODULE_VERSION", version);
+        // A reloaded frontend lost the "login expired" notice, send it again on its next poll
+        this.reauthNotified = false;
         // Blocks re-requests caused by socket.io implementation
         if (payload.backendExpectId === this.appendableId) break;
-        this.fetcher = new SpotifyFetcher(payload);
+        this.configCredentials = payload.credentials;
+        if (payload.authRedirectUri) this.authRedirectUri = payload.authRedirectUri;
+        if (payload.language) this.language = payload.language;
+        this.tokenInfo = this.resolveToken();
+        this.fetcher = new SpotifyFetcher({
+          ...payload,
+          credentials: {
+            ...payload.credentials,
+            refreshToken: this.tokenInfo.refreshToken,
+          },
+        });
+        this.fetcher.onTokenRotated = (account, refreshToken) => {
+          if (account === 0) this.saveToken({ refreshToken, source: "rotation" });
+        };
+        this.lastError = null;
+        this.lastSuccess = false;
+        this.reauthNotified = false;
+        this.broadcastStatus();
         this.fetchSpotifyData("PLAYER");
         this.preferences = payload.preferences;
         this.appendableId = payload.backendExpectId;
@@ -74,11 +194,21 @@ module.exports = NodeHelper.create({
   fetchSpotifyData: async function (type, accountNum = 0) {
     try {
       let data = await this.fetcher.getData(type, accountNum);
-      if (data instanceof Error)
+      if (data instanceof Error) {
+        this.lastError = data.message;
+        if (data.reauth && !this.reauthNotified) {
+          this.reauthNotified = true;
+          this.modulePageInfo().then((info) => this.sendSocketNotification("REAUTH_REQUIRED", info));
+        }
+        this.broadcastStatus();
         return this.sendSocketNotification(
           "CONNECTION_ERRONED",
           JSON.stringify(data),
         );
+      }
+      this.lastError = null;
+      this.lastSuccess = true;
+      this.broadcastStatus();
 
       switch (type) {
         case "PLAYER":
@@ -89,7 +219,7 @@ module.exports = NodeHelper.create({
             data.device.name &&
             !this.isAllowedDevice(data.device.name)
           ) {
-            this.sendSocketNotification("PLAYER_DATA", {
+            this.sendPlayerData({
               statusIsPlayerEmpty: true,
               statusIsNewSong: false,
               statusIsChangeToEmptyPlayer: this.lastPlayerStatus,
@@ -126,7 +256,7 @@ module.exports = NodeHelper.create({
                 this.lastDeviceName !== data.device.name ? true : false,
               notAllowedDevice: false,
             };
-            this.sendSocketNotification("PLAYER_DATA", payload);
+            this.sendPlayerData(payload);
             this.lastMediaUri = "privatesession";
             this.lastDeviceName = data.device.name;
             this.lastPlayerStatus = true;
@@ -187,7 +317,7 @@ module.exports = NodeHelper.create({
                 this.lastDeviceName !== data.device.name ? true : false,
               notAllowedDevice: false,
             };
-            this.sendSocketNotification("PLAYER_DATA", payload);
+            this.sendPlayerData(payload);
             this.lastMediaUri = data.item.uri;
             this.lastPlayerStatus = true;
             this.lastPlayerStatusCount = 0;
@@ -197,7 +327,7 @@ module.exports = NodeHelper.create({
             if (this.lastPlayerStatusCount <= 3) {
               // CASE 2A The player is available but there are no items in it. Wait 3 calls
               // This prevents an empty module when the player is loading or the playlist updating
-              this.sendSocketNotification("PLAYER_DATA", {
+              this.sendPlayerData({
                 statusIsPlayerEmpty: true,
                 statusIsNewSong: false,
                 statusIsChangeToEmptyPlayer: this.lastPlayerStatus,
@@ -209,7 +339,7 @@ module.exports = NodeHelper.create({
               this.lastPlayerStatusCount = this.lastPlayerStatusCount + 1;
               this.lastPlayerStatus = true;
             } else {
-              this.sendSocketNotification("PLAYER_DATA", {
+              this.sendPlayerData({
                 // CASE 2B The player is empty but still available for more than expected. Mark it as empty
                 statusIsPlayerEmpty: true,
                 statusIsNewSong: false,
@@ -225,7 +355,7 @@ module.exports = NodeHelper.create({
             }
             // CASE 3 There is nothing playing and there is not a player available
           } else {
-            this.sendSocketNotification("PLAYER_DATA", {
+            this.sendPlayerData({
               statusIsPlayerEmpty: true,
               statusIsNewSong: false,
               statusIsChangeToEmptyPlayer: this.lastPlayerStatus,
@@ -246,35 +376,28 @@ module.exports = NodeHelper.create({
               country: data.country,
               name: data.display_name,
               id: data.id,
-              image: data.images
-                ? data.images[0]
-                  ? data.images[0].url
-                  : null
-                : null,
+              image: data.images && data.images[0] ? data.images[0].url : null,
               product: data.product,
-              filterEnabled: data.explicit_content.filter_enabled,
-              filterLocked: data.explicit_content.filter_locked,
+              filterEnabled: data.explicit_content?.filter_enabled,
+              filterLocked: data.explicit_content?.filter_locked,
               type: data.type,
             };
             this.sendSocketNotification("USER_DATA", payload);
+            this.setPageUser(data);
           }
           break;
         case "AFFINITY":
-          if (data) {
-            let payload = [];
-            data.items.forEach((item) =>
-              payload.push({
-                name: item.name,
-                image: (item.type === "track" ? item.album.images : item.images)
-                  // Here we use medium sized images || Maybe later even the icon ones, as its just a background
-                  .filter((image) =>
-                    image.width >= 240 && image.width <= 360
-                      ? image.width >= 240 && image.width <= 360
-                      : // Fallback to any of the available image sizes.
-                        image,
-                  )[0].url,
-              }),
-            );
+          if (data && Array.isArray(data.items)) {
+            const payload = data.items.map((item) => {
+              const images =
+                (item.type === "track" ? item.album?.images : item.images) || [];
+              // Here we use medium sized images || Maybe later even the icon ones, as its just a background
+              // Fallback to any of the available image sizes.
+              const image =
+                images.find((image) => image.width >= 240 && image.width <= 360) ||
+                images[0];
+              return { name: item.name, image: image ? image.url : "" };
+            });
             this.sendSocketNotification("AFFINITY_DATA", payload);
           }
           break;
@@ -290,6 +413,386 @@ module.exports = NodeHelper.create({
         error,
       );
     }
+  },
+
+  /* LOCAL PAGE */
+  registerRoutes: function () {
+    const base = apiBase;
+    // Not in public/, MM2 would also serve it at /MMM-OnSpotify/ where the API paths break
+    this.expressApp.use(pageBase, express.static(path.join(this.path, "page")));
+    // Only reached without a build (CI commits page/, but it can be missing in a fork or a manual copy)
+    this.expressApp.get([pageBase, `${pageBase}/`], (req, res) => {
+      res
+        .status(503)
+        .type("text")
+        .send("The module page is not built. Run `npm install --prefix web && npm run build:local --prefix web` in the module folder.");
+    });
+
+    this.expressApp.get(`${base}/status`, (req, res) => {
+      res.json(this.pageStatus());
+    });
+
+    // Server-Sent Events: "status" and "nowPlaying"
+    this.expressApp.get(`${base}/events`, (req, res) => {
+      res.set({
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-transform",
+        Connection: "keep-alive",
+      });
+      res.flushHeaders();
+      res.write("retry: 5000\n\n");
+
+      const send = (event, data) =>
+        res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+      this.pageClients.add(send);
+      send("status", this.pageStatus());
+      send("nowPlaying", this.currentNowPlaying());
+      this.loadPageUser();
+
+      const heartbeat = setInterval(() => res.write(": ping\n\n"), 25 * 1000);
+      req.on("close", () => {
+        clearInterval(heartbeat);
+        this.pageClients.delete(send);
+      });
+    });
+
+    // Use a new refresh token (pasted in the page). It is tested with Spotify before saving.
+    this.expressApp.post(`${base}/auth/token`, async (req, res) => {
+      if (!this.isPageRequest(req))
+        return res.status(403).json({ error: "Request not allowed" });
+      if (!this.fetcher)
+        return res.status(409).json({
+          error: "The module has not started yet, open the mirror and try again",
+        });
+
+      const body = await this.readJsonBody(req);
+      const refreshToken =
+        body && typeof body.refreshToken === "string"
+          ? body.refreshToken.trim()
+          : "";
+      if (!refreshToken || refreshToken.length > 1024)
+        return res.status(400).json({ error: "Missing or invalid refresh token" });
+
+      const result = await this.fetcher.testRefreshToken(0, refreshToken);
+      if (result instanceof Error)
+        return res.status(400).json({ error: result.message });
+
+      this.saveToken({ refreshToken: result, source: "manual", authorizedAt: Date.now() });
+      this.afterTokenChange();
+      res.json(this.pageStatus());
+    });
+
+    // Forget the saved token and use the one in config.js again
+    this.expressApp.delete(`${base}/auth`, (req, res) => {
+      if (!this.isPageRequest(req))
+        return res.status(403).json({ error: "Request not allowed" });
+      if (!this.fetcher)
+        return res.status(409).json({
+          error: "The module has not started yet, open the mirror and try again",
+        });
+
+      try {
+        this.store.clear(this.configCredentials);
+      } catch (error) {
+        console.error(`${logPrefix} Could not update .credentials.json`, error);
+      }
+      this.tokenInfo = this.resolveToken();
+      this.fetcher.setRefreshToken(0, this.tokenInfo.refreshToken);
+      this.afterTokenChange();
+      res.json(this.pageStatus());
+    });
+
+    /*
+     * onsp handoff (see README):
+     * page > onsp /connect (save mirror) > auth/start > Spotify login > onsp (redirect URI) > auth/callback
+     * The client secret never leaves the mirror, onsp only forwards the login code.
+     */
+    this.expressApp.get(`${base}/auth/start`, (req, res) => {
+      if (!this.fetcher)
+        return this.redirectToPage(res, {
+          reauth: "error",
+          reason: "The module has not started yet, open the mirror and try again",
+        });
+
+      const nonce = crypto.randomBytes(16).toString("hex");
+      this.addAuthAttempt(nonce, { redirectUri: this.authRedirectUri });
+      // The address the browser used to reach this page, onsp sends the login back here
+      const mirror = `${req.protocol}://${req.get("host")}${pageBase}/`;
+      const state = [
+        mirrorStatePrefix,
+        nonce,
+        Buffer.from(mirror).toString("base64url"),
+      ].join(".");
+
+      const url = new URL("https://accounts.spotify.com/authorize");
+      url.searchParams.set("response_type", "code");
+      url.searchParams.set("client_id", this.configCredentials.clientId);
+      url.searchParams.set("scope", authScopes);
+      url.searchParams.set("redirect_uri", this.authRedirectUri);
+      url.searchParams.set("state", state);
+      url.searchParams.set("show_dialog", "true");
+      res.redirect(url.href);
+    });
+
+    // onsp forwards the Spotify login here. Only logins started by auth/start (nonce) are accepted.
+    this.expressApp.get(`${base}/auth/callback`, async (req, res) => {
+      const { code, state, error } = req.query;
+      const nonce = typeof state === "string" ? state.split(".")[1] : null;
+      const attempt = nonce ? this.takeAuthAttempt(nonce) : null;
+      if (!attempt)
+        return this.redirectToPage(res, {
+          reauth: "error",
+          reason: "This login was not started from this mirror, or it took too long. Start again.",
+        });
+      if (error)
+        return this.redirectToPage(res, { reauth: "error", reason: `Spotify: ${error}` });
+      if (typeof code !== "string" || !code || !this.fetcher)
+        return this.redirectToPage(res, { reauth: "error", reason: "Missing login code" });
+
+      const result = await this.fetcher.exchangeCode(0, code, attempt.redirectUri);
+      if (result instanceof Error)
+        return this.redirectToPage(res, { reauth: "error", reason: result.message });
+
+      this.saveToken({ refreshToken: result, source: "handoff", authorizedAt: Date.now() });
+      this.afterTokenChange();
+      this.redirectToPage(res, { reauth: "ok" });
+    });
+  },
+
+  /**
+   * Where a phone can open the module page, for the notice on the mirror.
+   * MM2 only listens on loopback when `address` is localhost (its default), then only the mirror can open it.
+   *
+   * @returns {Promise<{url: String, reachable: Boolean, qr: String|null}>} The page URL, if other devices can reach it, and a QR (SVG).
+   */
+  modulePageInfo: async function () {
+    const config = global.config || {};
+    const port = Number(process.env.MM_PORT || config.port || 8080);
+    const protocol = config.useHttps ? "https" : "http";
+    const address = (config.address || "localhost").trim();
+    const loopback = ["localhost", "127.0.0.1", "::1"].includes(address);
+
+    let host = address;
+    if (loopback) host = "localhost";
+    // Listening on every interface: the address of the network the phone is likely on
+    else if (address === "0.0.0.0" || address === "::") {
+      const lan = Object.values(os.networkInterfaces())
+        .flat()
+        .find((i) => i && i.family === "IPv4" && !i.internal);
+      host = (await defaultRouteAddress()) || (lan && lan.address) || "localhost";
+    }
+    const url = `${protocol}://${host.includes(":") ? `[${host}]` : host}:${port}${pageBase}/`;
+    const reachable = host !== "localhost";
+    let qr = null;
+    if (reachable) {
+      try {
+        qr = qrSvg(url);
+      } catch (error) {
+        console.error(`${logPrefix} Could not create the module page QR`, error);
+      }
+    }
+    return { url, reachable, qr };
+  },
+
+  redirectToPage: function (res, params) {
+    res.redirect(`${pageBase}/?${new URLSearchParams(params)}`);
+  },
+
+  addAuthAttempt: function (nonce, attempt) {
+    // Drop expired attempts, and keep only a few so a loop of requests can't fill memory
+    for (const [key, value] of this.authAttempts)
+      if (Date.now() - value.createdAt > authAttemptLifetime || this.authAttempts.size >= 10)
+        this.authAttempts.delete(key);
+    this.authAttempts.set(nonce, { ...attempt, createdAt: Date.now() });
+  },
+
+  // Single use: the attempt is removed when it is read
+  takeAuthAttempt: function (nonce) {
+    const attempt = this.authAttempts.get(nonce);
+    this.authAttempts.delete(nonce);
+    if (!attempt || Date.now() - attempt.createdAt > authAttemptLifetime) return null;
+    return attempt;
+  },
+
+  /**
+   * Only accepts JSON requests from the page itself, so other websites open in
+   * the same browser cannot change the token (CSRF).
+   */
+  isPageRequest: function (req) {
+    if (!(req.headers["content-type"] || "").startsWith("application/json"))
+      return false;
+    const origin = req.headers.origin;
+    // Browsers always send Origin on POST/DELETE, tools like curl do not
+    if (!origin) return true;
+    try {
+      return new URL(origin).host === req.headers.host;
+    } catch {
+      return false;
+    }
+  },
+
+  readJsonBody: function (req) {
+    return new Promise((resolve) => {
+      let body = "";
+      req.on("data", (chunk) => {
+        body += chunk;
+        if (body.length > maxBodySize) {
+          resolve(null);
+          req.destroy();
+        }
+      });
+      req.on("end", () => {
+        try {
+          resolve(JSON.parse(body));
+        } catch {
+          resolve(null);
+        }
+      });
+      req.on("error", () => resolve(null));
+    });
+  },
+
+  resolveToken: function () {
+    try {
+      return this.store.resolve(this.configCredentials);
+    } catch (error) {
+      console.error(`${logPrefix} Could not read/write .credentials.json`, error);
+      return {
+        refreshToken: this.configCredentials.refreshToken,
+        source: "config",
+        authorizedAt: null,
+        expiresBy: null,
+      };
+    }
+  },
+
+  saveToken: function (token) {
+    try {
+      this.store.save(this.configCredentials, token);
+      this.tokenInfo = this.store.resolve(this.configCredentials);
+      console.log(
+        `${logPrefix} Refresh token saved to .credentials.json >> \x1b[44m\x1b[37m %s \x1b[0m`,
+        token.source,
+      );
+    } catch (error) {
+      console.error(`${logPrefix} Could not save .credentials.json`, error);
+    }
+  },
+
+  afterTokenChange: function () {
+    this.lastError = null;
+    this.reauthNotified = false;
+    this.pageUser = null;
+    this.broadcastStatus();
+    this.loadPageUser();
+  },
+
+  pageStatus: function () {
+    let state = "waiting";
+    if (this.fetcher) {
+      if (this.fetcher.needsReauth(0)) state = "reauth";
+      else if (this.lastError) state = "error";
+      else if (this.lastSuccess) state = "connected";
+    }
+    return {
+      state,
+      error: this.lastError,
+      user: this.pageUser,
+      token: this.tokenInfo
+        ? {
+            source: this.tokenInfo.source,
+            authorizedAt: this.tokenInfo.authorizedAt,
+            expiresBy: this.tokenInfo.expiresBy,
+          }
+        : null,
+      // The redirect URI the user's Spotify App needs for the onsp handoff
+      redirectUri: this.authRedirectUri,
+      version,
+      // For the page translations (translations/<language>.json)
+      language: this.language,
+    };
+  },
+
+  broadcast: function (event, data) {
+    this.pageClients.forEach((send) => send(event, data));
+  },
+
+  // Only sends when something changed, this is called on every poll
+  broadcastStatus: function () {
+    const status = this.pageStatus();
+    const json = JSON.stringify(status);
+    if (json === this.lastStatusJson) return;
+    this.lastStatusJson = json;
+    this.broadcast("status", status);
+  },
+
+  setPageUser: function (data) {
+    this.pageUser = {
+      name: data.display_name || data.id,
+      image: data.images && data.images[0] ? data.images[0].url : null,
+      product: data.product,
+    };
+    this.broadcastStatus();
+  },
+
+  // The frontend only asks for user data if it shows it, so the page may need to load it
+  loadPageUser: async function () {
+    if (this.pageUser || !this.fetcher || this.fetcher.needsReauth(0)) return;
+    const data = await this.fetcher.getData("USER");
+    if (data && !(data instanceof Error)) this.setPageUser(data);
+  },
+
+  // Progress as of now, the page animates it from the moment it gets the event
+  currentNowPlaying: function () {
+    const playing = this.nowPlaying;
+    if (!playing.isPlaying || playing.progress === undefined) return playing;
+    return {
+      ...playing,
+      progress: Math.min(
+        playing.duration || Infinity,
+        playing.progress + (Date.now() - playing.at),
+      ),
+    };
+  },
+
+  sendPlayerData: function (payload) {
+    this.sendSocketNotification("PLAYER_DATA", payload);
+    // The player is loading, keep showing the last item
+    if (payload.statusPlayerUpdating) return;
+
+    const previous = this.nowPlaying;
+    let next;
+    if (payload.deviceIsPrivate)
+      next = { private: true, device: payload.deviceName, deviceType: payload.deviceType };
+    else if (payload.statusIsPlayerEmpty)
+      next = { empty: true, filteredDevice: payload.notAllowedDevice || null };
+    else
+      next = {
+        name: payload.itemName,
+        artists: payload.itemArtists || payload.itemShowName || "",
+        album: payload.itemAlbum,
+        image: payload.itemImages ? payload.itemImages.large || payload.itemImages.medium : null,
+        uri: payload.itemUri,
+        type: payload.playerMediaType,
+        device: payload.deviceName,
+        deviceType: payload.deviceType,
+        isPlaying: payload.playerIsPlaying,
+        progress: payload.playerProgress,
+        duration: payload.itemDuration,
+        at: Date.now(),
+      };
+    this.nowPlaying = next;
+
+    // Send on changes and seeks, the page animates the progress by itself
+    const key = (n) =>
+      JSON.stringify([n.empty, n.private, n.filteredDevice, n.uri, n.isPlaying, n.device]);
+    const expected =
+      previous.isPlaying && previous.progress !== undefined
+        ? previous.progress + (next.at - previous.at)
+        : previous.progress;
+    const seeked =
+      next.progress !== undefined && Math.abs(next.progress - expected) > 3000;
+    if (key(previous) !== key(next) || seeked) this.broadcast("nowPlaying", next);
   },
   isCorrectIdOrRefresh(rcvd) {
     if (rcvd !== this.appendableId) {

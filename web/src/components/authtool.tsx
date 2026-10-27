@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { BookIcon, Check, CloudDownload, Trash2Icon, UserLock, UserSearch, Verified } from "lucide-react"
 import { useEffect, useState } from "react"
 import { CopyButton } from "./copy"
+import { isMirrorState } from "@/lib/mirrors"
 
 function randomString16(l: number) {
   const array = new Uint8Array(l);
@@ -37,7 +38,7 @@ const AUTH_SCOPES = "user-read-playback-state user-read-currently-playing user-t
 const AUTH_URL = new URL("https://accounts.spotify.com/authorize?");
 
 const TOKEN_URL = new URL("https://accounts.spotify.com/api/token")
-const REDIRECT_URI = "https://onsp.fabriz.co/"
+const REDIRECT_URI = "https://onsp.fabriziob.com/"
 
 const formSchema = z.object({
   cid: z.string("Client ID is requied.").min(10, {
@@ -54,7 +55,10 @@ AUTH_URL.searchParams.set("scope", AUTH_SCOPES);
 AUTH_URL.searchParams.set("show_dialog", "true");
 
 const params = new URLSearchParams(window.location.search);
-if (window.location.href.includes("code=") && window.location.href.includes("state=")) {
+// Logins started by a mirror are forwarded to it (components/mirror-handoff.tsx)
+if (isMirrorState(params.get("state"))) {
+  // Nothing to do here
+} else if (window.location.href.includes("code=") && window.location.href.includes("state=")) {
   const code = params.get("code");
   const state = params.get("state");
 
@@ -201,8 +205,8 @@ export default function AuthTool() {
     localStorage.setItem("SPOTIFY_CLIENT_SECRET", values.secret);
     console.log("Saved new credentials: ", [values.cid, values.secret]);
 
+    // The secret is only used for the code exchange, it must not be part of the login URL
     AUTH_URL.searchParams.set("client_id", values.cid);
-    AUTH_URL.searchParams.set("client_secret", values.secret);
     AUTH_URL.searchParams.set("state", STATE_KEY);
 
     window.open(AUTH_URL, "_blank");
