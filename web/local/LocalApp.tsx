@@ -3,6 +3,7 @@ import { CircleAlert, CircleCheck, WifiOff } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import icon from "@/assets/icon.png"
 import { readReauthResult, useModuleEvents } from "./api"
+import { I18nProvider, useT } from "./i18n"
 import { NowPlayingCard } from "./components/NowPlayingCard"
 import { StatusCard } from "./components/StatusCard"
 import { TokenCard } from "./components/TokenCard"
@@ -11,7 +12,16 @@ import { TokenCard } from "./components/TokenCard"
 const reauthResult = readReauthResult()
 
 export default function LocalApp() {
-  const { status, setStatus, nowPlaying, online } = useModuleEvents()
+  const events = useModuleEvents()
+  return (
+    <I18nProvider language={events.status?.language}>
+      <Page {...events} />
+    </I18nProvider>
+  )
+}
+
+function Page({ status, setStatus, nowPlaying, online }: ReturnType<typeof useModuleEvents>) {
+  const { t, rich } = useT()
 
   return (
     <main className="min-h-dvh px-4 py-8 flex justify-center">
@@ -19,12 +29,12 @@ export default function LocalApp() {
         <header className="flex items-center gap-3">
           <img src={icon} alt="" className="h-9 w-18 rounded-lg" />
           <div className="flex-1 min-w-0">
-            <h1 className="font-semibold leading-tight">Authentication Settings</h1>
+            <h1 className="font-semibold leading-tight">{t("PAGE_TITLE")}</h1>
             <span className="text-sm text-muted-foreground">
               <a href="https://github.com/Fabrizz/MMM-OnSpotify" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
                 MMM-OnSpotify
               </a>{" "}
-              by{" "}
+              {t("PAGE_BY")}{" "}
               <a href="https://fabriziob.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
                 Fabrizz
               </a>
@@ -37,7 +47,7 @@ export default function LocalApp() {
               target="_blank"
               rel="noopener noreferrer"
               className="shrink-0 rounded-md border px-2 py-0.5 text-xs text-muted-foreground tabular-nums hover:text-foreground transition-colors"
-              title="Module version"
+              title={t("PAGE_VERSION_TITLE")}
             >
               v{status.version}
             </a>
@@ -48,22 +58,22 @@ export default function LocalApp() {
           (reauthResult.ok ? (
             <Alert>
               <CircleCheck className="text-green-500" />
-              <AlertTitle>Connected with your new Spotify login</AlertTitle>
-              <AlertDescription>The module is using the new token, it lasts 6 months.</AlertDescription>
+              <AlertTitle>{t("PAGE_HANDOFF_OK_TITLE")}</AlertTitle>
+              <AlertDescription>{t("PAGE_HANDOFF_OK_TEXT")}</AlertDescription>
             </Alert>
           ) : (
             <Alert variant="destructive">
               <CircleAlert />
-              <AlertTitle>The Spotify login did not finish</AlertTitle>
-              <AlertDescription className="break-words">{reauthResult.reason || "Unknown error"}</AlertDescription>
+              <AlertTitle>{t("PAGE_HANDOFF_ERROR_TITLE")}</AlertTitle>
+              <AlertDescription className="break-words">{reauthResult.reason || t("PAGE_UNKNOWN_ERROR")}</AlertDescription>
             </Alert>
           ))}
 
         {!online && (
           <Alert variant="destructive">
             <WifiOff />
-            <AlertTitle>Can't reach the mirror</AlertTitle>
-            <AlertDescription>Retrying...</AlertDescription>
+            <AlertTitle>{t("PAGE_OFFLINE_TITLE")}</AlertTitle>
+            <AlertDescription>{t("PAGE_OFFLINE_TEXT")}</AlertDescription>
           </Alert>
         )}
 
@@ -72,8 +82,8 @@ export default function LocalApp() {
         <TokenCard status={status} onStatus={setStatus} />
 
         <footer className="text-xs text-muted-foreground text-center">
-          <p>This page is served by the MMM-OnSpotify module. It is not an official Spotify product.</p>
-          <p>You can find the source code inside <code>/web</code> and <code>/web/local</code></p>
+          <p>{t("PAGE_FOOTER_NOTICE")}</p>
+          <p>{rich("PAGE_FOOTER_SOURCE", { web: <code>/web</code>, local: <code>/web/local</code> })}</p>
         </footer>
       </div>
     </main>

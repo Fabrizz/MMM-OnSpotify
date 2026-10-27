@@ -4,6 +4,7 @@ import { EyeOff, Laptop, Music, Pause, Smartphone, Speaker, Tv } from "lucide-re
 import { Card, CardContent } from "@/components/ui/card"
 import type { NowPlaying } from "../api"
 import { formatDuration } from "../format"
+import { useT } from "../i18n"
 
 function DeviceIcon({ type }: { type?: string }) {
   switch ((type || "").toLowerCase()) {
@@ -80,6 +81,7 @@ function Message({ icon, text }: { icon: ReactNode; text: string }) {
 }
 
 export function NowPlayingCard({ nowPlaying }: { nowPlaying: NowPlaying | null }) {
+  const { t } = useT()
   let content
   if (!nowPlaying || nowPlaying.empty)
     content = (
@@ -87,14 +89,14 @@ export function NowPlayingCard({ nowPlaying }: { nowPlaying: NowPlaying | null }
         icon={<Music className="size-5" />}
         text={
           nowPlaying?.filteredDevice
-            ? `Playing on ${nowPlaying.filteredDevice}, which is filtered by deviceFilter`
-            : "Nothing playing right now"
+            ? t("PAGE_FILTERED_DEVICE", { device: nowPlaying.filteredDevice })
+            : t("PAGE_NOTHING_PLAYING")
         }
       />
     )
   else if (nowPlaying.private)
     content = (
-      <Message icon={<EyeOff className="size-5" />} text={`Private session on ${nowPlaying.device ?? "a device"}`} />
+      <Message icon={<EyeOff className="size-5" />} text={t("PAGE_PRIVATE_SESSION", { device: nowPlaying.device ?? t("PAGE_A_DEVICE") })} />
     )
   else content = <Playing item={nowPlaying} />
 

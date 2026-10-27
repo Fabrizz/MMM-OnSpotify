@@ -21,8 +21,12 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
+    // The page imports ../translations/en.json from the module folder
+    fs: { allow: [path.resolve(__dirname, "..")] },
     // `npm run dev:local` against a running MagicMirror
     proxy: {
+      // Translation files, MM2 serves the module folder
+      "/modules": "http://localhost:8080",
       "/api": {
         target: "http://localhost:8080",
         rewrite: (p) => `/onspotify${p}`,

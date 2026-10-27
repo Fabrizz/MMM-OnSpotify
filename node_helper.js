@@ -111,6 +111,15 @@ module.exports = NodeHelper.create({
     this.authRedirectUri = "https://onsp.fabriziob.com/";
     // Spotify logins started from the page: nonce => { redirectUri, createdAt }
     this.authAttempts = new Map();
+    // Language of the module page: the module's `language` option, or MM2's.
+    // Known before the frontend connects, the page can be opened first.
+    const moduleConfig = ((global.config && global.config.modules) || []).find(
+      (m) => m.module === this.name,
+    );
+    this.language =
+      (moduleConfig && moduleConfig.config && moduleConfig.config.language) ||
+      (global.config && global.config.language) ||
+      "en";
     // Which refresh token is in use: { source, authorizedAt, expiresBy }
     this.tokenInfo = null;
     this.pageUser = null;
@@ -135,6 +144,7 @@ module.exports = NodeHelper.create({
         if (payload.backendExpectId === this.appendableId) break;
         this.configCredentials = payload.credentials;
         if (payload.authRedirectUri) this.authRedirectUri = payload.authRedirectUri;
+        if (payload.language) this.language = payload.language;
         this.tokenInfo = this.resolveToken();
         this.fetcher = new SpotifyFetcher({
           ...payload,
@@ -691,6 +701,8 @@ module.exports = NodeHelper.create({
       // The redirect URI the user's Spotify App needs for the onsp handoff
       redirectUri: this.authRedirectUri,
       version,
+      // For the page translations (translations/<language>.json)
+      language: this.language,
     };
   },
 

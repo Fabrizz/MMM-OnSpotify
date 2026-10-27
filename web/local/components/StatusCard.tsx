@@ -4,48 +4,52 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { ModuleState, Status } from "../api"
 import { daysUntil, formatDate } from "../format"
+import { useT } from "../i18n"
 
 const STATE_LABEL: Record<ModuleState, string> = {
-  waiting: "Waiting for the mirror",
-  connected: "Connected",
-  reauth: "Login expired",
-  error: "Connection error",
+  waiting: "PAGE_STATE_WAITING",
+  connected: "PAGE_STATE_CONNECTED",
+  reauth: "PAGE_STATE_REAUTH",
+  error: "PAGE_STATE_ERROR",
 }
 
 function StateBadge({ state }: { state: ModuleState }) {
+  const { t } = useT()
   if (state === "connected")
     return (
       <Badge className="bg-green-600/20 text-green-400 border-green-600/40">
-        <CircleCheck /> {STATE_LABEL[state]}
+        <CircleCheck /> {t(STATE_LABEL[state])}
       </Badge>
     )
   if (state === "waiting")
     return (
       <Badge variant="secondary">
-        <Loader2 className="animate-spin" /> {STATE_LABEL[state]}
+        <Loader2 className="animate-spin" /> {t(STATE_LABEL[state])}
       </Badge>
     )
   return (
     <Badge variant="destructive">
-      <CircleAlert /> {STATE_LABEL[state]}
+      <CircleAlert /> {t(STATE_LABEL[state])}
     </Badge>
   )
 }
 
 function TokenExpiry({ token }: { token: NonNullable<Status["token"]> }) {
-  if (!token.expiresBy) return <span>Unknown expiration</span>
+  const { t, language } = useT()
+  if (!token.expiresBy) return <span>{t("PAGE_UNKNOWN_EXPIRATION")}</span>
   const days = daysUntil(token.expiresBy)
   // Without an authorization date we only know the latest possible expiration
   const exact = token.authorizedAt !== null
-  const when = days <= 0 ? "Expired" : exact ? `Expires in ${days} days` : `Expires in ${days} days at the latest`
+  const when = days <= 0 ? t("PAGE_EXPIRED") : t(exact ? "PAGE_EXPIRES_IN" : "PAGE_EXPIRES_IN_LATEST", { days })
   return (
     <span className={"text-sm text-muted-foreground " + (days <= 14 ? "text-yellow-400" : "")}>
-      {when} ({formatDate(token.expiresBy)})
+      {when} ({formatDate(token.expiresBy, language)})
     </span>
   )
 }
 
 export function StatusCard({ status }: { status: Status | null }) {
+  const { t } = useT()
   const state = status?.state ?? "waiting"
   return (
     <Card className="relative overflow-hidden">
@@ -62,10 +66,10 @@ export function StatusCard({ status }: { status: Status | null }) {
         )}
         <div className="flex flex-col gap-0.5 min-w-0">
           <CardTitle className="truncate z-10">
-            {status?.user?.name ?? "Spotify account"}
+            {status?.user?.name ?? t("PAGE_ACCOUNT")}
             </CardTitle>
           <CardDescription className="uppercase z-10">
-            {status?.user?.product ?? "Unknown product"}
+            {status?.user?.product ?? t("PAGE_UNKNOWN_PRODUCT")}
           </CardDescription>
           <span className="absolute top-4 right-4">
             <StateBadge state={state} />
@@ -74,7 +78,7 @@ export function StatusCard({ status }: { status: Status | null }) {
       </CardHeader>
       <CardContent className="flex flex-col gap-2 z-10 border-t pt-6">
         {state === "waiting" && (
-          <p>The module starts when the mirror page is open. Open MagicMirror and this page will update.</p>
+          <p>{t("PAGE_WAITING_TEXT")}</p>
         )}
         {state === "error" && status?.error && <p className="text-destructive break-words">{status.error}</p>}
         {status?.token && (
@@ -83,7 +87,7 @@ export function StatusCard({ status }: { status: Status | null }) {
               <KeyRound className="size-5 shrink-0" />
             </span>
             <span className="flex flex-col gap-0">
-              <span>{status.token.source === "config" ? "Token from config.js" : "Token saved by the module"}</span>
+              <span>{t(status.token.source === "config" ? "PAGE_TOKEN_FROM_CONFIG" : "PAGE_TOKEN_SAVED")}</span>
               <TokenExpiry token={status.token} />
             </span>
           </p>

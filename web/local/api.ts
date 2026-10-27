@@ -61,6 +61,8 @@ export type Status = {
   redirectUri?: string
   // Module version, from its package.json
   version?: string
+  // Mirror language, picks translations/<language>.json
+  language?: string
 }
 
 export type NowPlaying = {
