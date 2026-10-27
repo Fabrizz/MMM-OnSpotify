@@ -114,8 +114,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    /* Space for the scrollbar is always kept, pages don't shift when they start scrolling */
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 45%, transparent) transparent;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Radix (dialogs, drawers) adds the scrollbar width as margin while scrolling is locked,
+     the gutter already keeps that space. More specific than its injected rule, also !important */
+  html body[data-scroll-locked] {
+    margin-right: 0 !important;
   }
 }
 

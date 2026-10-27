@@ -90,7 +90,7 @@ export default function MyMirrors() {
     <PageLayout>
       <SiteHeader />
       <div className="mb-6">
-        <h1 className="leading-11 font-sans text-3xl font-normal">My mirrors</h1>
+        <h1 className="leading-11 font-sans text-3xl font-normal">My mirrors <span className="text-sm font-extralight">(handoff)</span></h1>
         <p className="opacity-90">
           Mirrors are saved only in this browser. They are added when you get a new token from a mirror's module page
           (<code className='px-1'>http://{"<"}yourmirror{">"}/onspotify</code>), or you can add one below.
